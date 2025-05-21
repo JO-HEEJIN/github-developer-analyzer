@@ -420,17 +420,17 @@ class GitHubAnalysisDashboard:
                     st.metric("활동 기간", f"{int(dev_data['active_days'])}일")
             
             with col2:
-                if 'additions_mean' in dev_data:
+                if 'additions_mean' in dev_data and pd.notna(dev_data['additions_mean']):
                     st.metric("평균 추가 라인", f"{dev_data['additions_mean']:.1f}")
-                if 'deletions_mean' in dev_data:
+                if 'deletions_mean' in dev_data and pd.notna(dev_data['deletions_mean']):
                     st.metric("평균 삭제 라인", f"{dev_data['deletions_mean']:.1f}")
-            
+
             with col3:
-                if 'message_length_mean' in dev_data:
+                if 'message_length_mean' in dev_data and pd.notna(dev_data['message_length_mean']):
                     st.metric("평균 메시지 길이", f"{dev_data['message_length_mean']:.1f}")
-                if 'commits_per_day' in dev_data:
+                if 'commits_per_day' in dev_data and pd.notna(dev_data['commits_per_day']):
                     st.metric("일일 평균 커밋", f"{dev_data['commits_per_day']:.2f}")
-            
+
             # 탭으로 다양한 분석 표시
             dev_tabs = st.tabs(["요일별 활동", "시간대별 활동", "커밋 메시지 분석"])
             
