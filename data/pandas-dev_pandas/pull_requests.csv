@@ -1,0 +1,1026 @@
+repo,number,title,body,state,created_at,updated_at,closed_at,merged_at,merge_commit_sha,author_login,additions,deletions,changed_files,comments,review_comments,commits,is_merged,url,reviewers
+pandas-dev/pandas,61472,Backport PR #61399: BUG: round on object columns no longer raises a TypeError,xref https://github.com/pandas-dev/pandas/pull/61399,closed,2025-05-21T15:56:04+00:00,2025-05-21T17:06:19+00:00,2025-05-21T17:06:16+00:00,2025-05-21T17:06:16+00:00,86709da968c5c4633728d266f16de959a45f5300,mroeschke,10,0,3,0,0,1,True,https://github.com/pandas-dev/pandas/pull/61472,{}
+pandas-dev/pandas,61471,Improve lookup documentation,"- [ ] closes #40140
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+Follows from #61185 
+
+Examples available at https://colab.research.google.com/drive/1MGWX6JVJL5yHyK7BeEBPQAW4tLM3TZL9#scrollTo=DjWfk4i1SiOY",open,2025-05-21T15:04:30+00:00,2025-05-21T16:02:17+00:00,,,0f96b04b45de4291e429ffec1c5beea762fa415d,stevenae,24,8,1,0,0,2,False,https://github.com/pandas-dev/pandas/pull/61471,{}
+pandas-dev/pandas,61470,DOC: Restructure and expand UDF page,"I changed the order in which the methods are presented,both in the table and in the sections, to be:
+
+- map
+- apply
+- pipe
+- filter
+- agg
+- transform
+
+I find it easier to explain them in this order.
+
+And I expanded the method sections with examples and a bit more of information.
+
+I removed the most complex example in the intro, as I think the examples in the sections will make a better job now at explaining the most complex cases.
+
+@arthurlw @rhshadrach do you mind having a look?",open,2025-05-21T11:34:50+00:00,2025-05-21T17:06:00+00:00,,,d16475f1e2cdf8d4153283685d58d9d8ed511bce,datapythonista,210,96,1,0,0,3,False,https://github.com/pandas-dev/pandas/pull/61470,{}
+pandas-dev/pandas,61468,ENH: Implement PDEP-17,"- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+Continuation of #58169
+
+Still needs tests and some cleanup with the docs and decorator arguments, but I'd like to get a first look.
+
+cc @Dr-Irv @Aloqeely ",open,2025-05-20T22:22:11+00:00,2025-05-21T12:38:34+00:00,,,deda9247134a971dd2f119b2a998a0e367205c79,rhshadrach,417,159,42,1,6,4,False,https://github.com/pandas-dev/pandas/pull/61468,"{""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T22:31:44+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T22:35:06+00:00""}], ""Dr-Irv"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-21T12:38:34+00:00""}]}"
+pandas-dev/pandas,61467,ENH: Support third-party execution engines in Series.map,"- [X] xref #61125
+- [X] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [X] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [X] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [X] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",open,2025-05-20T22:07:21+00:00,2025-05-20T23:20:50+00:00,,,ce545e87807c911ee500742b0a29ef6fc677f59e,datapythonista,135,62,7,0,0,10,False,https://github.com/pandas-dev/pandas/pull/61467,{}
+pandas-dev/pandas,61465,BUG: Raise ValueError on integer indexers containing NA; skip test for unsupported EAs,"- [x] closes #56727 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+What this PR changes:
+
+- Adds a check to _setitem_with_indexer to raise a ValueError when NA is present in the indexer.
+
+- Updates test_setitem_integer_with_missing_raises to skip test cases for known ExtensionArray types (PeriodArray, DatetimeArray, IntervalArray) that do not support indexing with NA in integer indexers.",open,2025-05-20T18:02:28+00:00,2025-05-21T17:12:17+00:00,,,34fcf6ed24481aae6dd16ed9beb9d8dd65c02a42,pelagiavlas,262,76,15,1,0,93,False,https://github.com/pandas-dev/pandas/pull/61465,{}
+pandas-dev/pandas,61463,Wheels for win_arm64,"- [ ] closes #61462
+- [x] no new code was added to pandas",open,2025-05-19T21:22:13+00:00,2025-05-21T19:23:42+00:00,,,8677c35e1dc9837c3a4e18bbab6190649feb09a2,khmyznikov,25,2,1,1,4,35,False,https://github.com/pandas-dev/pandas/pull/61463,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T15:54:01+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T16:03:52+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T16:04:55+00:00""}], ""khmyznikov"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T16:34:28+00:00""}]}"
+pandas-dev/pandas,61461,DOC: fix two mistakes in missing_data.rst,"Small documentation improvements on `missing_data.rst`:
+- The referenced example no longer exists
+- Add space after full stop.",closed,2025-05-19T19:17:16+00:00,2025-05-20T15:02:21+00:00,2025-05-19T19:45:53+00:00,2025-05-19T19:45:53+00:00,7d8f5bdb4e165b13186385d0720d921358ad84d6,gogowitsch,1,4,1,0,0,1,True,https://github.com/pandas-dev/pandas/pull/61461,"{""datapythonista"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-19T19:45:41+00:00""}]}"
+pandas-dev/pandas,61459,DOC: change `pandas.DataFrame.unstack`'s `fill_value` param to scalar,"- [x] closes #61445 (Replace xxxx with the GitHub issue number)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+<img width=""796"" alt=""image"" src=""https://github.com/user-attachments/assets/2540c012-dc39-47bd-81f9-263855a2c69d"" />
+",closed,2025-05-19T13:13:36+00:00,2025-05-19T16:00:47+00:00,2025-05-19T16:00:40+00:00,2025-05-19T16:00:40+00:00,6879598d495904f3c0a4723bb140296348c49fbd,KevsterAmp,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61459,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-19T16:00:30+00:00""}]}"
+pandas-dev/pandas,61457,ENH: Added `DataFrame.nsorted` to select top ``n`` rows according to column-dependent order,"- [x] closes #61166 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+PR is ready for review.
+",open,2025-05-19T11:11:18+00:00,2025-05-19T17:38:44+00:00,,,864d4a0373cbe279e530349a3b7721df391a4d21,MartinBraquet,306,79,8,0,1,8,False,https://github.com/pandas-dev/pandas/pull/61457,"{""MartinBraquet"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T13:42:57+00:00""}]}"
+pandas-dev/pandas,61455,fix(doc): #61432 typing,"- [x] closes #61432
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-19T07:34:54+00:00,2025-05-20T21:42:25+00:00,2025-05-20T21:40:31+00:00,2025-05-20T21:40:31+00:00,fe60f43cd38944a46388acd21458e619c48cf85f,cmp0xff,16,10,3,3,7,3,True,https://github.com/pandas-dev/pandas/pull/61455,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:03:29+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:04:57+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-20T15:51:35+00:00""}], ""cmp0xff"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:12:15+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T07:29:52+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T07:29:56+00:00""}], ""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T22:17:04+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T22:17:59+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-20T21:38:21+00:00""}]}"
+pandas-dev/pandas,61454,BUG: Raise TypeError when joining with non-DataFrame using 'on=' (GH#61434),"Closes GH#61434
+
+### What does this PR change?
+
+When using `DataFrame.join()` with the `on` parameter, passing an invalid object like a `dict`, `int`, or third-party DataFrame previously resulted in unclear internal errors.
+
+This PR adds a minimal type check that raises a clear `TypeError` when `other` is not a `DataFrame`, `Series`, or a list of such objects. Valid list-based joins without `on` remain unaffected.
+
+### Checklist
+
+- [x] Closes #61434
+- [x] Tests added and passed
+- [x] All code checks passed via `pre-commit run --all-files`
+- [x] Entry added in `doc/source/whatsnew/v3.0.0.rst`",open,2025-05-18T23:00:01+00:00,2025-05-19T23:05:53+00:00,,,d6678234a87bba467b4c618f622ca46e8813deb9,iabhi4,47,0,3,1,8,1,False,https://github.com/pandas-dev/pandas/pull/61454,"{""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-19T02:18:21+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T20:42:41+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T22:36:05+00:00""}], ""iabhi4"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T05:20:54+00:00""}], ""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:07:20+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:08:14+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:05:53+00:00""}]}"
+pandas-dev/pandas,61453,TYP: Update typing for 3.10,"- Ran `pyupgrade` so that typing is updated to python 3.10 - that modified files in `pandas/_libs`
+- Updated `pandas/_typing.py` to have the following:
+  - Use `TypeAlias` to declare all types
+  - Change `Type` to use `builtins.type`
+  - Remove `Optional`
+  - Remove use of `Union` *except* for when it is used on a pandas type
+
+Also fixed some other typing issues as well as an issue with running `stubtest` locally.
+",closed,2025-05-18T21:38:17+00:00,2025-05-19T16:11:30+00:00,2025-05-19T16:11:23+00:00,2025-05-19T16:11:23+00:00,801bb24694ce32d04f9b1160c7dcb0e5ac2a8465,Dr-Irv,177,180,22,1,3,4,True,https://github.com/pandas-dev/pandas/pull/61453,"{""Dr-Irv"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T14:25:53+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T14:26:40+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T14:27:18+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-19T16:11:11+00:00""}]}"
+pandas-dev/pandas,61451,BUG: Fix DataFrame constructor misclassification of array-like with 'name' attribute (#61443),"BUG: Fix DataFrame constructor misclassification of array-like with 'name' attribute
+
+Previously, any object with a `.name` attribute (like some `vtkArray`-like objects) was assumed to be a `Series` or `Index`, causing the DataFrame constructor to misinterpret the input and raise errors when passed valid 2D array-likes.
+
+This fix ensures we only apply the named-Series/Index logic when the input is **actually** an instance of `ABCSeries` or `ABCIndex`, and the `name` is not `None`.
+
+A new test was added to ensure array-like subclasses with `.name` are handled correctly.
+
+---
+
+- [x] Closes #61443
+- [x] Tests added and passing
+- [x] Code passes all checks via `pre-commit`
+- [x] Behavior verified with array-like + `.name` case
+- [x] Entry added in `doc/source/whatsnew/v3.0.0.rst`",closed,2025-05-17T22:30:43+00:00,2025-05-19T15:54:56+00:00,2025-05-19T15:54:49+00:00,2025-05-19T15:54:49+00:00,ae8ea3e017481a47ab2635b6fe18572b280e3824,iabhi4,20,2,3,3,1,3,True,https://github.com/pandas-dev/pandas/pull/61451,"{""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-18T12:28:59+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-19T02:21:02+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-19T15:54:41+00:00""}]}"
+pandas-dev/pandas,61450,BUG: Fix Dataframe handling of scalar Timestamp #61444,"closes #61444
+Tests developed, but validating against test suite to ensure full compliance.  Will update pull request with submission notes and unit test after validation this doesn't disrupt other functions.
+
+TODO:
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",open,2025-05-17T01:42:15+00:00,2025-05-17T01:42:15+00:00,,,1919ee5fa1b12c91ac19ef224f8f5c753ff9302a,Farsidetfs,9,0,1,0,0,1,False,https://github.com/pandas-dev/pandas/pull/61450,{}
+pandas-dev/pandas,61449,DOC: fix typo in merging.rst,"""order data""
+
+- ~~[ ] closes #xxxx (Replace xxxx with the GitHub issue number)~~
+- ~~[ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature~~
+- ~~[ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).~~
+- ~~[ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~~
+- ~~[ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~~",closed,2025-05-16T23:56:46+00:00,2025-05-18T17:25:15+00:00,2025-05-17T00:21:58+00:00,2025-05-17T00:21:58+00:00,5aa78c019649a291456788bc3a808452a387884b,wjandrea,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61449,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-17T00:21:45+00:00""}]}"
+pandas-dev/pandas,61448,"DOC: Skip parallel_coordinaes, andrews_curves doctests","The method calls are skipped in these doctest, so we should skip the `DataFrame` setup that makes a network call
+
+e.g where this can fail https://github.com/pandas-dev/pandas/actions/runs/15072461295/job/42371956167",closed,2025-05-16T19:00:05+00:00,2025-05-16T20:59:18+00:00,2025-05-16T20:59:16+00:00,2025-05-16T20:59:15+00:00,3543e960064979976516792a2d6dc92b20ba3843,mroeschke,2,2,1,0,0,1,True,https://github.com/pandas-dev/pandas/pull/61448,{}
+pandas-dev/pandas,61446,CI: clean up wheel build workarounds now that Cython 3.1.0 is out,"- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+This simplifiers wheel builds for free-threaded CPython, which is useful in itself and I thought was a good idea before backporting the Windows cp313t wheel support to the 2.3.x branch, as just discussed at https://github.com/pandas-dev/pandas/pull/61249#issuecomment-2885514360.
+
+This should have no changes in behavior, and mostly reverts the workarounds for unreleased Cython added initially in gh-60146. Other notes:
+- Changes the `free-threaded-support` cibuildwheel setting to `enable`, because the former is now deprecated.
+- This leaves the license concatenation behavior unchanged. Note that it's skipped on Windows, and happens on other platforms. This was added without any discussion in gh-60146. It looks inconsistent, but the bash invocation doesn't work on Windows so I'd like to leave it unchanged in this PR. A useful follow-up PR may be to remove the ad-hoc concatenation in favor of starting to use [PEP 639](https://peps.python.org/pep-0639/).
+
+I ran the wheel builds on my fork before opening this PR, they're passing ([CI logs](https://github.com/rgommers/pandas/actions/runs/15060502913)).",closed,2025-05-16T04:44:14+00:00,2025-05-18T14:02:42+00:00,2025-05-16T15:54:59+00:00,2025-05-16T15:54:59+00:00,17f0dd6233a881702b36a301f4b8dd82f7d9f9a8,rgommers,2,31,6,2,0,1,True,https://github.com/pandas-dev/pandas/pull/61446,"{""lithomas1"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-16T11:32:15+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-16T15:53:47+00:00""}]}"
+pandas-dev/pandas,61441,BUG: Raise ValueError on integer indexers containing NA; skip test for unsupported EAs,"- [ ] closes #56727
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+This PR addresses missing validation in `_setitem_with_indexer`, where indexing with integer indexers containing `pd.NA` (e.g., `Int64` arrays with missing values) would silently fail or misbehave.
+
+### What this PR changes:
+
+- Adds a check to `_setitem_with_indexer` to raise a `ValueError` when NA is present in the indexer.
+- Updates `test_setitem_integer_with_missing_raises` to skip test cases for known `ExtensionArray` types (`PeriodArray`, `DatetimeArray`, `IntervalArray`) that do not support indexing with NA in integer indexers.
+
+",closed,2025-05-14T08:30:32+00:00,2025-05-20T18:02:28+00:00,2025-05-20T18:02:28+00:00,,5d40c849b5886d51a4a88a2c6fd3b7e93e6cd557,pelagiavlas,219,55,15,0,0,51,False,https://github.com/pandas-dev/pandas/pull/61441,{}
+pandas-dev/pandas,61437,Backport PR #61423: CI: Fix test failures in 32-bit environment,,closed,2025-05-13T23:25:43+00:00,2025-05-13T23:57:41+00:00,2025-05-13T23:57:38+00:00,2025-05-13T23:57:38+00:00,5bbd98bd616f0d7811c58e3e2d88473d94652d3a,mroeschke,3,1,1,0,0,1,True,https://github.com/pandas-dev/pandas/pull/61437,{}
+pandas-dev/pandas,61436,change readme,"- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-13T08:18:06+00:00,2025-05-13T08:20:01+00:00,2025-05-13T08:20:01+00:00,,a4cf14afdd1a44250b1c1ffbf6b23e68b76c188e,uzairahmad03,1,1,1,0,0,1,False,https://github.com/pandas-dev/pandas/pull/61436,{}
+pandas-dev/pandas,61435,ENH: Implemented MultiIndex.searchsorted method ( GH14833) ,"- [X] closes #14833
+- [X] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [X] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [X] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",open,2025-05-12T17:35:52+00:00,2025-05-21T16:52:37+00:00,,,2aab2313cc3b7663e259da21548d6e1ab9ee2648,GSAUC3,160,8,5,10,8,14,False,https://github.com/pandas-dev/pandas/pull/61435,"{""datapythonista"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T13:25:54+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T17:07:19+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-21T16:52:37+00:00""}], ""GSAUC3"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:46:40+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:47:22+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T16:52:09+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T05:39:21+00:00""}]}"
+pandas-dev/pandas,61430,BLD: Decrease size of docker image,"This PR reduces the size of the docker image by:
+- combining RUN commands to minimise the number of layers 
+- removing the apt lists files to reduce total size 
+- use --no-cache-dir when installing with pip
+
+In my tests it reduced the size of the final image with approximately 0.47GB (most of it due to the --no-cache-dir). 
+
+- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-11T16:25:28+00:00,2025-05-12T19:10:45+00:00,2025-05-12T19:10:38+00:00,2025-05-12T19:10:38+00:00,839747c3f6b68af08dded9e63a18320a854eee28,huisman,12,8,1,1,2,2,True,https://github.com/pandas-dev/pandas/pull/61430,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T16:54:19+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-12T19:10:31+00:00""}], ""huisman"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T17:22:57+00:00""}]}"
+pandas-dev/pandas,61429,DOC: Updates to documentation - io.rst,"updating hdf5 data description link due to 404 error
+
+- [x] closes #61428 
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-11T14:17:41+00:00,2025-05-12T16:55:22+00:00,2025-05-12T16:55:16+00:00,2025-05-12T16:55:16+00:00,9bfbe9e339faf02dbda911c8d89d183033efdf45,ConnorWallace15,1,1,1,1,0,2,True,https://github.com/pandas-dev/pandas/pull/61429,"{""datapythonista"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-12T09:20:18+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-12T16:55:08+00:00""}]}"
+pandas-dev/pandas,61426,BUG: Fix memory leak when slicing Series and assigning to self,"This PR fixes a memory leak that occurs when a Series is sliced and reassigned to itself, e.g., a = a[-1:].
+
+The underlying BlockManager retained references to the original data, preventing garbage collection. This is resolved by ensuring the sliced result copies the backing data.
+
+Closes #60640.",open,2025-05-10T16:36:04+00:00,2025-05-10T17:06:15+00:00,,,24ddafd0f983e530536dfe7f0859d30396f61396,niranjanorkat,28,1,2,0,0,3,False,https://github.com/pandas-dev/pandas/pull/61426,{}
+pandas-dev/pandas,61423,CI: Fix test failures in 32-bit environment,"I noticed that some CI failures are due to the same test errors appearing in several recent PRs.
+After comparing multiple failed and successful CI runs, it seems that the unit tests fail when using `cython==3.1.0` in the Linux 32-bit environment.
+
+
+* Faliure unittest case:
+  ```python
+  FAILED pandas/tests/window/test_rolling.py::test_rolling_var_numerical_issues[var-1-values0] - AssertionError: Series are different
+  
+  Series values are different (42.85714 %)
+  [index]: [0, 1, 2, 3, 4, 5, 6]
+  [left]:  [nan, 5e+33, 0.0, -1.7226268574692147e+17, -1.7226268574692147e+17, -1.7226268574692147e+17, 0.0]
+  [right]: [nan, 5e+33, 0.0, 0.5, 0.5, 2.0, 0.0]
+  At positional index 3, first diff: -1.7226268574692147e+17 != 0.5
+  FAILED pandas/tests/window/test_rolling.py::test_rolling_var_numerical_issues[std-1-values1] - AssertionError: Series are different
+  
+  Series values are different (42.85714 %)
+  [index]: [0, 1, 2, 3, 4, 5, 6]
+  [left]:  [nan, 7.071067811865475e+16, 0.0, 0.0, 0.0, 0.0, 0.0]
+  [right]: [nan, 7.071068e+16, 0.0, 0.7071068, 0.7071068, 1.414214, 0.0]
+  At positional index 3, first diff: 0.0 != 0.7071068
+  FAILED pandas/tests/window/test_rolling.py::test_rolling_var_numerical_issues[var-2-values2] - AssertionError: Series are different
+  
+  Series values are different (42.85714 %)
+  [index]: [0, 1, 2, 3, 4, 5, 6]
+  [left]:  [nan, 5e+33, -1.7226268574692147e+17, 0.0, -1.7226268574692147e+17, -1.7226268574692147e+17, 0.0]
+  [right]: [nan, 5e+33, 0.5, 0.0, 0.5, 2.0, 0.0]
+  At positional index 2, first diff: -1.7226268574692147e+17 != 0.5
+  FAILED pandas/tests/window/test_rolling.py::test_rolling_var_numerical_issues[std-2-values3] - AssertionError: Series are different
+  
+  Series values are different (42.85714 %)
+  [index]: [0, 1, 2, 3, 4, 5, 6]
+  [left]:  [nan, 7.071067811865475e+16, 0.0, 0.0, 0.0, 0.0, 0.0]
+  [right]: [nan, 7.071068e+16, 0.7071068, 0.0, 0.7071068, 1.414214, 0.0]
+  At positional index 2, first diff: 0.0 != 0.7071068
+  = 4 failed, 166839 passed, 24850 skipped, 5388 deselected, 795 xfailed, 92 xpassed, 2 warnings in 554.17s (0:09:14) =
+  ```
+* using `cython==3.0.10`:
+  ```python
+  >>> import numpy as np
+  ... from pandas import Series
+  ...
+  ... def debug_rolling_var():
+  ...     ds = Series([99999999999999999, 1, 1, 2, 3, 1, 1])
+  ...     print(""Rolling(2).var():\n"", ds.rolling(2).var())
+  ...     print(""Numpy var:"", np.var([99999999999999999, 1], ddof=0))
+  ...
+  >>> debug_rolling_var()
+  Rolling(2).var():
+   0             NaN
+  1    5.000000e+33
+  2    0.000000e+00
+  3    5.000000e-01
+  4    5.000000e-01
+  5    2.000000e+00
+  6    0.000000e+00
+  dtype: float64
+  Numpy var: 2.5e+33
+  ```
+* using `cython==3.1.0`:
+  ```python
+  >>> import numpy as np
+  ... from pandas import Series
+  ...
+  ... def debug_rolling_var():
+  ...     ds = Series([99999999999999999, 1, 1, 2, 3, 1, 1])
+  ...     print(""Rolling(2).var():\n"", ds.rolling(2).var())
+  ...     print(""Numpy var:"", np.var([99999999999999999, 1], ddof=0))
+  ...
+  >>> debug_rolling_var()
+  Rolling(2).var():
+   0             NaN
+  1    5.000000e+33
+  2    0.000000e+00
+  3   -1.722627e+17
+  4   -1.722627e+17
+  5   -1.722627e+17
+  6    0.000000e+00
+  dtype: float64
+  Numpy var: 2.5e+33
+  ```",closed,2025-05-10T06:43:45+00:00,2025-05-13T23:25:56+00:00,2025-05-13T23:09:01+00:00,2025-05-13T23:09:01+00:00,41968a550a159ec0e5ef541a610b7007003bab5b,chilin0525,3,1,1,4,2,3,True,https://github.com/pandas-dev/pandas/pull/61423,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T19:53:07+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-13T23:08:56+00:00""}], ""chilin0525"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-13T19:02:25+00:00""}]}"
+pandas-dev/pandas,61422,BUG: Raise MergeError when suffixes result in duplicate column names …,"closes #61402 
+
+ All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+ Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+ Added an entry in the latest doc/source/whatsnew/vX.X.X.rst file if fixing a bug or adding a new feature.
+",open,2025-05-09T23:21:41+00:00,2025-05-19T02:32:35+00:00,,,b46d58646652ec695044fa2724189730c2532f33,Farsidetfs,23,6,3,14,5,2,False,https://github.com/pandas-dev/pandas/pull/61422,"{""nikaltipar"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-10T08:42:01+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-14T21:45:36+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-15T05:34:48+00:00""}], ""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-19T02:32:11+00:00""}]}"
+pandas-dev/pandas,61421,DOC: Updated titanic.rst survived description,"- [x] closes #61412
+- [ ] ~[Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature~
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] ~Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~
+- [ ] ~Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~
+",closed,2025-05-09T18:01:35+00:00,2025-05-09T18:36:15+00:00,2025-05-09T18:36:07+00:00,2025-05-09T18:36:07+00:00,9c5b9ee823702d937d008d761dbe9ae8872f2259,arthurlw,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61421,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-09T18:35:58+00:00""}]}"
+pandas-dev/pandas,61414,Bug fix slow plot with datetimeindex,"- [x] closes [#61398](https://github.com/pandas-dev/pandas/issues/61398)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests)
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions. (N/A - no new methods/functions added)
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.",open,2025-05-09T03:55:17+00:00,2025-05-09T03:55:17+00:00,,,641e3a83c704b32fb1492063fa248eb241c7c85f,thehalvo,359,27,5,0,0,2,False,https://github.com/pandas-dev/pandas/pull/61414,{}
+pandas-dev/pandas,61413,CLN: Expose arguments in DataFrame.query,"- [x] closes #61405 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-09T03:18:15+00:00,2025-05-20T02:35:42+00:00,2025-05-20T02:35:31+00:00,2025-05-20T02:35:31+00:00,09a17c7b59767e42f529b4ab21a229f866aa4a67,loicdiridollou,87,10,1,1,4,12,True,https://github.com/pandas-dev/pandas/pull/61413,"{""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-19T02:37:53+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T22:32:54+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-20T02:35:12+00:00""}], ""loicdiridollou"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:23:23+00:00""}]}"
+pandas-dev/pandas,61411,DOC: removed none from docstring,"- [x] closes #61408
+- [ ] ~[Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature~
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] ~Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~
+- [ ] ~Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~
+",closed,2025-05-08T18:38:30+00:00,2025-05-08T22:27:29+00:00,2025-05-08T22:27:22+00:00,2025-05-08T22:27:22+00:00,cdc5b7418ee351cf656f611402e697c18d83a082,arthurlw,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61411,"{""rhshadrach"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-08T18:46:48+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-08T22:27:18+00:00""}]}"
+pandas-dev/pandas,61410,"CI: Upgrade to ubuntu-24.04, install Python free threading from conda-forge",,closed,2025-05-08T16:50:51+00:00,2025-05-16T00:58:56+00:00,2025-05-15T18:59:46+00:00,2025-05-15T18:59:46+00:00,b2b2d04e419e44932d51017ececb5c3a86b15925,mroeschke,73,75,11,6,0,9,True,https://github.com/pandas-dev/pandas/pull/61410,"{""lithomas1"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-14T21:09:26+00:00""}]}"
+pandas-dev/pandas,61404,BLD: allow to build with non-MSVC compilers on Windows,"Always passing --vsenv to meson means pandas can't be built with gcc/clang
+on Windows.
+
+Instead add it to the cibuildwheel config so MSVC is still forced in CI
+when building wheels, and in various places where it is built via pip.",open,2025-05-07T21:25:47+00:00,2025-05-09T14:00:34+00:00,,,,lazka,4,6,3,2,0,1,False,https://github.com/pandas-dev/pandas/pull/61404,{}
+pandas-dev/pandas,61400,BUG: Fix naive timestamps inheriting timezone from previous timestamps in to_datetime with ISO8601 format,"- [x] closes #61389 (Replace xxxx with the GitHub issue number)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-06T14:50:19+00:00,2025-05-06T18:29:26+00:00,2025-05-06T18:29:19+00:00,2025-05-06T18:29:19+00:00,7595ed503df845f3bdf4d26b9beea5ec031b619d,myenugula,52,0,3,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61400,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-06T18:29:05+00:00""}]}"
+pandas-dev/pandas,61399,BUG: round on object columns no longer raises a TypeError,"- [x] closes #61206 (Replace xxxx with the GitHub issue number)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-06T13:24:43+00:00,2025-05-21T15:56:25+00:00,2025-05-21T00:33:33+00:00,2025-05-21T00:33:33+00:00,6a2da7ad16cff82f0eadbec04e921baf6c0ae8fb,KevsterAmp,10,0,3,6,3,6,True,https://github.com/pandas-dev/pandas/pull/61399,"{""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-19T02:49:14+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-20T21:15:07+00:00""}], ""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T15:56:25+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-21T00:33:27+00:00""}], ""KevsterAmp"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:47:27+00:00""}]}"
+pandas-dev/pandas,61397,[pre-commit.ci] pre-commit autoupdate,"<!--pre-commit.ci start-->
+updates:
+- [github.com/astral-sh/ruff-pre-commit: v0.11.4 → v0.11.8](https://github.com/astral-sh/ruff-pre-commit/compare/v0.11.4...v0.11.8)
+- [github.com/pre-commit/mirrors-clang-format: v20.1.0 → v20.1.3](https://github.com/pre-commit/mirrors-clang-format/compare/v20.1.0...v20.1.3)
+- [github.com/trim21/pre-commit-mirror-meson: v1.7.2 → v1.8.0](https://github.com/trim21/pre-commit-mirror-meson/compare/v1.7.2...v1.8.0)
+<!--pre-commit.ci end-->",closed,2025-05-05T16:29:15+00:00,2025-05-05T17:24:34+00:00,2025-05-05T17:24:05+00:00,2025-05-05T17:24:05+00:00,7bb58a82d444fa4d672a484180c567b17bed5da4,pre-commit-ci[bot],3,3,1,0,0,1,True,https://github.com/pandas-dev/pandas/pull/61397,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-05T17:23:59+00:00""}]}"
+pandas-dev/pandas,61396,"Fix #60766:.map,.apply would convert element type for extension array","- [x] closes #60766 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/v3.0.0.rst` file if fixing a bug or adding a new feature.
+
+
+The Int32Dtype type allows representing integers with support for null values (pd.NA). However, when using .map(f) or .apply(f), the elements passed to f are converted to float64, and pd.NA is transformed into np.nan.
+
+This happens because .map() and .apply() internally use numpy, which automatically converts the data to float64, even when the original type is Int32Dtype.
+
+The fix (just remove the method to_numpy()) ensures that when using .map() or .apply(), the elements in the series retain their original type (Int32, Float64, boolean, etc.), preventing unnecessary conversions to float64 and ensuring that pd.NA remains correctly handled.",open,2025-05-03T21:54:02+00:00,2025-05-19T13:11:11+00:00,,,aea8e4e09e761e7c59c61abc311e751c22204190,pedromfdiogo,32,1,4,0,0,5,False,https://github.com/pandas-dev/pandas/pull/61396,{}
+pandas-dev/pandas,61394,DOC: add `api.types.is_dtype_equal` into document,"- [x] closes #60905
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-03T07:20:19+00:00,2025-05-03T20:00:54+00:00,2025-05-03T20:00:53+00:00,2025-05-03T20:00:53+00:00,337d40e5d55f7787e48f029486f47fd5a053bc80,chilin0525,17,2,2,1,5,6,True,https://github.com/pandas-dev/pandas/pull/61394,"{""datapythonista"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-03T11:10:21+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-03T20:00:06+00:00""}], ""chilin0525"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-03T16:12:12+00:00""}]}"
+pandas-dev/pandas,61393,Subplot title count fix + fix for issue introduced in earlier PR ,"- [x] closes #61019  
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+Adds a check for length of subplots as an alternative to the default title check and produces an alternative error message if number of subplots does not match titles produced.
+
+Additionally, includes fix for issues introduced during PR: #61340 and mentioned in #61018 ",closed,2025-05-02T22:00:03+00:00,2025-05-07T16:11:38+00:00,2025-05-07T16:11:19+00:00,2025-05-07T16:11:19+00:00,2e141aaf9906cb5ef5539bf1c0ef108176037ddb,eicchen,64,10,3,1,4,34,True,https://github.com/pandas-dev/pandas/pull/61393,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-05T17:04:38+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-05T17:05:17+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-05T17:07:32+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-06T21:11:50+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-07T16:11:09+00:00""}]}"
+pandas-dev/pandas,61391,"fix MultiIndex.difference not working with PyArrow timestamps (#61382) ,and some ruff formating fix","## Problem
+The `MultiIndex.difference` method fails to remove entries when the index contains PyArrow-backed timestamps (`timestamp[ns][pyarrow]`). This occurs because direct tuple comparisons with PyArrow scalar types are unreliable during membership checks, causing entries to remain unexpectedly.
+
+**Example**:
+```python
+# PyArrow timestamp index
+df = DataFrame(...).astype({""date"": ""timestamp[ns][pyarrow]""}).set_index([""id"", ""date""])
+idx_val = df.index[0]
+new_index = df.index.difference([idx_val])  # Fails to remove idx_val
+```
+Solution
+Code Conversion: Map other values to integer codes compatible with the original index's levels.
+
+Engine Validation: Use the MultiIndex's internal engine for membership checks, ensuring accurate handling of PyArrow types.
+
+Mask-Based Exclusion: Create a boolean mask to filter out matched entries, then reconstruct the index.
+
+Testing
+Added a test in pandas/tests/indexes/multi/test_setops.py that:
+
+Creates a MultiIndex with PyArrow timestamps.
+
+Validates difference correctly removes entries.
+
+Skips the test if PyArrow is not installed.
+
+Use Case Impact
+Fixes scenarios where users filter hierarchical datasets with PyArrow timestamps, such as:
+
+```python
+# Remove specific timestamps from a time-series index
+clean_index = raw_index.difference(unwanted_timestamps)
+```
+Closes #61382.",closed,2025-05-02T12:10:52+00:00,2025-05-20T16:04:42+00:00,2025-05-20T16:04:41+00:00,,b5eb3795afc9ba0ebb70862757b12b2ef315d97b,NEREUScode,188,100,16,1,0,3,False,https://github.com/pandas-dev/pandas/pull/61391,"{""NEREUScode"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-02T13:10:53+00:00""}]}"
+pandas-dev/pandas,61390,"fix MultiIndex.difference not working with PyArrow timestamps (#61382) ,and some ruff formating fix","## Problem
+The `MultiIndex.difference` method fails to remove entries when the index contains PyArrow-backed timestamps (`timestamp[ns][pyarrow]`). This occurs because direct tuple comparisons with PyArrow scalar types are unreliable during membership checks, causing entries to remain unexpectedly.
+
+**Example**:
+```python
+# PyArrow timestamp index
+df = DataFrame(...).astype({""date"": ""timestamp[ns][pyarrow]""}).set_index([""id"", ""date""])
+idx_val = df.index[0]
+new_index = df.index.difference([idx_val])  # Fails to remove idx_val
+```
+Solution
+Code Conversion: Map other values to integer codes compatible with the original index's levels.
+
+Engine Validation: Use the MultiIndex's internal engine for membership checks, ensuring accurate handling of PyArrow types.
+
+Mask-Based Exclusion: Create a boolean mask to filter out matched entries, then reconstruct the index.
+
+Testing
+Added a test in pandas/tests/indexes/multi/test_setops.py that:
+
+Creates a MultiIndex with PyArrow timestamps.
+
+Validates difference correctly removes entries.
+
+Skips the test if PyArrow is not installed.
+
+Use Case Impact
+Fixes scenarios where users filter hierarchical datasets with PyArrow timestamps, such as:
+
+```python
+# Remove specific timestamps from a time-series index
+clean_index = raw_index.difference(unwanted_timestamps)
+```
+Closes #61382.",closed,2025-05-02T11:30:06+00:00,2025-05-02T12:09:22+00:00,2025-05-02T12:09:22+00:00,,e87dfe83d51927fea142dc1e1fc98eb3381d541c,NEREUScode,170,100,16,0,0,2,False,https://github.com/pandas-dev/pandas/pull/61390,{}
+pandas-dev/pandas,61388,"fix MultiIndex.difference not working with PyArrow timestamps (#61382) ,and some formating fix ","## Problem
+The `MultiIndex.difference` method fails to remove entries when the index contains PyArrow-backed timestamps (`timestamp[ns][pyarrow]`). This occurs because direct tuple comparisons with PyArrow scalar types are unreliable during membership checks, causing entries to remain unexpectedly.
+
+**Example**:
+```python
+# PyArrow timestamp index
+df = DataFrame(...).astype({""date"": ""timestamp[ns][pyarrow]""}).set_index([""id"", ""date""])
+idx_val = df.index[0]
+new_index = df.index.difference([idx_val])  # Fails to remove idx_val
+```
+Solution
+Code Conversion: Map other values to integer codes compatible with the original index's levels.
+
+Engine Validation: Use the MultiIndex's internal engine for membership checks, ensuring accurate handling of PyArrow types.
+
+Mask-Based Exclusion: Create a boolean mask to filter out matched entries, then reconstruct the index.
+
+Testing
+Added a test in pandas/tests/indexes/multi/test_setops.py that:
+
+Creates a MultiIndex with PyArrow timestamps.
+
+Validates difference correctly removes entries.
+
+Skips the test if PyArrow is not installed.
+
+Use Case Impact
+Fixes scenarios where users filter hierarchical datasets with PyArrow timestamps, such as:
+
+```python
+# Remove specific timestamps from a time-series index
+clean_index = raw_index.difference(unwanted_timestamps)
+```
+Closes #61382.",closed,2025-05-02T11:21:31+00:00,2025-05-02T11:26:59+00:00,2025-05-02T11:26:59+00:00,,417609d17bb63d7882fbeca619ab5e5e4f23ead2,NEREUScode,170,100,16,0,0,1,False,https://github.com/pandas-dev/pandas/pull/61388,{}
+pandas-dev/pandas,61384,BLD: Try using shared memory utilities in Cython to reduce wheel sizes,"- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-05-01T00:01:38+00:00,2025-05-16T02:07:29+00:00,2025-05-16T01:14:44+00:00,2025-05-16T01:14:44+00:00,341f1612a984e6d990ffa1d3302a220deeadad92,lithomas1,43,3,5,5,4,10,True,https://github.com/pandas-dev/pandas/pull/61384,"{""WillAyd"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-04T16:44:08+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-14T12:57:33+00:00""}], ""rgommers"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-14T08:22:33+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-14T08:25:05+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-14T08:25:58+00:00""}]}"
+pandas-dev/pandas,61383,ENH: Implement pandas.read_iceberg,"- [X] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [X] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [X] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [X] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-30T21:00:23+00:00,2025-05-14T20:29:30+00:00,2025-05-14T20:29:30+00:00,2025-05-14T20:29:30+00:00,e637b4290d22e71afc1455bc1b691582f0a3ec78,datapythonista,396,37,19,11,10,37,True,https://github.com/pandas-dev/pandas/pull/61383,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:13:45+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:20:26+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:22:06+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T17:01:47+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T17:02:04+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T17:03:39+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T17:15:38+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-12T17:41:52+00:00""}], ""datapythonista"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:38:05+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:41:33+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:41:58+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-12T17:09:51+00:00""}]}"
+pandas-dev/pandas,61381,"Fix alignment in Series subtraction with MultiIndex, Index and NaN values (#60908)","This pull request fixes #60908 , where subtracting a Series with a MultiIndex containing NaN values from a Series with a regular Index could lead to incorrect results or unexpected behavior.
+
+The issue was caused by the _align_for_op method not properly handling cases where the left-hand Series had a MultiIndex and the right-hand side had a flat Index, especially when NaN values were present. This could lead to misalignment during arithmetic operations.
+
+To fix this, the _align_for_op method was updated to:
+
+- Ensure that when the left Series has a MultiIndex and the right Series has a regular Index, the right Series is properly reindexed based on the first level of the left-hand MultiIndex, even when NaN values are involved.
+
+- Correctly handle cases where either Series is empty.
+
+Additionally, a new test test_series_subtraction_with_nan_and_levels (added in test_subtraction_nanindex) was introduced to verify that:
+
+- Subtracting a Series with a MultiIndex (including NaNs) from a regular Index works correctly.
+
+- The result maintains the correct alignment and expected output values.",open,2025-04-30T11:21:39+00:00,2025-05-18T19:35:14+00:00,,,91837dd03b46412636f3763e478ea3434395051a,rit4rosa,58,17,2,1,0,2,False,https://github.com/pandas-dev/pandas/pull/61381,{}
+pandas-dev/pandas,61380,ENH: Implement translations infrastructure,"Hello team! 
+
+This PR is a proposal for adding the translations infrastructure to the pandas web page.
+
+Following the discussion in https://github.com/pandas-dev/pandas/issues/56301, we (a group of folks working on the Scientific Python grant) have been working to set up infrastructure and translate the contents of the pandas web site. As of this moment, we have 100% translations for the pandas website into Spanish and Brazilian Portuguese, with other languages available for translation (depending on volunteer translators).
+
+To build, the command remains the same:
+
+```bash
+python pandas_web.py pandas/content --target-path build
+```
+
+If you want to check out other related work, please take a look at https://github.com/scipy/scipy.org/pull/617
+
+You an read more about how the translation process works at https://scientific-python-translations.github.io/docs/
+
+## What this PR does?
+
+- Download and extract the latest available translations (over 90% completion) from https://github.com/Scientific-Python-Translations/pandas-translations. The setting can be changed [here](https://github.com/Scientific-Python-Translations/pandas-translations/blob/main/.github/workflows/sync_translations.yml#L21)
+- Adds a Language switcher (Thanks @melissawm ❤️ 🚀 ).
+- Added a new section to the config to store additional translations information.
+- Handles site generation for each language.
+- Left everything in the same script.
+
+Supersedes https://github.com/pandas-dev/pandas/pull/61220
+
+## Demo
+
+![pandas](https://github.com/user-attachments/assets/fdb07a75-8661-4dc1-8239-29e792bac7ee)
+
+---
+
+cc @mroeschke @datapythonista ",open,2025-04-30T03:24:20+00:00,2025-05-21T17:01:26+00:00,,,83b2ee9e07a94ed35dc2ffb02cd1dca58abd7187,goanpeca,199,48,4,29,42,10,False,https://github.com/pandas-dev/pandas/pull/61380,"{""datapythonista"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T06:53:41+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:25:04+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:43:10+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:46:08+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-20T20:02:40+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T10:18:10+00:00""}], ""goanpeca"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-13T18:09:45+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:30:40+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:30:47+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:32:14+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:32:30+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T18:34:44+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:37:20+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:37:26+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:37:34+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:37:37+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T23:37:42+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:51:51+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:52:03+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:52:08+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:52:13+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:53:01+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:53:13+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:53:22+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:53:27+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T08:53:39+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T12:46:14+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T12:46:26+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-21T12:46:39+00:00""}]}"
+pandas-dev/pandas,61379,DOC: Fix dark mode text visibility in Getting Started accordion (#60024),"- [x] closes [#61377](https://github.com/pandas-dev/pandas/issues/61377) (duplicate of [#60024](https://github.com/pandas-dev/pandas/issues/60024))
+
+### 📄 **Description**
+
+This pull request fixes the issue described in [#61377](https://github.com/pandas-dev/pandas/issues/61377), where the text in the accordion content of the *Getting Started* tutorial section was not visible in dark mode.
+
+Although #61377 is a duplicate, the underlying problem was originally reported in [#60024](https://github.com/pandas-dev/pandas/issues/60024), and later duplicated in [#60041](https://github.com/pandas-dev/pandas/issues/60041) and [#60921](https://github.com/pandas-dev/pandas/issues/60921). This PR addresses the root cause described in those issues.
+
+### ✅ **Changes Made**
+
+Added CSS variables to ensure that text and background colors are consistent with the active theme:
+
+```css
+.tutorial-card .card-header {
+  --bs-card-cap-color: var(--pst-color-text-base);
+  color: var(--pst-color-text-base);
+  cursor: pointer;
+  background-color: var(--pst-color-surface);
+  border: 1px solid var(--pst-color-border);
+}
+
+.tutorial-card .card-body {
+  background-color: var(--pst-color-on-background);
+  color: var(--pst-color-text-base);
+}
+```
+",closed,2025-04-29T23:01:49+00:00,2025-04-30T16:21:16+00:00,2025-04-30T16:21:09+00:00,2025-04-30T16:21:09+00:00,e55d90783bac30b75e7288380b15a62ab6e43f78,danielpintosalazar,2,0,1,3,0,1,True,https://github.com/pandas-dev/pandas/pull/61379,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-30T16:21:01+00:00""}]}"
+pandas-dev/pandas,61378,DOC: update pandas cheat sheet with a third page (fixes #40680),"- [x] closes #40680
+- [x] added 3rd page to the cheat sheet including more details on plotting, frequently used options, input/output formats and more.
+- [x] added `.info()`, `.memory_usage()`, and `.dtypes()` to 'Summarize Data' on page 2 and rearranged the page to fill the gap left by the old plotting section.
+",closed,2025-04-29T15:47:54+00:00,2025-05-11T17:29:57+00:00,2025-05-11T17:29:57+00:00,2025-05-11T17:29:57+00:00,f496acffccfc08f30f8392894a8e0c56d404ef87,Shoestring42,1,1,3,4,0,4,True,https://github.com/pandas-dev/pandas/pull/61378,"{""Dr-Irv"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-29T18:33:26+00:00""}, {""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-30T15:29:38+00:00""}, {""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-01T14:38:55+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-05-11T17:29:47+00:00""}]}"
+pandas-dev/pandas,61376,BUG: Series.dot for arrow and nullable dtypes returns object-dtyped series,"fixes #61375 by porting DataFrame fix (from #54025 as reported in #53979)
+
+- [x] closes #61375 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-29T14:16:14+00:00,2025-04-29T16:21:11+00:00,2025-04-29T16:20:40+00:00,2025-04-29T16:20:40+00:00,cf6de581e1c27f06107b5be9e7f2923d7bbc98a6,theavey,19,1,3,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61376,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-29T16:20:23+00:00""}]}"
+pandas-dev/pandas,61374,Percentile Scaling Data Transformation,"This pull request adds a new data transformation utility called `percentile_scaling` to the `pandas/io/` module, which scales numerical data to a percentile-based range from 0 to 100. This transformation is useful for standardizing features in data preprocessing workflows, especially for ML pipelines or percentile-based visual analytics.
+
+Implementation Details
+
+- Introduced a new function `percentile_scaling(data: List[float]) -> List[float]` that:
+  - Accepts a list or NumPy array of numerical values.
+  - Returns values scaled to a [0, 100] percentile scale.
+  - Raises appropriate errors for invalid input (e.g., zero variance or empty input).
+
+Tests
+
+- Added unit tests in `pandas/tests/io/test_percentile_scaling.py`:
+  - Validates correct scaling behavior.
+  - Handles edge cases such as identical values and empty inputs.
+  - All tests pass successfully using `unittest`.
+
+Compliance
+
+- [x] Follows Pandas contribution guidelines
+- [x] All tests pass successfully
+- [x] Function is self-contained and does not introduce dependencies
+- [x] Code is PEP8-compliant and cleanly documented
+
+Notes
+
+This contribution is part of a university-level data engineering course project (DATA 226). The goal is to implement practical transformation logic for real-world data pipeline use cases while following standard open-source contribution workflows.
+
+
+- [x] Tests added and passed
+- [x] Code passes style checks and pre-commit hooks
+",closed,2025-04-29T11:23:42+00:00,2025-04-29T16:23:41+00:00,2025-04-29T16:23:41+00:00,,941d0821a671158d80572f2289c42287e4aed7b4,sujan099,32,0,2,1,0,1,False,https://github.com/pandas-dev/pandas/pull/61374,{}
+pandas-dev/pandas,61373,this is testing only,"- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-29T10:35:03+00:00,2025-04-29T16:21:29+00:00,2025-04-29T16:21:29+00:00,,5f4e8c2bd5f74f4cf1a1f551a74475d337238db7,ManasasivaVasireedy,1,0,1,0,0,1,False,https://github.com/pandas-dev/pandas/pull/61373,{}
+pandas-dev/pandas,61372,Fix pyarrow comparison issue in array.py,"- [x] closes #60937 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-28T21:41:17+00:00,2025-05-19T16:17:14+00:00,2025-05-19T16:17:13+00:00,,,AshleySonny,376,385,1,1,0,1,False,https://github.com/pandas-dev/pandas/pull/61372,{}
+pandas-dev/pandas,61371,CI: Use Cython nightlies for Windows wheel builds again,Validated that the wheel tests should pass now from https://github.com/pandas-dev/pandas/pull/61354,closed,2025-04-28T17:05:20+00:00,2025-04-28T18:17:52+00:00,2025-04-28T18:17:50+00:00,2025-04-28T18:17:50+00:00,d79f7b0df1728cbccd84d631a26df901d2a1f2fc,mroeschke,1,3,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61371,{}
+pandas-dev/pandas,61369,Bump pypa/cibuildwheel from 2.23.2 to 2.23.3,"Bumps [pypa/cibuildwheel](https://github.com/pypa/cibuildwheel) from 2.23.2 to 2.23.3.
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/pypa/cibuildwheel/releases"">pypa/cibuildwheel's releases</a>.</em></p>
+<blockquote>
+<h2>v2.23.3</h2>
+<ul>
+<li>🛠 Dependency updates, including Python 3.13.3 (<a href=""https://redirect.github.com/pypa/cibuildwheel/issues/2371"">#2371</a>)</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/pypa/cibuildwheel/blob/main/docs/changelog.md"">pypa/cibuildwheel's changelog</a>.</em></p>
+<blockquote>
+<h3>v2.23.3</h3>
+<p><em>26 April 2025</em></p>
+<ul>
+<li>🛠 Dependency updates, including Python 3.13.3 (<a href=""https://redirect.github.com/pypa/cibuildwheel/issues/2371"">#2371</a>)</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/pypa/cibuildwheel/commit/faf86a6ed7efa889faf6996aa23820831055001a""><code>faf86a6</code></a> Bump version: v2.23.3</li>
+<li><a href=""https://github.com/pypa/cibuildwheel/commit/4241f37b2c5be7f7ed96214b83f8cfbe1496cc28""><code>4241f37</code></a> [2.x] Update dependencies (<a href=""https://redirect.github.com/pypa/cibuildwheel/issues/2371"">#2371</a>)</li>
+<li>See full diff in <a href=""https://github.com/pypa/cibuildwheel/compare/v2.23.2...v2.23.3"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=pypa/cibuildwheel&package-manager=github_actions&previous-version=2.23.2&new-version=2.23.3)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
+
+
+</details>",closed,2025-04-28T10:35:52+00:00,2025-04-28T17:41:39+00:00,2025-04-28T17:41:35+00:00,2025-04-28T17:41:35+00:00,c644e459d341a7edb70202a6bff30b41b13c01c0,dependabot[bot],1,1,1,0,0,1,True,https://github.com/pandas-dev/pandas/pull/61369,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-28T17:41:30+00:00""}]}"
+pandas-dev/pandas,61367,DOC: Add missing period in sample docstring,"- Minor documentation fix.
+- Adds a missing period at the end of the ""random_state"" description in the `sample` function docstring.
+- No functional changes.
+
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+",closed,2025-04-27T20:25:31+00:00,2025-04-28T16:45:56+00:00,2025-04-28T16:45:43+00:00,2025-04-28T16:45:43+00:00,2121180485ba6af843353313d7d7a2426abc614b,yanamis,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61367,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-28T16:45:32+00:00""}]}"
+pandas-dev/pandas,61366,[minor edit] edit definitions of some parameters with correct idiomatic English for better legibility,"<!--
+- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+//-->",closed,2025-04-27T17:32:54+00:00,2025-04-28T16:39:33+00:00,2025-04-28T16:39:26+00:00,2025-04-28T16:39:26+00:00,d692ddd260a9caef150be58f1cf22f373d3a8001,kirisakow,6,4,1,1,1,2,True,https://github.com/pandas-dev/pandas/pull/61366,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-27T21:11:12+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-28T16:39:21+00:00""}]}"
+pandas-dev/pandas,61364,BUG: groupby.groups with NA categories fails,"- [x] closes #61356 (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+There is a slight code duplication here, but we don't need to rely on Cateorical's codes because we can just directly use groupby's. We also can't use `groupby` to implement `Index.groupby` because the former only works in the case where the `values` are exhaustive.",closed,2025-04-27T14:19:18+00:00,2025-04-28T20:30:58+00:00,2025-04-28T16:47:10+00:00,2025-04-28T16:47:10+00:00,b519aa703d6934194249b5c19cfa0324e5fa5d8e,rhshadrach,35,3,3,1,5,3,True,https://github.com/pandas-dev/pandas/pull/61364,"{""tehunter"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-27T15:35:04+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-28T11:48:36+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-28T11:58:55+00:00""}], ""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-27T15:44:41+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-28T20:30:42+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-28T16:47:04+00:00""}]}"
+pandas-dev/pandas,61363,DOC: Added constructor parameters to DateOffset docstring for API consistency #52431," - Added the constructor signature for DateOffset.
+ - No functional changes were made, only documentation improvements.
+ - Part of the issue #52431 is addressed by this.",closed,2025-04-27T02:11:58+00:00,2025-05-03T13:24:42+00:00,2025-05-03T13:24:42+00:00,,0785deaeab077a0b37c412704241726e5b525b1d,sainivas-99,4,0,1,1,0,6,False,https://github.com/pandas-dev/pandas/pull/61363,{}
+pandas-dev/pandas,61359,BUG: Raise ValueError for non-string columns in read_json orient='table' (GH19129),"- Closes #19129
+- Adds validation to ensure all column names are strings when using orient='table' in read_json
+- Raises a clear ValueError if invalid column names are found
+- Adds a new unit test to pandas/tests/io/json/test_json_table_schema.py to cover the invalid input case
+- Ran pytest and pre-commit hooks successfully
+
+Looking forward to feedback. Thanks!",open,2025-04-26T01:10:10+00:00,2025-05-02T19:23:38+00:00,,,24ce6331c6dee941d322413db003205c5a0ece7a,amoitra1,26,0,2,2,2,3,False,https://github.com/pandas-dev/pandas/pull/61359,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-28T16:53:32+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-28T16:54:14+00:00""}]}"
+pandas-dev/pandas,61358,Improve documentation for MonthEnd and YearBegin offsets,"This pull request improves the documentation for two commonly used offset constructors in Pandas: MonthEnd and YearBegin.
+
+Changes include:
+
+Clarified the purpose and behavior of each offset class
+
+Added runnable examples (doctest-compliant) to demonstrate usage
+
+Improved parameter descriptions where necessary
+
+These changes aim to make the documentation more accessible and clear for both new and experienced users of Pandas’ time series functionality.
+",closed,2025-04-26T00:37:39+00:00,2025-05-03T13:20:16+00:00,2025-05-03T13:20:15+00:00,,,SoumitAddanki,70119,63367,1430,1,0,2080,False,https://github.com/pandas-dev/pandas/pull/61358,{}
+pandas-dev/pandas,61355,"DOC: Removed self-reference to `DataFrame.resample` in the ""See also"" section.","- [ ] ~closes #xxxx (Replace xxxx with the GitHub issue number)~
+- [ ] ~[Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature~
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] ~Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~
+- [ ] ~Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~
+",closed,2025-04-25T18:51:16+00:00,2025-04-25T18:54:57+00:00,2025-04-25T18:54:56+00:00,,f5a2a3018f4025daf6009b8368f5b3c896b7d44a,arthurlw,0,2,1,1,0,1,False,https://github.com/pandas-dev/pandas/pull/61355,{}
+pandas-dev/pandas,61354,Test Cython divmod fix for Windows,"https://github.com/cython/cython/pull/6801 should fix the issues we were seeing in https://github.com/pandas-dev/pandas/pull/61261, but this commit is not apart of the Cython nightly wheels yet.",closed,2025-04-25T16:50:01+00:00,2025-04-25T17:16:37+00:00,2025-04-25T17:16:32+00:00,,68aabce62cc445bcf9ee01205c0619cea80c38ac,mroeschke,1,1,1,1,0,1,False,https://github.com/pandas-dev/pandas/pull/61354,{}
+pandas-dev/pandas,61352,DOC: Updated `groupby.expanding` arguments,"- [ ] ~closes #xxxx (Replace xxxx with the GitHub issue number)~
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] ~Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~
+- [ ] ~Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~
+",closed,2025-04-25T00:46:30+00:00,2025-04-27T11:30:09+00:00,2025-04-25T16:34:50+00:00,2025-04-25T16:34:49+00:00,0fce6b4304d8965d8685a4e9a6ad8d9a4b2bafa3,arthurlw,19,12,1,1,3,2,True,https://github.com/pandas-dev/pandas/pull/61352,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-25T16:34:33+00:00""}], ""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T18:46:23+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-26T17:39:15+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-27T11:30:09+00:00""}]}"
+pandas-dev/pandas,61351,Add warning to `.groupby` when null keys would be dropped due to default `dropna`,"- [X] closes #61339
+- [X] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [X] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [X] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+TODO:
+
+- [X] Check performance for `codes` check approaches (`codes.min()` was about 3x faster)
+- [ ] Run full test suite to ensure nothing broke
+- [ ] Add tests/implementation for `.pivot_table`/`.stack`/etc. (possibly in a follow-up PR?)",open,2025-04-24T21:01:55+00:00,2025-04-25T21:18:15+00:00,,,,tehunter,225,51,14,0,2,10,False,https://github.com/pandas-dev/pandas/pull/61351,"{""tehunter"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-24T21:04:50+00:00""}]}"
+pandas-dev/pandas,61349,TST: Testing for mixed int/str Index,"- [x] closes #54072 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",open,2025-04-24T15:48:53+00:00,2025-05-21T17:11:56+00:00,,,30b8143de7e37edf74e4b044ccc3e6802423b6ee,xaris96,158,57,11,10,6,64,False,https://github.com/pandas-dev/pandas/pull/61349,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:05:48+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-08T16:06:47+00:00""}, {""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-05-08T16:10:25+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-14T16:21:03+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-14T16:21:10+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-14T16:21:38+00:00""}], ""xaris96"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-14T20:45:30+00:00""}]}"
+pandas-dev/pandas,61348,Mixed int string ,"- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-24T15:25:38+00:00,2025-05-04T21:04:42+00:00,2025-05-03T13:16:39+00:00,,7c74f48e9cbaca35dcd98ba0836451fc3092ac0a,xaris96,705,46,16,2,0,23,False,https://github.com/pandas-dev/pandas/pull/61348,{}
+pandas-dev/pandas,61345,Update groupby().first() documentation to clarify behavior with missing data (#27578),"This PR enhances the docstring for `GroupBy.first()` to clarify:
+- It returns the first *non-null* value per column
+- It differs from `.nth(0)` and `.head(1)` in how it treats missing values
+- Includes comparative examples for better understanding
+
+Fixes part of issue #27578
+
+Ready for review.",closed,2025-04-23T18:39:30+00:00,2025-05-19T16:16:48+00:00,2025-05-19T16:16:47+00:00,,e067fb591f5efbe63bba9aa730fb951d5c92e1ac,ericcht,30,12,1,1,4,2,False,https://github.com/pandas-dev/pandas/pull/61345,"{""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-24T20:49:30+00:00""}]}"
+pandas-dev/pandas,61343,Fix #61072: inconsistent fullmatch results with regex alternation,"in PyArrow strings
+Fixes an issue where regex patterns with alternation (|) produce different results between str dtype and string[pyarrow] dtype. When using patterns like ""(as)|(as)"", PyArrow implementation would incorrectly match ""asdf"" while Python's implementation correctly rejects it. The fix adds special handling to ensure alternation patterns are properly parenthesized when using PyArrow-backed strings
+
+- [ ] closes #61072  ",open,2025-04-23T11:33:57+00:00,2025-05-20T15:04:01+00:00,,,da77a189207710aee2eefdf5068296ca66775b10,Pedro-Santos04,111,5,2,0,1,7,False,https://github.com/pandas-dev/pandas/pull/61343,"{""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-05-19T02:58:21+00:00""}]}"
+pandas-dev/pandas,61341,"DOC Update link to ""The Grammar of Graphics"" book","Update link to ""The Grammar of Graphics"" book.
+https://doi.org/10.1007/0-387-28695-0
+
+Original link does not work:
+https://www.cs.uic.edu/~wilkinson/TheGrammarOfGraphics/GOG.html
+
+- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-23T01:32:17+00:00,2025-04-23T01:47:49+00:00,2025-04-23T01:47:42+00:00,2025-04-23T01:47:42+00:00,1ac8552bb6c2463a09be95b28e37df4ec5cb3886,star1327p,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61341,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-23T01:47:31+00:00""}]}"
+pandas-dev/pandas,61340,BUG: Fixed issue with bar plots not stacking correctly when 'stacked' and 'subplots' are used together,"- [x] closes #61018
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+Added check for when stacked and subplots are used in conjunction for bar plots. And logic dictating offsets for individual subplots to account for plots with non-concurrent columns being graphed. 
+
+Currently, does not take into account column order in subplot entry (eg: (A, B) vs (B, A)) when stacking",closed,2025-04-23T00:58:23+00:00,2025-04-28T20:10:37+00:00,2025-04-28T20:10:28+00:00,2025-04-28T20:10:28+00:00,65bf9cde577c27b76a97d24014f16b63f40b4882,eicchen,172,1,3,1,14,19,True,https://github.com/pandas-dev/pandas/pull/61340,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-23T16:25:50+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-23T16:32:13+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-23T16:34:29+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-23T16:34:45+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-23T16:35:12+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T21:40:40+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T21:42:16+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T21:43:20+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-28T17:00:47+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-28T20:10:21+00:00""}], ""eicchen"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T20:19:51+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T20:24:22+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T20:32:29+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T20:38:28+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-28T19:51:40+00:00""}]}"
+pandas-dev/pandas,61335,ENH/TST: unset_index method #60869,"- [x] closes #60869 (Replace xxxx with the GitHub issue number)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-22T02:34:40+00:00,2025-04-22T15:59:38+00:00,2025-04-22T15:59:38+00:00,,3271ac3a04157cb00a804a8ec85c0b5f2f02e766,HoqueUM,160,0,3,1,0,1,False,https://github.com/pandas-dev/pandas/pull/61335,{}
+pandas-dev/pandas,61334,DOC: Updated `groupby.ewm` arguments,"- [ ] ~closes #xxxx (Replace xxxx with the GitHub issue number)~
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] ~Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~
+- [ ] ~Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~
+
+
+",closed,2025-04-21T23:35:26+00:00,2025-04-23T18:37:47+00:00,2025-04-22T15:56:52+00:00,2025-04-22T15:56:52+00:00,c38e1f1aa9efbfb68b42670de84a4450d04ffd4a,arthurlw,53,30,1,1,0,5,True,https://github.com/pandas-dev/pandas/pull/61334,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-22T15:56:35+00:00""}]}"
+pandas-dev/pandas,61333,CI: Have dedicated Python 3.13 job instead of using Python dev,"We've been testing Python 3.13 using the `Python dev` job. Since Python 3.13 has been available since last October, we should be able to test this version with a dedicated job with all of our optional dependencies. 
+
+Additionally, this new job caught an unclosed `sqlite3` engine, so modified some `test_sql.py` tests (and removed unnecessary parametrizations)",closed,2025-04-21T21:58:26+00:00,2025-04-30T16:09:44+00:00,2025-04-30T16:09:41+00:00,2025-04-30T16:09:41+00:00,caa58c72337b350452804489c05cf67118e9d101,mroeschke,87,34,3,1,0,20,True,https://github.com/pandas-dev/pandas/pull/61333,{}
+pandas-dev/pandas,61332,CLN: Use newer numpy random Generator methods in plotting colors,"Noticed in https://github.com/pandas-dev/pandas/pull/61330, replace a numpy legacy random method with a newer random Generator method (in addition to a cleanup)",closed,2025-04-21T21:45:31+00:00,2025-04-30T16:08:51+00:00,2025-04-30T16:08:48+00:00,2025-04-30T16:08:48+00:00,07039a640219acdadc5248715a75349778c20ad0,mroeschke,6,22,1,1,0,2,True,https://github.com/pandas-dev/pandas/pull/61332,{}
+pandas-dev/pandas,61331,DEPS: Clean unused dependencies,"* When installing pytables, it appears `blosc2` is generally a dependency now https://github.com/PyTables/PyTables/blob/9afcc380d93192460e7badd1baf568592cadad26/pyproject.toml#L78
+* I don't think we use `google-auth` or `gitdb` anywhere now",closed,2025-04-21T17:49:35+00:00,2025-05-08T16:24:30+00:00,2025-05-08T16:24:26+00:00,2025-05-08T16:24:26+00:00,8045c2d59fc9e193e76a761ee4c355499c68a591,mroeschke,39,60,17,2,0,10,True,https://github.com/pandas-dev/pandas/pull/61331,{}
+pandas-dev/pandas,61330,TYP: Remove unused mypy ignores,Failing on main. Maybe unneeded due to a numpy update.,closed,2025-04-21T17:15:37+00:00,2025-04-21T20:47:15+00:00,2025-04-21T20:47:12+00:00,2025-04-21T20:47:12+00:00,f8d5a16542d9289f714df3cb378e798f710ffa62,mroeschke,5,5,5,1,0,2,True,https://github.com/pandas-dev/pandas/pull/61330,{}
+pandas-dev/pandas,61329,Remove WillAyd from CODEOWNERS,"This was well intentioned but I do not follow every change to _libs, and this ends up creating more notifications than I follow",closed,2025-04-21T14:48:02+00:00,2025-04-21T15:46:38+00:00,2025-04-21T15:45:50+00:00,2025-04-21T15:45:50+00:00,faf97858ace6ddff6056cd75fc82631c11be0509,WillAyd,0,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61329,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-21T15:45:35+00:00""}]}"
+pandas-dev/pandas,61327, ENH/TST: grep-like select columns of a DataFrame by a part of their names (fixes #61319),"- [ ] closes #61319(Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-21T14:13:39+00:00,2025-04-21T14:50:04+00:00,2025-04-21T14:50:04+00:00,,aa4b880be028d133c9c00dd0e1894f6ce1e5066f,HoqueUM,15972,1,4,0,0,8,False,https://github.com/pandas-dev/pandas/pull/61327,{}
+pandas-dev/pandas,61326,ENH/TST: grep-like select columns of a DataFrame by a part of their names (fixes #61319) ,"- [ ] closes #61319 (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-21T13:26:21+00:00,2025-04-21T13:29:54+00:00,2025-04-21T13:29:53+00:00,,61dabf2ec290ad74030aaf7b9622b53191b5af10,HoqueUM,15969,1,4,0,0,7,False,https://github.com/pandas-dev/pandas/pull/61326,{}
+pandas-dev/pandas,61325,add test case for mixed string and int,"- [ ] closes #54072 (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-21T13:26:08+00:00,2025-05-09T16:08:27+00:00,2025-05-09T16:08:27+00:00,,5e35ea5600dcfcb80618d900de20e0c8e9e9e8dc,spd123,5,0,2,1,0,5,False,https://github.com/pandas-dev/pandas/pull/61325,{}
+pandas-dev/pandas,61324,ENH/TST: grep-like select columns of a DataFrame by a part of their names (fixes #61319),"- [x] closes #61319(Replace xxxx with the GitHub issue number)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-21T13:18:23+00:00,2025-04-21T13:24:23+00:00,2025-04-21T13:24:23+00:00,,8b79f0c6b59b5a83e1803cb1886d467862ef6e1f,HoqueUM,15967,1,4,0,0,6,False,https://github.com/pandas-dev/pandas/pull/61324,{}
+pandas-dev/pandas,61321,Fix: AttributeError when using .iloc with pyarrow-backed Series in Pandas #61311,"fix : #61311
+### Solution:
+The problem arises when the code tries to access `.max()` and `.min()` on `ArrowExtensionArray`. To fix this, we can replace `.max()` and `.min()` with `np.max()` and `np.min()`, which can handle these arrays correctly.
+
+Here is the modification to be made:
+
+```python
+# check that the key does not exceed the maximum size of the index
+if np.max(arr) >= len_axis or np.min(arr) < -len_axis:
+    raise IndexError(""positional indexers are out-of-bounds"")
+```
+
+---",closed,2025-04-20T17:15:13+00:00,2025-05-09T16:07:23+00:00,2025-05-09T16:07:23+00:00,,32ebd1ef0b9ff4aeb71a10bc57c57d479f9acf8b,Shyanil,1,1,1,1,0,1,False,https://github.com/pandas-dev/pandas/pull/61321,{}
+pandas-dev/pandas,61320,PERF: Restore old performances with .isin() on columns typed as np.ui…,"…nt64
+
+- [ ] closes #60098 (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+Only if dtypes are equal (e.g uint64 vs uint64, uint32 vs uint32...)
+
+%timeit data[""uints""].isin([np.uint64(1), np.uint64(2)]) # 17ms (!)
+The last line, with older numpy==1.26.4 (last version <2.0), is even worse: ~200ms.",closed,2025-04-20T14:24:36+00:00,2025-05-19T16:14:54+00:00,2025-05-19T16:14:47+00:00,2025-05-19T16:14:47+00:00,eca6bd38647dced033f726c886d04f1b2195e1b4,pbrochart,2,0,1,3,0,2,True,https://github.com/pandas-dev/pandas/pull/61320,"{""rhshadrach"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-19T03:03:25+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-05-19T16:14:41+00:00""}]}"
+pandas-dev/pandas,61315,DOC: Add missing punctuation to merging.rst,"Add missing punctuation to ``merging.rst``.
+
+- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-20T02:51:59+00:00,2025-04-21T15:46:38+00:00,2025-04-21T15:46:30+00:00,2025-04-21T15:46:30+00:00,7a61e1b3c93d4adfdd48b9a770675c02b2d033dd,star1327p,10,9,1,3,0,1,True,https://github.com/pandas-dev/pandas/pull/61315,"{""datapythonista"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-20T11:21:13+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-21T15:46:25+00:00""}]}"
+pandas-dev/pandas,61314,[minor edit] fix typo: psudocode -> pseudocode,"this PR fixes this typo spotted here:
+
+https://github.com/pandas-dev/pandas/blob/a811388727bb0640528962191b0f4e50d8235cfd/.github/ISSUE_TEMPLATE/feature_request.yaml#L34
+
+<!--
+- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+//-->",closed,2025-04-19T23:28:30+00:00,2025-04-21T15:47:05+00:00,2025-04-21T15:46:59+00:00,2025-04-21T15:46:59+00:00,31b073c794507204c8aa43e0770bb816d43c4f81,kirisakow,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61314,"{""datapythonista"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-20T11:49:49+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-21T15:46:54+00:00""}]}"
+pandas-dev/pandas,61313,[ canceled PR ],"this PR fixes this typo spotted here:
+
+https://github.com/pandas-dev/pandas/blob/a811388727bb0640528962191b0f4e50d8235cfd/.github/ISSUE_TEMPLATE/feature_request.yaml?plain=1#L34
+
+<!--
+- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+//-->",closed,2025-04-19T23:11:04+00:00,2025-04-19T23:22:51+00:00,2025-04-19T23:18:47+00:00,,56e0f67c0746b92b6feaab5ccf56b069eb69244f,kirisakow,859250,0,2623,0,0,1,False,https://github.com/pandas-dev/pandas/pull/61313,{}
+pandas-dev/pandas,61308,ENH: Add tzdata to hard dependencies,"- [x] closes #61273
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/v3.0.0.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-19T09:10:48+00:00,2025-04-22T16:04:29+00:00,2025-04-22T16:04:22+00:00,2025-04-22T16:04:22+00:00,09de147f67452cfe97d3a90d224ae3b7c198bebe,chilin0525,3,3,2,1,3,5,True,https://github.com/pandas-dev/pandas/pull/61308,"{""datapythonista"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-20T11:48:17+00:00""}], ""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-20T13:00:41+00:00""}], ""chilin0525"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-21T16:34:14+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-22T16:04:12+00:00""}]}"
+pandas-dev/pandas,61307,EHN: `df.to_latex(escape=True)` also escape index names,"- [ ] closes #57362 (Replace xxxx with the GitHub issue number)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+
+Stage 3. Part of an multi-stages effort: https://github.com/pandas-dev/pandas/pull/57880#issuecomment-2003636401
+Part 2 has a issue at https://github.com/pandas-dev/pandas/issues/59324
+But in the process of implementing, I realized the current implementation of `df.to_latex(escape)` does not go through `styler.to_latex` but to call `styler.format_index`. This implementation follows the same flow. So maybe part 2 is not really relevant.
+",closed,2025-04-19T08:50:21+00:00,2025-04-28T16:58:49+00:00,2025-04-28T16:58:41+00:00,2025-04-28T16:58:41+00:00,26a6316ccefac2b6e31455a8b198002298a718ee,quangngd,50,1,2,2,9,7,True,https://github.com/pandas-dev/pandas/pull/61307,"{""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-19T12:47:36+00:00""}, {""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-25T19:19:32+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-26T11:58:41+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-26T17:41:44+00:00""}], ""quangngd"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T13:05:20+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T13:05:30+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-25T23:51:20+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-26T13:27:26+00:00""}], ""attack68"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-26T05:29:01+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-28T05:27:56+00:00""}], ""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-28T16:58:34+00:00""}]}"
+pandas-dev/pandas,61302,Fix #59772: tz_aware NaT raises exception on to_numpy,"Fix error when converting tz-aware Series with NaT to NumPy array
+
+- [x] closes #59772 
+- [x] [Tests added and passed] if fixing a bug or adding a new feature
+- [ ] All [code checks passed]
+- [ ] Added [type annotations] to new arguments/methods/functions.
+- [x] Added an entry in the latest doc/source/whatsnew/vX.X.X.rst file if fixing a bug or adding a new feature.
+
+Previously,  converting a Series of timezone-aware pd.NaT to a NumPy array using
+.to_numpy(""datetime64[ns]"") would raise an exception.
+It would happen because it could not be converted to datetime64 as a tz-aware value.
+This is now fixed by removing the timezone localization from NaT values before the conversion.
+",closed,2025-04-17T14:46:13+00:00,2025-05-09T16:06:16+00:00,2025-05-09T16:06:15+00:00,,cc51f3c83599324759b59d24c26b10df2f89b2c2,tomasmacieira,19,1,3,1,1,1,False,https://github.com/pandas-dev/pandas/pull/61302,"{""mroeschke"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-17T16:34:49+00:00""}]}"
+pandas-dev/pandas,61301,DOC: Fix documentation for DataFrameGroupBy.filter and SeriesGroupBy.filter,"- [x] closes #61300
+- [ ] ~~[Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature~~
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] ~~Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~~
+- [ ] ~~Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~~
+",closed,2025-04-17T01:57:12+00:00,2025-04-17T04:32:42+00:00,2025-04-17T04:32:42+00:00,,28ee4b7e8c032b390be884974e1caadc63e1a8b7,adamreeve,6,6,1,0,0,1,False,https://github.com/pandas-dev/pandas/pull/61301,{}
+pandas-dev/pandas,61299,DOC: copyedit _base.py,"No need to restate the library name
+
+- ~~[ ] closes #xxxx (Replace xxxx with the GitHub issue number)~~
+- ~~[ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature~~
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- ~~[ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~~
+- ~~[ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~~",closed,2025-04-16T16:37:48+00:00,2025-04-17T18:07:23+00:00,2025-04-16T20:41:28+00:00,2025-04-16T20:41:28+00:00,5fef9793dd23867e7b227a1df7aa60a283f6204e,wjandrea,1,1,1,1,0,1,True,https://github.com/pandas-dev/pandas/pull/61299,"{""mroeschke"": [{""state"": ""APPROVED"", ""submitted_at"": ""2025-04-16T20:41:14+00:00""}]}"
+pandas-dev/pandas,61297,BUG: Raise clear error when assign is used with non-string column keys,"### What does this PR do?
+
+Fixes confusing behavior when `.assign()` is used with non-string keys like tuples. Python raises a generic `TypeError: keywords must be strings`, which confuses users.
+
+This PR adds a more helpful message:
+> assign() only supports string column names. Use df[('C', 'one')] = ... to assign non-string column names like tuples.
+
+### Why?
+
+This improves the developer experience and avoids unnecessary debugging time.
+
+### How was this fixed?
+
+- Added `__kwargs_dict__` as a keyword-only argument for testing with tuple keys
+- Added validation in `assign()` for string-only keys
+- Updated existing test for compatibility
+- Added new test: `test_assign_with_tuple_column_key_raises_typeerror`
+
+### Test added
+
+ `test_assign_with_tuple_column_key_raises_typeerror`
+",closed,2025-04-16T03:02:15+00:00,2025-04-16T16:08:03+00:00,2025-04-16T16:08:03+00:00,,,AnushaUKumar,4045,1863,300,1,0,174,False,https://github.com/pandas-dev/pandas/pull/61297,{}
+pandas-dev/pandas,61293,BUG: pivot_table with overlapping values,"- [x] closes #57876
+- [x] closes #61292
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-15T17:56:43+00:00,2025-04-23T22:58:54+00:00,2025-04-23T21:47:17+00:00,2025-04-23T21:47:17+00:00,20d5b1c00423eca5054875a8c1f82640a6905b2b,it176131,95,0,4,6,10,22,True,https://github.com/pandas-dev/pandas/pull/61293,"{""rhshadrach"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-19T12:10:45+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-22T20:32:05+00:00""}], ""it176131"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T18:29:42+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T18:32:59+00:00""}], ""mroeschke"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-23T17:06:06+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-23T21:47:11+00:00""}]}"
+pandas-dev/pandas,61289,WEB: Update benchmarks page,"- [ ] closes #xxxx (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-14T13:10:24+00:00,2025-04-19T12:12:34+00:00,2025-04-19T11:47:47+00:00,2025-04-19T11:47:47+00:00,c27a309854401cc1931cd72ba1c5c99e77472fe4,rhshadrach,7,45,1,1,8,5,True,https://github.com/pandas-dev/pandas/pull/61289,"{""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T13:12:29+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-15T12:40:34+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-16T12:57:15+00:00""}], ""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T16:46:39+00:00""}], ""datapythonista"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T20:47:30+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-16T08:58:43+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-16T09:06:06+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-16T19:37:50+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-19T11:47:25+00:00""}]}"
+pandas-dev/pandas,61288,BUG: Fix #46726; wrong result with varying window size min/max rolling calc.,"- [x] closes #46726 
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) 
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Speed improved by ~10% as measured by ASV.
+- [x] added an entry in the latest `doc/source/whatsnew/v3.0.0.rst`.
+
+### Summary:
+
+-	Fixes a 3-year-old bug with incorrect min/max rolling calculation for custom window sizes. Adds an error check for invalid inputs.
+-	Speed improvement of ~10% by not using additional queue for handling NaNs.
+-	For complex cases, incurs additional multiplicative log(k) complexity (where k is max window size), but this cost is only incurred in cases that produced invalid result before. For example, for constant window size this cost is not incurred.
+
+### Changed behavior:
+Has additional validity check, which will raise ValueError if the function detects a condition it cannot work with, namely improper ordering of start/end bounds. The existing method would happily consume such input and would produce a wrong result. There is a new unit test to check for the raised ValueError.
+
+### Note on invalid inputs:
+
+It is possible to make the method work for an arbitrary stream of start/end window bounds, but it will require sorting. It is very unlikely that such work is worth the effort, and it is estimated to have extremely low need, if any. Let someone create an enhancement request first. 
+If sorting is to be implemented: it can be done with only incurring performance hit in the case of unsorted input: copy and sort the start/end arrays, producing a permutation, run the main method on the copy, and then extract the result back using the permutation. To detect if the start/end array pair is properly sorted will only take O(N). (Soring is N*log(N), does not have to be stable, but the input array is extremely likely to be “almost” sorted, and you have to pick your poison of a sorting method that works well with nearly sorted array, or use efficient soring methods, most of which do not offer additional speed on nearly sorted arrays.) Working such intermediate step (without copying and pasting) into 3 different implementations will require some less than straightforward work in the “apply” family of methods used by other rolling functions, and therefore will bear risk. If this is decided to be done, it is recommended to have an additional parameter to optionally skip the “sorted” check. (The user may already know that the arrays are properly sorted).
+
+### How to Debug numba
+You can temporarily change 2 lines of code in order to Python-debug numba implementation with VS Code or another Python debugger:
+- Comment out the `numba.jit` decorator on the function(`sliding_min_max()` in `min_max_.py`). 
+- Do the same with the `column_looper()` function defined inside the `generate_apply_looper()` function in **executor.py**.
+- Your breakpoint inside the function will now hit!
+
+### Misc Notes
+
+The speed improvement of ~10% was confirmed in two ways:
+-	As measured by pandas’ supplied asv benchmark suite (0.80-0.91 coefficient (depending on particular test) on my hardware).
+-	With a custom load test over a 2MM-long rolling window on a 300MM-long data set. (See the supplied [bench.py.txt](https://github.com/user-attachments/files/19735182/bench.py.txt).) A single run of the test takes approx. 6-8 seconds and consumes ~15GB of RAM on a 32-GB RAM PC.
+
+",closed,2025-04-14T12:15:42+00:00,2025-04-25T20:28:31+00:00,2025-04-25T20:28:19+00:00,2025-04-25T20:28:19+00:00,0e0bafb39d080a05ca44c501d5af3c553ef89b14,viable-alternative,336,126,5,3,22,8,True,https://github.com/pandas-dev/pandas/pull/61288,"{""mroeschke"": [{""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-17T16:50:34+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:15:02+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:15:42+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:17:45+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:19:01+00:00""}, {""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-18T16:23:54+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:38:38+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T17:49:00+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-21T16:07:46+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-21T16:08:56+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-24T15:22:59+00:00""}], ""viable-alternative"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:32:07+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:35:21+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T16:44:58+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-18T17:24:15+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T01:49:16+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T13:19:36+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T13:20:52+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-22T01:55:12+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-22T01:55:56+00:00""}], ""rhshadrach"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-19T11:39:07+00:00""}, {""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-20T14:28:01+00:00""}, {""state"": ""CHANGES_REQUESTED"", ""submitted_at"": ""2025-04-25T19:07:46+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-25T20:03:37+00:00""}]}"
+pandas-dev/pandas,61287,PERF: Restore old performances with .isin() on columns typed as np.ui…,"…nt64
+
+- [ ] closes #60098 (Replace xxxx with the GitHub issue number)
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-14T10:07:07+00:00,2025-04-14T18:44:21+00:00,2025-04-14T18:44:21+00:00,,d199c77d9be461541ac8f93a6d22ff8babe5ef11,pbrochart,3,2,1,0,0,1,False,https://github.com/pandas-dev/pandas/pull/61287,{}
+pandas-dev/pandas,61286,ENH: Update DataFrame.to_stata to handle pd.NA and None values in strL columns,"- [x] closes #23633  (Replace xxxx with the GitHub issue number)
+- [x] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [x] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.
+",closed,2025-04-14T09:08:20+00:00,2025-04-23T08:17:34+00:00,2025-04-22T16:02:29+00:00,2025-04-22T16:02:29+00:00,dd1f69e2c0f2a5def5aa768d6f9fd05107cbdf7d,Danferno,17,2,3,1,3,3,True,https://github.com/pandas-dev/pandas/pull/61286,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T16:51:36+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T16:51:56+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-22T16:02:20+00:00""}], ""Danferno"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-22T08:18:11+00:00""}]}"
+pandas-dev/pandas,61285,DOC: Improve clarity and beginner-friendly tone in table tutorial,"This PR makes small improvements to the 01_table_oriented.rst tutorial in the getting_started/intro_tutorials section. The changes include:
+
+Simplified explanations for importing pandas and creating DataFrames.
+
+Improved grammar and sentence clarity.
+
+Reworded the Series and describe() method descriptions to be more beginner-friendly.
+
+These edits aim to enhance readability and help first-time users better understand pandas concepts.
+",closed,2025-04-14T07:04:32+00:00,2025-04-14T19:02:13+00:00,2025-04-14T16:53:24+00:00,,c07becd1626ddcbdd167fd0ca2d857117f2752b2,VenkataSiriPriya,6,5,1,1,0,1,False,https://github.com/pandas-dev/pandas/pull/61285,{}
+pandas-dev/pandas,61284,Doc-groupby-ewm,"- [x] closes #61268 (Adding documentation for `groupby.ewm()`)
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [x] Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.
+- [ ] [Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature
+- [ ] Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.",closed,2025-04-14T06:53:34+00:00,2025-04-14T16:55:00+00:00,2025-04-14T16:54:59+00:00,,71d2a617083898921b11f1dbf8d5cfa0726d3607,ShauryaDusht,83,24,3,1,0,10,False,https://github.com/pandas-dev/pandas/pull/61284,{}
+pandas-dev/pandas,61283,DOC: Add documentation for `groupby.ewm()`,"- [x] closes #61268
+- [ ] ~[Tests added and passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#writing-tests) if fixing a bug or adding a new feature~
+- [x] All [code checks passed](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#pre-commit).
+- [ ] ~Added [type annotations](https://pandas.pydata.org/pandas-docs/dev/development/contributing_codebase.html#type-hints) to new arguments/methods/functions.~
+- [ ] ~Added an entry in the latest `doc/source/whatsnew/vX.X.X.rst` file if fixing a bug or adding a new feature.~
+",closed,2025-04-14T05:24:05+00:00,2025-04-14T20:05:42+00:00,2025-04-14T20:05:35+00:00,2025-04-14T20:05:35+00:00,183b327228b29495cf67fc885da30eb0d9fc8422,arthurlw,68,2,2,1,5,5,True,https://github.com/pandas-dev/pandas/pull/61283,"{""mroeschke"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T16:55:33+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T16:55:47+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T16:56:16+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T20:04:43+00:00""}, {""state"": ""APPROVED"", ""submitted_at"": ""2025-04-14T20:05:26+00:00""}], ""arthurlw"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-04-14T18:15:31+00:00""}]}"

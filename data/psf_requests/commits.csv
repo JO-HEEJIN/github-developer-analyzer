@@ -1,0 +1,24 @@
+repo,sha,author_name,author_email,author_login,committer_name,committer_email,committer_login,date,message,url,additions,deletions,total_changes,files_changed
+psf/requests,c65c780849563c891f35ffc98d3198b71011c012,Robin,167366979+allrob23@users.noreply.github.com,allrob23,GitHub,noreply@github.com,web-flow,2025-05-03T16:39:14+00:00,"Add two more tests exercising the adapter (#6936)
+
+Closes #6935",https://github.com/psf/requests/commit/c65c780849563c891f35ffc98d3198b71011c012,,,,
+psf/requests,579cd9f23319ebc65b71613f59e2b7b37d67276d,Nate Prewitt,nate.prewitt@gmail.com,nateprewitt,Ian Stapleton Cordasco,graffatcolmingov@gmail.com,sigmavirus24,2025-03-31T17:43:23+00:00,Drop pypy 3.9 and add pypy 3.11 support,https://github.com/psf/requests/commit/579cd9f23319ebc65b71613f59e2b7b37d67276d,,,,
+psf/requests,c54d0347e24f38b40881f1e0a8bfc9fbce583298,Nate Prewitt,nate.prewitt@gmail.com,nateprewitt,GitHub,noreply@github.com,web-flow,2025-04-28T17:36:20+00:00,Merge pull request #6939 from psf/dependabot/github_actions/actions/setup-python-5.6.0,https://github.com/psf/requests/commit/c54d0347e24f38b40881f1e0a8bfc9fbce583298,,,,
+psf/requests,991f05dcd922b1c4036067cb0473abc17db3c806,dependabot[bot],49699333+dependabot[bot]@users.noreply.github.com,dependabot[bot],GitHub,noreply@github.com,web-flow,2025-04-28T17:28:05+00:00,"Bump actions/setup-python from 5.5.0 to 5.6.0
+
+Bumps [actions/setup-python](https://github.com/actions/setup-python) from 5.5.0 to 5.6.0.
+- [Release notes](https://github.com/actions/setup-python/releases)
+- [Commits](https://github.com/actions/setup-python/compare/8d9ed9ac5c53483de85588cdf95a591a75ab9f55...a26af69be951a213d495a4c3e4e4022e16d87065)
+
+---
+updated-dependencies:
+- dependency-name: actions/setup-python
+  dependency-version: 5.6.0
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>",https://github.com/psf/requests/commit/991f05dcd922b1c4036067cb0473abc17db3c806,,,,
+psf/requests,4ce9520a1cfa2e91abe5a923498f49e1fdb2e4ee,Robin,167366979+allrob23@users.noreply.github.com,allrob23,GitHub,noreply@github.com,web-flow,2025-04-23T12:44:05+00:00,"Update lint workflow to ubuntu-24.04
+
+Ubuntu 20.04 was the old default and is no longer supported by GitHub Actions",https://github.com/psf/requests/commit/4ce9520a1cfa2e91abe5a923498f49e1fdb2e4ee,,,,

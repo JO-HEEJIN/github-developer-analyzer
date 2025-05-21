@@ -1,0 +1,656 @@
+repo,sha,author_name,author_email,author_login,committer_name,committer_email,committer_login,date,message,url,additions,deletions,total_changes,files_changed
+pandas-dev/pandas,1321954c120cc7c9869faf92de0f6bf2e9f6e12b,Aidan Feldman,aidan.feldman@gmail.com,afeld,GitHub,noreply@github.com,web-flow,2025-05-21T15:57:55+00:00,"DOC: Expand on different Getitem uses (#60806)
+
+* expand on different Getitem uses
+
+* Update doc/source/user_guide/10min.rst
+
+---------
+
+Co-authored-by: Marc Garcia <garcia.marc@gmail.com>",https://github.com/pandas-dev/pandas/commit/1321954c120cc7c9869faf92de0f6bf2e9f6e12b,,,,
+pandas-dev/pandas,6a2da7ad16cff82f0eadbec04e921baf6c0ae8fb,Kevin Amparado,109636487+KevsterAmp@users.noreply.github.com,KevsterAmp,GitHub,noreply@github.com,web-flow,2025-05-21T00:33:33+00:00,"BUG: round on object columns no longer raises a TypeError (#61399)
+
+* raise TypeError when Series dtype is object on calling Series.round()
+
+* add test
+
+* precommit
+
+* add github issue reference to test
+
+* add bugfix to 2.3 whatsnew
+
+* change self._mgr.dtype to self.dtype
+
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>
+
+---------
+
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/6a2da7ad16cff82f0eadbec04e921baf6c0ae8fb,,,,
+pandas-dev/pandas,fe60f43cd38944a46388acd21458e619c48cf85f,cmp0xff,cmp0xff@users.noreply.github.com,cmp0xff,GitHub,noreply@github.com,web-flow,2025-05-20T21:40:31+00:00,DOC: Fix pivot_table and index.name descriptions (#61455),https://github.com/pandas-dev/pandas/commit/fe60f43cd38944a46388acd21458e619c48cf85f,,,,
+pandas-dev/pandas,c75171ae4def316a2c372a412b09d95cc8d19b17,Sofia Soares,sofia.soares@tecnico.ulisboa.pt,SofiaSM45,GitHub,noreply@github.com,web-flow,2025-05-20T15:57:34+00:00,"BUG: Fix #57608: queries on categorical string columns in HDFStore.select() return unexpected results. (#61225)
+
+* BUG: Fix #57608: queries on categorical string columns in
+HDFStore.select() return unexpected results.
+In function __init__() of class Selection (pandas/core/io/pytables.py),
+the method self.terms.evaluate() was not returning the correct value
+for the where condition. The issue stemmed from the function
+convert_value() of class BinOp (pandas/core/computation/pytables.py),
+where the function searchedsorted() did not return the correct index
+when matching the where condition in the metadata (categories table).
+Replacing searchsorted() with np.where() resolves this issue.
+
+* BUG: Follow-up for #57608: check if metadata is sorted before search
+
+* BUG: Follow-up for #57608: use direct match via np.flatnonzero
+
+* [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+for more information, see https://pre-commit.ci
+
+---------
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/c75171ae4def316a2c372a412b09d95cc8d19b17,,,,
+pandas-dev/pandas,09a17c7b59767e42f529b4ab21a229f866aa4a67,Loic Diridollou,loic.diridollou@gmail.com,loicdiridollou,GitHub,noreply@github.com,web-flow,2025-05-20T02:35:31+00:00,CLN: Expose arguments in DataFrame.query (#61413),https://github.com/pandas-dev/pandas/commit/09a17c7b59767e42f529b4ab21a229f866aa4a67,,,,
+pandas-dev/pandas,7d8f5bdb4e165b13186385d0720d921358ad84d6,Christian Bläul,christian@blaeul.de,gogowitsch,GitHub,noreply@github.com,web-flow,2025-05-19T19:45:53+00:00,DOC: fix two mistakes in missing_data.rst (#61461),https://github.com/pandas-dev/pandas/commit/7d8f5bdb4e165b13186385d0720d921358ad84d6,,,,
+pandas-dev/pandas,eca6bd38647dced033f726c886d04f1b2195e1b4,Pascal Brochart,pbrochart@tuxfamily.org,pbrochart,GitHub,noreply@github.com,web-flow,2025-05-19T16:14:47+00:00,"PERF: Restore old performances with .isin() on columns typed as np.ui… (#61320)
+
+* PERF: Restore old performances with .isin() on columns typed as np.uint64
+
+* [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+for more information, see https://pre-commit.ci
+
+---------
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/eca6bd38647dced033f726c886d04f1b2195e1b4,,,,
+pandas-dev/pandas,801bb24694ce32d04f9b1160c7dcb0e5ac2a8465,Irv Lustig,irv@princeton.com,Dr-Irv,GitHub,noreply@github.com,web-flow,2025-05-19T16:11:23+00:00,"TYP: Update typing for 3.10 (#61453)
+
+* update typing for 3.10
+
+* add 2 more TypeAlias
+
+* add 2 more TypeAlias
+
+* fix hook for stubtest - make it work on Windows. remove combine from nattype.pyi",https://github.com/pandas-dev/pandas/commit/801bb24694ce32d04f9b1160c7dcb0e5ac2a8465,,,,
+pandas-dev/pandas,6879598d495904f3c0a4723bb140296348c49fbd,Kevin Amparado,109636487+KevsterAmp@users.noreply.github.com,KevsterAmp,GitHub,noreply@github.com,web-flow,2025-05-19T16:00:40+00:00,"DOC: change `pandas.DataFrame.unstack`'s `fill_value` param to scalar (#61459)
+
+change fill_value param to scalar",https://github.com/pandas-dev/pandas/commit/6879598d495904f3c0a4723bb140296348c49fbd,,,,
+pandas-dev/pandas,ae8ea3e017481a47ab2635b6fe18572b280e3824,Abhinav,61010675+iabhi4@users.noreply.github.com,iabhi4,GitHub,noreply@github.com,web-flow,2025-05-19T15:54:49+00:00,"BUG: Fix DataFrame constructor misclassification of array-like with 'name' attribute (#61443) (#61451)
+
+* BUG: Fix DataFrame constructor misclassification of array-like with 'name' attribute
+
+Previously, any object with a .name attribute (like some vtkArray-like objects) was assumed to be a Series or Index, causing the constructor to misinterpret the input.
+
+This fix ensures we only apply the named-Index/Series logic when the input is actually an instance of ABCSeries or ABCIndex *and* has a non-None name.
+
+Closes #61443.
+
+* Apply pre-commit fixes: isort and remove unused type ignore
+
+* TST/CLN: Add issue reference in test and update whatsnew for GH#61443",https://github.com/pandas-dev/pandas/commit/ae8ea3e017481a47ab2635b6fe18572b280e3824,,,,
+pandas-dev/pandas,6177e2233974643d17d1560a4d61804800534900,Joris Van den Bossche,jorisvandenbossche@gmail.com,jorisvandenbossche,GitHub,noreply@github.com,web-flow,2025-05-19T15:51:39+00:00,"API (string dtype): implement hierarchy (NA > NaN, pyarrow > python) for consistent comparisons between different string dtypes (#61138)
+
+* API (string dtype): implement hierarchy (NA > NaN, pyarrow > python) for consistent comparisons between different string dtypes
+
+* fix string arith tests
+
+* fix for build without pyarrow
+
+* fix xfail condition
+
+* fix type annotation
+
+* re-add test with list
+
+* cleanup
+
+* Fix ArrowExtensionArray and add whatsnew
+
+* fixup
+
+---------
+
+Co-authored-by: Richard Shadrach <rhshadrach@gmail.com>
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/6177e2233974643d17d1560a4d61804800534900,,,,
+pandas-dev/pandas,5b0767a3a61a133a74de8a36e230dcb8559e991b,Arthur Laureus Wigo,126365160+arthurlw@users.noreply.github.com,arthurlw,GitHub,noreply@github.com,web-flow,2025-05-18T19:31:45+00:00,DOC: User Guide Page on user-defined functions (#61195),https://github.com/pandas-dev/pandas/commit/5b0767a3a61a133a74de8a36e230dcb8559e991b,,,,
+pandas-dev/pandas,5aa78c019649a291456788bc3a808452a387884b,William Andrea,22385371+wjandrea@users.noreply.github.com,wjandrea,GitHub,noreply@github.com,web-flow,2025-05-17T00:21:58+00:00,"DOC: fix typo in merging.rst (#61449)
+
+""order data""",https://github.com/pandas-dev/pandas/commit/5aa78c019649a291456788bc3a808452a387884b,,,,
+pandas-dev/pandas,3543e960064979976516792a2d6dc92b20ba3843,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-05-16T20:59:15+00:00,"DOC: Skip parallel_coordinaes, andrews_curves doctests (#61448)
+
+Skip parallel_coordinaes, andrews_curves doctests",https://github.com/pandas-dev/pandas/commit/3543e960064979976516792a2d6dc92b20ba3843,,,,
+pandas-dev/pandas,17f0dd6233a881702b36a301f4b8dd82f7d9f9a8,Ralf Gommers,ralf.gommers@gmail.com,rgommers,GitHub,noreply@github.com,web-flow,2025-05-16T15:54:59+00:00,CI: clean up wheel build workarounds now that Cython 3.1.0 is out (#61446),https://github.com/pandas-dev/pandas/commit/17f0dd6233a881702b36a301f4b8dd82f7d9f9a8,,,,
+pandas-dev/pandas,341f1612a984e6d990ffa1d3302a220deeadad92,Thomas Li,47963215+lithomas1@users.noreply.github.com,lithomas1,GitHub,noreply@github.com,web-flow,2025-05-16T01:14:44+00:00,"BLD: Try using shared memory utilities in Cython to reduce wheel sizes (#61384)
+
+* BLD: Try using shared memory utilities in Cython to reduce wheel sizes
+
+* fix syntax
+
+* maybe fix?
+
+* switch keyword order?
+
+* try putting as list?
+
+* try the cython rc
+
+* add more version checks
+
+* [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+for more information, see https://pre-commit.ci
+
+---------
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/341f1612a984e6d990ffa1d3302a220deeadad92,,,,
+pandas-dev/pandas,b2b2d04e419e44932d51017ececb5c3a86b15925,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-05-15T18:59:45+00:00,"CI: Upgrade to ubuntu-24.04, install Python free threading from conda-forge (#61410)
+
+* Upgrade to ubuntu-24.04, add config for free threading
+
+* Comment out matplotlib, move to a specific build
+
+* Remove all optional dependencies
+
+* Install setuptools?
+
+* bump meson/meson-python
+
+* Update unit-tests.yml
+
+* Update action.yml
+
+* Update action.yml
+
+* Update actions-313-freethreading.yaml
+
+---------
+
+Co-authored-by: Thomas Li <47963215+lithomas1@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/b2b2d04e419e44932d51017ececb5c3a86b15925,,,,
+pandas-dev/pandas,29e01463a633498c5aa7c4449f140fc9520bc42e,Manjunath L,84699147+Manju080@users.noreply.github.com,Manju080,GitHub,noreply@github.com,web-flow,2025-05-15T16:13:20+00:00,"BUG: Impossible creation of array with dtype=string (#61263)
+
+* DOC: Update warning in Index.values docstring to clarify index modification issues (#60954)
+
+* DOC: Update warning in Index.values docstring to clarify index modification issues (#60954) with changes
+
+* Update pandas/core/indexes/base.py
+
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>
+
+* DOC : Fixing the whitespace which was causing error
+
+* Fixed docstring validation and formatting issues
+
+* BUG: Fix array creation for string dtype with inconsistent list lengths (#61155)
+
+* BUG: Fix array creation for string dtype with inconsistent list lengths (#61155)
+
+* BUG fix GH#61155 v2
+
+* BUG fix GH#61155 with test case for list of lists handling
+
+* Fix formatting in test_string_array.py (pre-commit autofix)
+
+* [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+for more information, see https://pre-commit.ci
+
+* Add test for list of lists handling in ensure_string_array (GH#61155)
+
+* fixing checks
+
+* [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+for more information, see https://pre-commit.ci
+
+* Update pandas/tests/libs/test_lib.py
+
+Co-authored-by: Richard Shadrach <45562402+rhshadrach@users.noreply.github.com>
+
+* Remove pandas/tests/arrays/test_string_array.py as requested
+
+* wrong fiel base.py
+
+* Remove check for nested lists in scalars in string_.py first try
+
+* Revert unintended changes to base.py
+
+---------
+
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+Co-authored-by: Richard Shadrach <45562402+rhshadrach@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/29e01463a633498c5aa7c4449f140fc9520bc42e,,,,
+pandas-dev/pandas,e637b4290d22e71afc1455bc1b691582f0a3ec78,Marc Garcia,garcia.marc@gmail.com,datapythonista,GitHub,noreply@github.com,web-flow,2025-05-14T20:29:29+00:00,ENH: Implement pandas.read_iceberg (#61383),https://github.com/pandas-dev/pandas/commit/e637b4290d22e71afc1455bc1b691582f0a3ec78,,,,
+pandas-dev/pandas,41968a550a159ec0e5ef541a610b7007003bab5b,ChiLin Chiu,chilin.chiou@gmail.com,chilin0525,GitHub,noreply@github.com,web-flow,2025-05-13T23:09:01+00:00,"CI: Fix test failures in 32-bit environment (#61423)
+
+* CI: re-run testing in cython=3.0.10 env to evaluate root cause of testing failure
+
+* add comment for pin cython version",https://github.com/pandas-dev/pandas/commit/41968a550a159ec0e5ef541a610b7007003bab5b,,,,
+pandas-dev/pandas,839747c3f6b68af08dded9e63a18320a854eee28,huisman,23581164+huisman@users.noreply.github.com,huisman,GitHub,noreply@github.com,web-flow,2025-05-12T19:10:38+00:00,"BLD: Decrease size of docker image (#61430)
+
+* Decrease size of docker image
+
+Combining RUN commands to minimise the number of layers and cleaning up the apt lists to reduce total size.
+
+* Combine upgrade and install steps
+
+Combine upgrade and install steps
+Add --no-install-recommends option",https://github.com/pandas-dev/pandas/commit/839747c3f6b68af08dded9e63a18320a854eee28,,,,
+pandas-dev/pandas,9bfbe9e339faf02dbda911c8d89d183033efdf45,Connor Wallace,146393496+ConnorWallace15@users.noreply.github.com,ConnorWallace15,GitHub,noreply@github.com,web-flow,2025-05-12T16:55:16+00:00,"DOC: Updates to documentation - io.rst (#61429)
+
+Update io.rst
+
+updating hdf5 data description link",https://github.com/pandas-dev/pandas/commit/9bfbe9e339faf02dbda911c8d89d183033efdf45,,,,
+pandas-dev/pandas,f496acffccfc08f30f8392894a8e0c56d404ef87,Jack Shewring,jackshewring1@gmail.com,Shoestring42,GitHub,noreply@github.com,web-flow,2025-05-11T17:29:57+00:00,"DOC: update pandas cheat sheet with a third page (fixes #40680) (#61378)
+
+* DOC: update pandas cheat sheet with a third page (fixes #50680)
+
+* DOC: update cheat sheet based on review feedback (40680)
+
+* DOC: 3rd draft: update cheat sheet (40680)
+
+* Italicised 'option_name' and fixed the max_rows example",https://github.com/pandas-dev/pandas/commit/f496acffccfc08f30f8392894a8e0c56d404ef87,,,,
+pandas-dev/pandas,3832e85779b143d882ce501c24ee51df95799e2c,Joris Van den Bossche,jorisvandenbossche@gmail.com,jorisvandenbossche,GitHub,noreply@github.com,web-flow,2025-05-10T14:29:46+00:00,"String dtype: more informative repr (keeping brief __str__) (#61148)
+
+* String dtype: more informative repr (keeping brief __str__)
+
+* fix display in series
+
+* update doctest
+
+* update docstring
+
+* fixup",https://github.com/pandas-dev/pandas/commit/3832e85779b143d882ce501c24ee51df95799e2c,,,,
+pandas-dev/pandas,9c5b9ee823702d937d008d761dbe9ae8872f2259,Arthur Laureus Wigo,126365160+arthurlw@users.noreply.github.com,arthurlw,GitHub,noreply@github.com,web-flow,2025-05-09T18:36:07+00:00,"DOC: Updated titanic.rst survived description (#61421)
+
+updated titanic.rst survived description",https://github.com/pandas-dev/pandas/commit/9c5b9ee823702d937d008d761dbe9ae8872f2259,,,,
+pandas-dev/pandas,cdc5b7418ee351cf656f611402e697c18d83a082,Arthur Laureus Wigo,126365160+arthurlw@users.noreply.github.com,arthurlw,GitHub,noreply@github.com,web-flow,2025-05-08T22:27:22+00:00,"DOC: removed none from docstring (#61411)
+
+removed none from docstring",https://github.com/pandas-dev/pandas/commit/cdc5b7418ee351cf656f611402e697c18d83a082,,,,
+pandas-dev/pandas,8045c2d59fc9e193e76a761ee4c355499c68a591,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-05-08T16:24:26+00:00,"DEPS: Clean unused dependencies (#61331)
+
+* DEPS: Clean unused dependencies
+
+* Sync remove upper pin on xarray
+
+* Remove other dependencies unused
+
+* Fix xarray failures post xarray unpin
+
+* Fix downstream test
+
+* xfail based on version",https://github.com/pandas-dev/pandas/commit/8045c2d59fc9e193e76a761ee4c355499c68a591,,,,
+pandas-dev/pandas,2e141aaf9906cb5ef5539bf1c0ef108176037ddb,eicchen,63069720+eicchen@users.noreply.github.com,eicchen,GitHub,noreply@github.com,web-flow,2025-05-07T16:11:18+00:00,"Subplot title count fix + fix for issue introduced in earlier PR  (#61393)
+
+* test case for subplot stacking
+
+* Removed overlooked print statement
+
+* Updated test to check other subplot in figure
+
+* Updated test cases to include more subplot stacking possibilities
+
+* removed savefig() left in test cases
+
+* Updated test cases to test more arrangements
+
+* Completed function fix (order of subplot input does not matter, need clarification if it matters)
+
+* appeasing the great pre-commit formatter
+
+* Updated whatsnew
+
+* Docstring adjustment
+
+* Moved self.subplot check to a seperate bool
+
+* Added ignore where mypy thinks self.subplots is a bool
+
+* Actually addressed mypy typing
+
+* Incorperated initial PR comments
+
+* Updated missing () after .all
+
+* Initial test cases
+
+* Addressed more comments on PR
+
+* Updated '&' to 'and'
+
+* Updated Test cases
+
+* Fixed crash when ""subplots=True"" is used
+
+* Title check checks for subplot length if specified
+
+* Updated Test cases
+
+* Title check checks for subplot length if specified
+
+* Updated test name
+
+* Removed extra '_' in test name
+
+* Fixed issue where expected_total_height returns as a df instead of a series
+
+* Updated change notes
+
+* Addressed mypy error
+
+* Addresed PR comments
+
+* Changed exception message raised and updated test case",https://github.com/pandas-dev/pandas/commit/2e141aaf9906cb5ef5539bf1c0ef108176037ddb,,,,
+pandas-dev/pandas,7595ed503df845f3bdf4d26b9beea5ec031b619d,myenugula,127900888+myenugula@users.noreply.github.com,myenugula,GitHub,noreply@github.com,web-flow,2025-05-06T18:29:19+00:00,BUG: Fix naive timestamps inheriting timezone from previous timestamps in to_datetime with ISO8601 format (#61400),https://github.com/pandas-dev/pandas/commit/7595ed503df845f3bdf4d26b9beea5ec031b619d,,,,
+pandas-dev/pandas,7bb58a82d444fa4d672a484180c567b17bed5da4,pre-commit-ci[bot],66853113+pre-commit-ci[bot]@users.noreply.github.com,pre-commit-ci[bot],GitHub,noreply@github.com,web-flow,2025-05-05T17:24:05+00:00,"[pre-commit.ci] pre-commit autoupdate (#61397)
+
+updates:
+- [github.com/astral-sh/ruff-pre-commit: v0.11.4 → v0.11.8](https://github.com/astral-sh/ruff-pre-commit/compare/v0.11.4...v0.11.8)
+- [github.com/pre-commit/mirrors-clang-format: v20.1.0 → v20.1.3](https://github.com/pre-commit/mirrors-clang-format/compare/v20.1.0...v20.1.3)
+- [github.com/trim21/pre-commit-mirror-meson: v1.7.2 → v1.8.0](https://github.com/trim21/pre-commit-mirror-meson/compare/v1.7.2...v1.8.0)
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/7bb58a82d444fa4d672a484180c567b17bed5da4,,,,
+pandas-dev/pandas,337d40e5d55f7787e48f029486f47fd5a053bc80,ChiLin Chiu,chilin.chiou@gmail.com,chilin0525,GitHub,noreply@github.com,web-flow,2025-05-03T20:00:53+00:00,DOC: Improve `api.types.is_dtype_equal` docstring (#61394),https://github.com/pandas-dev/pandas/commit/337d40e5d55f7787e48f029486f47fd5a053bc80,,,,
+pandas-dev/pandas,e55d90783bac30b75e7288380b15a62ab6e43f78,Daniel Pinto Salazar,90653641+danielpintosalazar@users.noreply.github.com,danielpintosalazar,GitHub,noreply@github.com,web-flow,2025-04-30T16:21:09+00:00,"DOC: Fix dark mode text visibility in Getting Started accordion (#60024) (#61379)
+
+Fix: text color for accordion content in getting started",https://github.com/pandas-dev/pandas/commit/e55d90783bac30b75e7288380b15a62ab6e43f78,,,,
+pandas-dev/pandas,caa58c72337b350452804489c05cf67118e9d101,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-04-30T16:09:41+00:00,"CI: Have dedicated Python 3.13 job instead of using Python dev (#61333)
+
+* CI: Have dedicated Python 3.13 job instead of using Python dev
+
+* Rename environment name
+
+* Track down resource warning
+
+* Fix -vv usage
+
+* Add __exit__ methods to PandasSQL
+
+* Revert ""Add __exit__ methods to PandasSQL""
+
+This reverts commit 374c5ac7515b3681c6fb8e0ce1dcc3310f54f516.
+
+* Focus on only running sqlite tests
+
+* Fix testing path
+
+* Dont mess with test path
+
+* unskip sqlalchemy sqlite tests
+
+* Remove tests that don't exercise the failures
+
+* Remove bulk of tests
+
+* freeze some workflows
+
+* Freeze more workflows
+
+* disable more jobs
+
+* See if forced collection raises ResourceError earlier
+
+* Try context manager in test_delete_rows_is_atomic
+
+* Undo all changes and update test
+
+* Use a file in test_database_uri_string
+
+* Remove another uneeded parametrization",https://github.com/pandas-dev/pandas/commit/caa58c72337b350452804489c05cf67118e9d101,,,,
+pandas-dev/pandas,07039a640219acdadc5248715a75349778c20ad0,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-04-30T16:08:48+00:00,CLN: Use newer numpy random Generator methods in plotting colors (#61332),https://github.com/pandas-dev/pandas/commit/07039a640219acdadc5248715a75349778c20ad0,,,,
+pandas-dev/pandas,cf6de581e1c27f06107b5be9e7f2923d7bbc98a6,Thomas Heavey,thomasjheavey@gmail.com,theavey,GitHub,noreply@github.com,web-flow,2025-04-29T16:20:40+00:00,"BUG: Series.dot for arrow and nullable dtypes returns object-dtyped series (#61376)
+
+Co-authored-by: Thomas Heavey <thomas.heavey@gardacp.com>",https://github.com/pandas-dev/pandas/commit/cf6de581e1c27f06107b5be9e7f2923d7bbc98a6,,,,
+pandas-dev/pandas,65bf9cde577c27b76a97d24014f16b63f40b4882,eicchen02,63069720+eicchen02@users.noreply.github.com,eicchen,GitHub,noreply@github.com,web-flow,2025-04-28T20:10:27+00:00,"BUG: Fixed issue with bar plots not stacking correctly when 'stacked' and 'subplots' are used together (#61340)
+
+* test case for subplot stacking
+
+* Removed overlooked print statement
+
+* Updated test to check other subplot in figure
+
+* Updated test cases to include more subplot stacking possibilities
+
+* removed savefig() left in test cases
+
+* Updated test cases to test more arrangements
+
+* Completed function fix (order of subplot input does not matter, need clarification if it matters)
+
+* appeasing the great pre-commit formatter
+
+* Updated whatsnew
+
+* Docstring adjustment
+
+* Moved self.subplot check to a seperate bool
+
+* Added ignore where mypy thinks self.subplots is a bool
+
+* Actually addressed mypy typing
+
+* Incorperated initial PR comments
+
+* Updated missing () after .all
+
+* Addressed more comments on PR
+
+* Updated '&' to 'and'",https://github.com/pandas-dev/pandas/commit/65bf9cde577c27b76a97d24014f16b63f40b4882,,,,
+pandas-dev/pandas,d79f7b0df1728cbccd84d631a26df901d2a1f2fc,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-04-28T18:17:50+00:00,CI: Use Cython nightlies for Windows wheel builds again (#61371),https://github.com/pandas-dev/pandas/commit/d79f7b0df1728cbccd84d631a26df901d2a1f2fc,,,,
+pandas-dev/pandas,c644e459d341a7edb70202a6bff30b41b13c01c0,dependabot[bot],49699333+dependabot[bot]@users.noreply.github.com,dependabot[bot],GitHub,noreply@github.com,web-flow,2025-04-28T17:41:35+00:00,"Bump pypa/cibuildwheel from 2.23.2 to 2.23.3 (#61369)
+
+Bumps [pypa/cibuildwheel](https://github.com/pypa/cibuildwheel) from 2.23.2 to 2.23.3.
+- [Release notes](https://github.com/pypa/cibuildwheel/releases)
+- [Changelog](https://github.com/pypa/cibuildwheel/blob/main/docs/changelog.md)
+- [Commits](https://github.com/pypa/cibuildwheel/compare/v2.23.2...v2.23.3)
+
+---
+updated-dependencies:
+- dependency-name: pypa/cibuildwheel
+  dependency-version: 2.23.3
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/c644e459d341a7edb70202a6bff30b41b13c01c0,,,,
+pandas-dev/pandas,26a6316ccefac2b6e31455a8b198002298a718ee,Quang Nguyễn,30631476+quangngd@users.noreply.github.com,quangngd,GitHub,noreply@github.com,web-flow,2025-04-28T16:58:40+00:00,"EHN: `df.to_latex(escape=True)` also escape index names (#61307)
+
+* use same format_index option to format_index_names
+
+* test
+
+* fix test
+
+* add ref to issues
+
+* rm blank line
+
+* Remove overwrite format_index_names when header defined
+
+* add test for columns.name",https://github.com/pandas-dev/pandas/commit/26a6316ccefac2b6e31455a8b198002298a718ee,,,,
+pandas-dev/pandas,b519aa703d6934194249b5c19cfa0324e5fa5d8e,Richard Shadrach,45562402+rhshadrach@users.noreply.github.com,rhshadrach,GitHub,noreply@github.com,web-flow,2025-04-28T16:47:10+00:00,"BUG: groupby.groups with NA categories fails (#61364)
+
+* BUG: groupby.groups with NA categories fails
+
+* cleanup
+
+* whatsnew",https://github.com/pandas-dev/pandas/commit/b519aa703d6934194249b5c19cfa0324e5fa5d8e,,,,
+pandas-dev/pandas,2121180485ba6af843353313d7d7a2426abc614b,Yana Mishula,72974057+yanamis@users.noreply.github.com,yanamis,GitHub,noreply@github.com,web-flow,2025-04-28T16:45:43+00:00,DOC: Add missing period in sample docstring (#61367),https://github.com/pandas-dev/pandas/commit/2121180485ba6af843353313d7d7a2426abc614b,,,,
+pandas-dev/pandas,d692ddd260a9caef150be58f1cf22f373d3a8001,Kiril Isakov,kirisakow@users.noreply.github.com,kirisakow,GitHub,noreply@github.com,web-flow,2025-04-28T16:39:26+00:00,"[minor edit] edit definitions of some parameters with correct idiomatic English for better legibility (#61366)
+
+* edit definitions of some parameters with correct idiomatic English for better legibility (e.g. you don't *append* a prefix, you can only *prepend* it)
+
+* strip trailing space, as suggested by @mroeschke
+
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>
+
+---------
+
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/d692ddd260a9caef150be58f1cf22f373d3a8001,,,,
+pandas-dev/pandas,44c56135688e84de154625d09a199276c141ef3a,Robin,167366979+allrob23@users.noreply.github.com,allrob23,GitHub,noreply@github.com,web-flow,2025-04-26T18:10:39+00:00,"perf: improve membership check performance in column filtering (#61046)
+
+* perf: improve membership check performance in column filtering
+
+* [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+for more information, see https://pre-commit.ci
+
+---------
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/44c56135688e84de154625d09a199276c141ef3a,,,,
+pandas-dev/pandas,0e0bafb39d080a05ca44c501d5af3c553ef89b14,viable-alternative,github.endpoint@gmail.com,viable-alternative,GitHub,noreply@github.com,web-flow,2025-04-25T20:28:19+00:00,BUG: Wrong result with varying window size min/max rolling calc. (#61288),https://github.com/pandas-dev/pandas/commit/0e0bafb39d080a05ca44c501d5af3c553ef89b14,,,,
+pandas-dev/pandas,0fce6b4304d8965d8685a4e9a6ad8d9a4b2bafa3,Arthur Laureus Wigo,126365160+arthurlw@users.noreply.github.com,arthurlw,GitHub,noreply@github.com,web-flow,2025-04-25T16:34:49+00:00,"DOC: Updated `groupby.expanding` arguments (#61352)
+
+* updated expanding args
+
+* fixed punctuation",https://github.com/pandas-dev/pandas/commit/0fce6b4304d8965d8685a4e9a6ad8d9a4b2bafa3,,,,
+pandas-dev/pandas,20d5b1c00423eca5054875a8c1f82640a6905b2b,Ian Thompson,ian.thompson@hrblock.com,it176131,GitHub,noreply@github.com,web-flow,2025-04-23T21:47:17+00:00,"BUG: pivot_table with overlapping values (#61293)
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Added two tests, :func:`test_pivot_table_values_in_columns` and :func:`test_pivot_table_values_in_index`, to ensure that the `values` param is still used when the argument is shared between the `columns` and `values` params, and `index` and `values` params.
+
+* modified:   pandas/core/reshape/pivot.py
+	- Added condition to :func:`__internal_pivot_table` to aggregate `values` explicitly if `values` were passed, otherwise aggregate all remaining columns. This allows the tests :func:`test_pivot_table_values_in_columns` and :func:`test_pivot_table_values_in_index` in test_pivot_multilevel.py to pass.
+
+* modified:   pandas/tests/reshape/test_pivot.py
+	- Added test :func:`test_pivot_table_values_as_two_params` to test that the updates in pivot.py result in expected results, satisfying GH issue #57876.
+
+* modified:   pandas/tests/reshape/test_pivot.py
+	- Added GH issue comment to test :func:`test_pivot_table_values_as_two_params`.
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Combined tests :func:`test_pivot_table_values_in_columns` and :func:`test_pivot_table_values_in_index` into a single parametrized test, :func:`test_pivot_table_multiindex_values_as_two_params` to reduce duplicate setup code.
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Added GH issue #61292 as comment to test :func:`test_pivot_table_multiindex_values_as_two_params`.
+
+* modified:   pandas/core/reshape/pivot.py
+	- Simplified proposed logic in :func:`__internal_pivot_table`.
+
+* modified:   pandas/core/reshape/pivot.py
+	- Added GH issue numbers to new logic in :func:`__internal_pivot_table`.
+
+* modified:   pandas/core/reshape/pivot.py
+	- Added ignore-comment to silence mypy error in :func:`__internal_pivot_table`.
+	- Added TODO-comment stating that the :meth:`DataFrameGroupBy.__getitem__` should be overloaded to match the pandas-stubs type declarations, informing mypy that the type is correct given `values` is a list.
+
+* modified:   doc/source/whatsnew/v3.0.0.rst
+	- Added pivot_table bug to Bugs/Reshaping section referencing issues #57876 and #61292.
+
+* modified:   pandas/core/reshape/pivot.py
+	- Moved and simplified mypy comment per feedback.
+
+* modified:   pandas/core/reshape/pivot.py
+	- Removed comment about explicit aggregation per feedback.
+
+* modified:   pandas/tests/reshape/test_pivot.py
+	- Removed param names and updated `argnames` arg per feedback in parametrized marker.
+
+* modified:   pandas/tests/reshape/test_pivot.py
+	- Removed param names in favor of implicit args per feedback.
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Removed param names and updated arg for `argnames` in parametrized marker per feedback.
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Reduced `expected` assignments from two to one per feedback.
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Removed param names in favor of implicit args per feedback.
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Moved e_data, e_index, and e_cols to parametrized marker instead of declaring inside the test :func:`test_pivot_table_multiindex_values_as_two_params`.
+
+* modified:   pandas/tests/reshape/test_pivot.py
+	- Moved `expected` setup to parametrized marker instead of in the test :meth:`TestPivotTable.test_pivot_table_values_as_two_params`.
+
+* modified:   pandas/tests/reshape/test_pivot.py
+	- Removed walrus operator declarations in parametrized marker for test :meth:TestPivotTable.test_pivot_table_values_as_two_params`. Appears related to this mypy issue -> https://github.com/python/mypy/issues/17377.
+
+* modified:   pandas/tests/reshape/test_pivot_multilevel.py
+	- Removed walrus operator declarations as I'm sure mypy would raise an issue with it given that it did in test_pivot.py (see commit 52cf56011e).",https://github.com/pandas-dev/pandas/commit/20d5b1c00423eca5054875a8c1f82640a6905b2b,,,,
+pandas-dev/pandas,1ac8552bb6c2463a09be95b28e37df4ec5cb3886,Christine P. Chai,star1327p@gmail.com,star1327p,GitHub,noreply@github.com,web-flow,2025-04-23T01:47:42+00:00,"DOC Update link to ""The Grammar of Graphics"" book (#61341)",https://github.com/pandas-dev/pandas/commit/1ac8552bb6c2463a09be95b28e37df4ec5cb3886,,,,
+pandas-dev/pandas,09de147f67452cfe97d3a90d224ae3b7c198bebe,ChiLin Chiu,chilin.chiou@gmail.com,chilin0525,GitHub,noreply@github.com,web-flow,2025-04-22T16:04:22+00:00,"ENH: Add tzdata to hard dependencies (#61308)
+
+* ENH: add tzdata to the _hard_dependencies
+
+* Add github issue number into test comment
+
+* Update whatsnew v3.0.0.rst
+
+* Remove change content from whatsnew v3.0.0.rst",https://github.com/pandas-dev/pandas/commit/09de147f67452cfe97d3a90d224ae3b7c198bebe,,,,
+pandas-dev/pandas,dd1f69e2c0f2a5def5aa768d6f9fd05107cbdf7d,Danferno,jessaius@gmail.com,Danferno,GitHub,noreply@github.com,web-flow,2025-04-22T16:02:29+00:00,"ENH: Update DataFrame.to_stata to handle pd.NA and None values in strL columns (#61286)
+
+* ENH: Update DataFrame.to_stata to handle pd.NA and None values in strL columns
+
+* Update pandas/io/stata.py
+
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>
+
+* Moved changelog msg to 3.0.0 and adapted phrasing
+
+---------
+
+Co-authored-by: Jesse <jesse.wursten@kuleuven.be>
+Co-authored-by: Matthew Roeschke <10647082+mroeschke@users.noreply.github.com>",https://github.com/pandas-dev/pandas/commit/dd1f69e2c0f2a5def5aa768d6f9fd05107cbdf7d,,,,
+pandas-dev/pandas,c38e1f1aa9efbfb68b42670de84a4450d04ffd4a,Arthur Laureus Wigo,126365160+arthurlw@users.noreply.github.com,arthurlw,GitHub,noreply@github.com,web-flow,2025-04-22T15:56:52+00:00,"DOC: Updated `groupby.ewm` arguments (#61334)
+
+* updated ewm arguments
+
+* added method argument to docstring
+
+* removed unexpected indentation
+
+* updated method parameter description
+
+* precommit",https://github.com/pandas-dev/pandas/commit/c38e1f1aa9efbfb68b42670de84a4450d04ffd4a,,,,
+pandas-dev/pandas,f8d5a16542d9289f714df3cb378e798f710ffa62,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-04-21T20:47:12+00:00,"TYP: Remove unused mypy ignores (#61330)
+
+* Remove unused mypy ignores
+
+* Remove another ignore",https://github.com/pandas-dev/pandas/commit/f8d5a16542d9289f714df3cb378e798f710ffa62,,,,
+pandas-dev/pandas,e5898b8d33ac943a60250e1466006c073a506e8c,Matthew Roeschke,10647082+mroeschke@users.noreply.github.com,mroeschke,GitHub,noreply@github.com,web-flow,2025-04-21T16:16:56+00:00,"DEPS: Bump optional dependencies (#60655)
+
+* Bump optional dependencies
+
+* Remove version workarounds
+
+* Remove a min_version
+
+* Consolidate all optional-dependency:
+
+* Revert ""Consolidate all optional-dependency:""
+
+This reverts commit e689e1bc17aa82d516a64b653947c9621c792ae2.
+
+* Bump blosc
+
+* Unbump pycopg2
+
+* Undo pytables
+
+* Undo sqlalchemy
+
+* Remove sqlalchemy from whatsnew
+
+* undo blosc and lxml
+
+* Move adbc packages to conda
+
+* Revert ""Move adbc packages to conda""
+
+This reverts commit 39cdaf19f3e0d461f8f1c016c450b466a81f31a7.
+
+* Revert ""Revert ""Move adbc packages to conda""""
+
+This reverts commit 9ba03c4d14bae83376f6c4c9ca736b463b653cb0.
+
+* Revert ""Move adbc packages to conda""
+
+This reverts commit 39cdaf19f3e0d461f8f1c016c450b466a81f31a7.",https://github.com/pandas-dev/pandas/commit/e5898b8d33ac943a60250e1466006c073a506e8c,,,,
+pandas-dev/pandas,31b073c794507204c8aa43e0770bb816d43c4f81,Kiril Isakov,kirisakow@users.noreply.github.com,kirisakow,GitHub,noreply@github.com,web-flow,2025-04-21T15:46:59+00:00,[minor edit] fix typo: psudocode -> pseudocode (#61314),https://github.com/pandas-dev/pandas/commit/31b073c794507204c8aa43e0770bb816d43c4f81,,,,
+pandas-dev/pandas,7a61e1b3c93d4adfdd48b9a770675c02b2d033dd,Christine P. Chai,star1327p@gmail.com,star1327p,GitHub,noreply@github.com,web-flow,2025-04-21T15:46:30+00:00,"DOC: Add missing punctuation to merging.rst (#61315)
+
+DOC Add missing punctuation to merging.rst",https://github.com/pandas-dev/pandas/commit/7a61e1b3c93d4adfdd48b9a770675c02b2d033dd,,,,
+pandas-dev/pandas,faf97858ace6ddff6056cd75fc82631c11be0509,William Ayd,will_ayd@innobi.io,WillAyd,GitHub,noreply@github.com,web-flow,2025-04-21T15:45:50+00:00,Remove WillAyd from CODEOWNERS (#61329),https://github.com/pandas-dev/pandas/commit/faf97858ace6ddff6056cd75fc82631c11be0509,,,,

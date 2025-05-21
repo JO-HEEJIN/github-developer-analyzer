@@ -1,0 +1,566 @@
+repo,number,title,body,state,created_at,updated_at,closed_at,author_login,assignees,comments,labels,milestone,url
+pallets/flask,5738,Allow multiple template folders for large projects,"
+Jinja2 supports multiple search paths for templates so Flask should do the same. This will allow template inheriting without copying files.
+
+
+https://github.com/pallets/jinja/blob/main/src/jinja2/loaders.py#L190
+",closed,2025-05-20T10:48:36+00:00,2025-05-20T12:19:23+00:00,2025-05-20T12:18:26+00:00,Tobey,[],3,[],,https://github.com/pallets/flask/issues/5738
+pallets/flask,5729,The `template_filter` decorator doesn't work if you don't pass an argument,"## What's the issue?
+
+You can use `template_filter` as a decorator, but it only registers the filter if you write an explicit name or an empty set of parentheses. If you call it without parens, the filter doesn't get registered.
+
+It's a small difference and can be confusing.
+
+## Minimal example
+
+Consider the following program:
+
+```python
+from flask import Flask, render_template_string
+
+
+app = Flask(__name__)
+
+
+@app.template_filter
+def double(x):
+    return x * 2
+
+
+@app.route(""/"")
+def index():
+    return render_template_string(""2 times 2 is {{ 2 | double }}"")
+```
+
+If you run this app (`flask run --port 8008 --debug`) and then open it in your browser (`http://localhost:8008`) you'll get an error:
+
+```
+jinja2.exceptions.TemplateAssertionError: No filter named 'double'.
+```
+
+This is confusing, and it took me a while to realise the missing parentheses in `app.template_filter` were at fault.
+
+## Suggested fix
+
+I think it would be helpful if the decorator either:
+
+* Supported being called without parentheses, or
+* Printed an explicit warning if called this way, e.g. `Did you use 'template_filter' as a decorator without parentheses? You need to call it with 'template_filter()'`
+
+This is caught by type checkers, but not everybody type checks their Python and the error message is less obvious:
+
+```
+Argument 1 to ""template_filter"" of ""App"" has incompatible type ""Callable[[Any], Any]""; expected ""str | None""
+```
+
+I've had a look at the relevant code, and I'd be happy to provide a patch if you think this is a useful change.
+
+## Environment
+
+- Python version: Python 3.11.11
+- Flask version: Flask 3.1.0
+",open,2025-05-12T08:33:00+00:00,2025-05-17T03:17:09+00:00,,alexwlchan,[],4,[],,https://github.com/pallets/flask/issues/5729
+pallets/flask,5726,Adding Architecture Diagram Contribution,"Hello maintainers!
+I've created an architecture diagram that visualizes Flask's core components and their relationships. This visualization could help new contributors understand the codebase structure and assist users in grasping Flask's high-level architecture.
+
+![Image](https://github.com/user-attachments/assets/143025cf-6094-4c19-93f5-ac06bfa59738)
+
+[Flask Architecture Diagram on Kloudfarm.io](https://app.kloudfarm.io/share/379c2674f0b240c387a5135690c8f01c8c18a988878e99846fb36ea18ad7e1ef)
+The diagram shows:
+- Core Flask classes and relationships
+- Request/response lifecycle
+- Extension integration points
+- Blueprint organization
+
+I'd be happy to:
+
+1. Submit a PR to add this to documentation
+2. Provide different file formats
+3. Create more focused diagrams of specific subsystems
+
+Would this be a helpful addition to the project? Open to any feedback or suggestions.
+Thanks!",closed,2025-05-10T16:22:17+00:00,2025-05-10T16:45:20+00:00,2025-05-10T16:45:20+00:00,kiran-kf,[],1,[],,https://github.com/pallets/flask/issues/5726
+pallets/flask,5721,Ihmuukin_ai,"<!--
+This issue tracker is a tool to address bugs in Flask itself. Please use
+GitHub Discussions or the Pallets Discord for questions about your own code.
+
+Replace this comment with a clear outline of what the bug is.
+-->
+
+<!--
+Describe how to replicate the bug.
+
+Include a minimal reproducible example that demonstrates the bug.
+Include the full traceback if there was an exception.
+-->
+
+<!--
+Describe the expected behavior that should have happened but didn't.
+-->
+
+Environment:
+
+- Python version:
+- Flask version:
+",closed,2025-04-22T11:37:28+00:00,2025-05-07T00:08:54+00:00,2025-04-22T11:40:56+00:00,ihmuukin,[],0,[],,https://github.com/pallets/flask/issues/5721
+pallets/flask,5718,"Recommend Warning and Safer Defaults for url_for(..., _external=True)","Hi Flask team,
+
+We recently analyzed several Flask-based applications and noticed a recurring security concern related to url_for(..., _external=True) when used in untrusted request contexts. Specifically, since it uses request.host by default to construct the external URL, applications that do not explicitly configure SERVER_NAME or sanitize headers can be vulnerable to host header injection.
+
+To improve developer awareness and reduce misuse, we suggest: Add a warning to the url_for documentation about the risk of relying on request.host, and recommend the use of SERVER_NAME or trusted_hosts when generating external URLs.
+
+We’d be happy to help draft the relevant documentation or contribute a pull request if this direction aligns with the maintainers' goals.
+
+Best regards,
+Rui Yang and Zhengyu Liu
+Johns Hopkins University
+",open,2025-04-14T03:53:08+00:00,2025-05-02T17:58:01+00:00,,BrookeYangRui,[],5,"[""docs""]",,https://github.com/pallets/flask/issues/5718
+pallets/flask,5711,close resources before reload (option --reload),"I have a Flask application that establishes connections to multiple SQLite databases.  When the local development server (werkzeug) is started with option ``--reload`` the connections are not closed on reload, since Python 3.13 this is also logged with a [ResourceWarning](https://docs.python.org/3/whatsnew/3.13.html#sqlite3):
+
+    ResourceWarning: unclosed database in <sqlite3.Connection object at ...>
+
+Since the application (since each thread) establishes various DB connections, the (debug) log is flooded with such warnings during development.
+
+I am aware that the DB connectors can be closed when the context is [torn down](https://flask.palletsprojects.com/en/stable/patterns/sqlite3/), but this is not desired. The DB connections should be open over the entire lifetime of the server (thread).
+
+And the problem is not limited to sqlite3, in general, it would be better to close resources before reloading the modules.
+
+Is there perhaps a hook or another chance with which it would be possible to close open resources?
+
+
+-----
+
+*I placed it here as a feature-request .. may we better move this issue to werkzeug?*",closed,2025-04-09T14:00:37+00:00,2025-04-24T00:08:23+00:00,2025-04-09T15:00:53+00:00,return42,[],1,[],,https://github.com/pallets/flask/issues/5711
+pallets/flask,5709,Reference cycle caused by exception handling,"A reference cycle is introduced by Flask's exception handling mechanism. Specifically, the exception object retains a reference to the stack frame, which in turn holds a reference back to the exception. This creates a reference cycle between the traceback and the exception instance.
+
+This becomes particularly problematic in applications where the garbage collector is disabled (gc.disable()). Even when the GC is enabled, this cycle puts unnecessary pressure on memory management.
+
+The issue originates from the following line in the Flask source code: https://github.com/pallets/flask/blob/9225f8bb28d291b1610c8a58e3233aa6bbdc1808/src/flask/app.py#L1507
+
+The fix is simple: the reference to the exception object should be explicitly released once it is no longer needed.
+
+A minimal reproducible example demonstrating this issue can be found here:
+👉 https://github.com/tomasz-pankowski/exception-memory-leak/tree/main
+
+Environment:
+
+- Python version: any
+- Flask version: 3.1.0 (earlier ones too)
+",closed,2025-04-06T08:05:19+00:00,2025-04-22T00:08:26+00:00,2025-04-07T18:00:31+00:00,tomasz-pankowski,[],0,[],,https://github.com/pallets/flask/issues/5709
+pallets/flask,5707,Jija2 security vulnerability,"There is a security vulnerability reported for Jinja2 https://github.com/advisories/GHSA-cpwx-vrp4-4pq7
+
+Solution is to update the Jinja2 version to 3.1.6
+
+
+Environment:
+
+- Python version: latest
+- Flask version: latest
+",closed,2025-04-01T13:49:09+00:00,2025-04-16T00:08:38+00:00,2025-04-01T13:51:03+00:00,pdhotems,[],1,[],,https://github.com/pallets/flask/issues/5707
+pallets/flask,5692,'pkgutil.get_loader' is removed from Python 3.14,"Per What's new in Python 3.14:
+> Remove deprecated pkgutil.get_loader() and pkgutil.find_loader(). These had previously raised a DeprecationWarning since Python 3.12. (Contributed by Bénédikt Tran in gh-97850.)
+
+It manifests in flask's tests: 
+
+```
+______________ ERROR at setup of test_prefix_package_paths[True] _______________
+
+request = <SubRequest 'limit_loader' for <Function test_prefix_package_paths[True]>>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1fe6cb9b70>
+
+    @pytest.fixture(params=(True, False))
+    def limit_loader(request, monkeypatch):
+        """"""Patch pkgutil.get_loader to give loader without get_filename or archive.
+    
+        This provides for tests where a system has custom loaders, e.g. Google App
+        Engine's HardenedModulesHook, which have neither the `get_filename` method
+        nor the `archive` attribute.
+    
+        This fixture will run the testcase twice, once with and once without the
+        limitation/mock.
+        """"""
+        if not request.param:
+            return
+    
+        class LimitedLoader:
+            def __init__(self, loader):
+                self.loader = loader
+    
+            def __getattr__(self, name):
+                if name in {""archive"", ""get_filename""}:
+                    raise AttributeError(f""Mocking a loader which does not have {name!r}."")
+                return getattr(self.loader, name)
+    
+>       old_get_loader = pkgutil.get_loader
+E       AttributeError: module 'pkgutil' has no attribute 'get_loader'
+
+ERROR tests/test_instance_config.py::test_installed_module_paths[True] - Attr...
+ERROR tests/test_instance_config.py::test_installed_package_paths[True] - Att...
+ERROR tests/test_instance_config.py::test_prefix_package_paths[True] - Attrib...
+```
+
+Run the tests with Python 3.14
+
+Environment:
+
+- Python version: 3.14.0a6
+- Flask version: 3.1.0
+",closed,2025-03-19T11:08:53+00:00,2025-04-13T00:32:57+00:00,2025-03-29T22:45:22+00:00,befeleme,[],4,[],,https://github.com/pallets/flask/issues/5692
+pallets/flask,5691,flask.__init__.__getattr__ can hide typing errors,"admittedly this is a bit of an edge case -- but perhaps if the `__getattr__` pattern is implemented next time for deprecations this can be taken into consideration!
+
+I have an unfortunately-named bit in my webapp called ""flash"" and I've used flask for years and my fingers tend to typo one as the other.
+
+I had a file like this (simplified!):
+
+```python
+import flask
+
+flask.FlashMessage
+```
+
+which is obviously wrong -- flask doesn't have a `FlashMessage`!  but it was passing mypy due to `def __getattr__(name: str) -> t.Any:` in `__init__.py`
+
+it _might_ be better to guard that behind a `if not t.TYPE_CHECKING: ...` block such that mypy doesn't pick that up and lead to misleading results
+
+not a big deal though and I see that the `__getattr__`  is already removed in mainline
+
+another idea would be to use `@overload` on `__getattr__` such that it only allows the particular Literals? but it looks like mypy doesn't even support that so nevermind! https://github.com/python/mypy/issues/8203#issuecomment-1670344931
+
+
+Environment:
+
+- Python version: 3.13.1
+- Flask version: 3.1.0
+",closed,2025-03-08T16:56:50+00:00,2025-04-13T00:32:59+00:00,2025-03-29T22:28:33+00:00,asottile,[],3,[],3.1.1,https://github.com/pallets/flask/issues/5691
+pallets/flask,5688,Error using sample code in favicon documentation,"The code sample gives the assert `view_func is not None, ""expected view func if endpoint is not provided.""`.
+
+Documentation in question: https://flask.palletsprojects.com/en/stable/patterns/favicon/
+
+Sample code in question:
+```
+app.add_url_rule('/favicon.ico',
+                 redirect_to=url_for('static', filename='favicon.ico'))
+```",closed,2025-03-02T06:04:51+00:00,2025-04-13T00:32:58+00:00,2025-03-29T22:32:36+00:00,AluminumAngel,[],1,"[""docs""]",,https://github.com/pallets/flask/issues/5688
+pallets/flask,5686,Inaccurate documentation for adding a favicon redirect,"The code sample in the existing documentation on how to redirect a favicon request assumes that add_url_rule takes a parameter named redirect_to. It does not.
+
+Documentation in question: https://flask.palletsprojects.com/en/stable/patterns/favicon/
+
+Sample code in question:
+```
+app.add_url_rule('/favicon.ico',
+                 redirect_to=url_for('static', filename='favicon.ico'))
+```",closed,2025-03-02T05:29:12+00:00,2025-03-17T00:09:03+00:00,2025-03-02T05:32:32+00:00,AluminumAngel,[],3,[],,https://github.com/pallets/flask/issues/5686
+pallets/flask,5679,How to solve,"```python
+response = {
+        ""status"": ""ok"",
+        ""message"": ""Success"",
+        ""response"": url
+    }
+    return jsonify(response)
+```
+
+In this getting output like this 
+
+```json
+{""message"": ""success"", ""response"": url, ""status"": ""old""}
+```
+
+How to solve that getting incorrect output
+
+I need this like
+
+```
+{
+        ""status"": ""ok"",
+        ""message"": ""Success"",
+        ""response"": url
+    }
+```
+
+How to solve ",closed,2025-02-18T09:21:49+00:00,2025-02-18T09:28:00+00:00,2025-02-18T09:28:00+00:00,Tanjiroop,[],1,[],,https://github.com/pallets/flask/issues/5679
+pallets/flask,5676,Admin endpoint seems to be reserved,"```python
+@app.route(""/admin/<password>/<int:page>"", methods=[""GET""])
+def admin(password: str, page: int = 1) -> Any:
+    print(page)
+    files, total = [], 2
+    return render_template(""admin.html"", files=files, password=password, total=total)
+```
+
+This fails when page is 1,2,3 or 8.
+
+At least. it might fail in more cases.
+
+If page is 4 or 5, 9,  etc, it works.
+
+By works I mean, it uses the actual argument instead of the default: 1
+
+I'm guessing the admin endpoint is being reserved in some way, but should it?
+
+If I replace 'admin' to 'pok' for example:
+
+`@app.route(""/pok/<password>/<int:page>"", methods=[""GET""])`
+
+Then it works as expected.
+
+
+Environment:
+
+- Python version: 3.13.1
+- Flask version: 3.1.0",closed,2025-02-08T04:41:55+00:00,2025-02-23T00:08:34+00:00,2025-02-08T05:02:48+00:00,madprops,[],2,[],,https://github.com/pallets/flask/issues/5676
+pallets/flask,5673,Custom commands not listed,"When I run the `flask` command by itself I get help output with all of my custom commands listed. But when I run `flask --help` I get the help output with only the built-in flask commands (`routes`, `run`, `shell`). I am using the `FLASK_APP` environment variable to load the app.
+
+I would think I should get the same help output (showing my custom commands) whether or not I add the `--help` parameter?
+
+Environment:
+
+- Python 3.12.2
+- Flask 3.1.0",closed,2025-01-28T06:57:24+00:00,2025-04-13T00:33:00+00:00,2025-03-29T22:15:26+00:00,dunkmann00,[],7,"[""cli""]",3.1.1,https://github.com/pallets/flask/issues/5673
+pallets/flask,5670,"int route converters are actually uint, but not documented as such","In #2643, a user noted that flask routes with an `int` converter only accepts unsigned integers.
+
+I'll summarize a few different opinions and options in that thread:
+1. a user can create their own converter that accepts unsigned integers, or modifies the existing converter (but only on their codebase). An example code snippet was provided in the issue.
+2. The user's report could be treated as a bug in the `int` converter, so the fix would be to modify the flask `int` converter to accept the other ~50% of legitimate integers. Assumptions were made about which part of the integer space most people would use. Concerns were raised about how users may be relying on this bug, and that it should not be fixed for fear of breaking said users.
+3. The user's report could be treated as a bug in the documentation, so a presumed fix would be to amend [the documentation](https://flask.palletsprojects.com/en/stable/api/#url-route-registrations) which currently states ""The following converters are available: [...] `int`: accepts integers""; it could be changed to ""`int`: accepts _unsigned_ integers"".
+
+My expectation would have been that either option 2 or 3 would be selected, but instead it appears that the issue was locked to further comment and no further action was taken. So, the documentation is still at odds with the behavior of flask vs the math and computer science definition of integer. I'm not wedded to either solution, but would the pallets team be open to implementing a fix in either direction?
+
+Thank you,
+-Andrew
+
+",closed,2025-01-13T04:57:35+00:00,2025-01-29T00:07:21+00:00,2025-01-13T07:22:53+00:00,widdowson,[],2,[],,https://github.com/pallets/flask/issues/5670
+pallets/flask,5669,ok,"<!--
+Replace this comment with a description of what the feature should do.
+Include details such as links to relevant specs or previous discussions.
+-->
+
+<!--
+Replace this comment with an example of the problem which this feature
+would resolve. Is this problem solvable without changes to Flask, such
+as by subclassing or using an extension?
+-->
+",closed,2025-01-10T14:36:15+00:00,2025-01-25T00:07:20+00:00,2025-01-10T14:48:44+00:00,gamestime102,[],0,[],,https://github.com/pallets/flask/issues/5669
+pallets/flask,5667,Consider supporting HOT reload with `hmr`?,"Hot Module Replacement has been existed in JavaScript ecosystem for a long time, but Python web applications are still using full reloads by default.
+
+To solve this situation, I implemented the `hmr` package, which does the fine-grained dependency tracking, on-demand reloading jobs. Here is a demo of what the results look like:
+
+https://github.com/user-attachments/assets/7937d1c2-ed41-4f38-be18-9cc29b9961a1
+
+Obviously the `a.py` runs everytime in `flask run --reload` but reloads only when needed in `hmr app.py`. But everything else works fine (at least for this small demo)
+
+You may say that user should use lazy imports and cache expensive calculations themselves, but in fact not every function can be cached, and lazy imports may lead to ugly code style. This can be solved with on-demand hot reloading without overhead. So I believe this is the future.
+
+Although this is just a minimal demo, but I value hmr's potential in the Python ecosystem, and believe that with our efforts this is a reachable goal.
+
+> [!TIP]
+> You can try the example above [here](https://github.com/promplate/hmr/tree/readme/examples/flask) with `hmr app.py`
+
+---
+
+About `hmr`, you can refer to its [README](https://github.com/promplate/hmr) for details.
+",closed,2025-01-10T08:58:37+00:00,2025-01-10T09:15:33+00:00,2025-01-10T09:02:03+00:00,CNSeniorious000,[],3,[],,https://github.com/pallets/flask/issues/5667
+pallets/flask,5666,intersphinx broken for flask.Flask.cli,"https://flask.palletsprojects.com/en/stable/api/#flask.Flask.cli has a type of `Group`, but it doesn't link to further docs.",closed,2025-01-03T18:51:42+00:00,2025-01-23T00:07:27+00:00,2025-01-08T21:04:29+00:00,AstraLuma,[],2,[],,https://github.com/pallets/flask/issues/5666
+pallets/flask,5662,Containerization,Hello  team I am planning to containerized the entire flask framework using docker so whenever user needs to work on the project they can able to run entire framework just by running docker container so can i work on this feature. ,closed,2024-12-29T12:29:29+00:00,2025-01-13T00:08:22+00:00,2024-12-29T13:19:44+00:00,vignesh-0512,[],3,[],,https://github.com/pallets/flask/issues/5662
+pallets/flask,5661,Design Enhancement,"Hello team, planning to develop flask documentation with web interface with great and clean UI, also trying to make the concept more simple and understandable can you assign me this task.",closed,2024-12-28T15:14:44+00:00,2025-01-12T00:08:38+00:00,2024-12-28T15:36:53+00:00,vignesh-0512,[],1,[],,https://github.com/pallets/flask/issues/5661
+pallets/flask,5655,app.run(debug=True)，会导致flask_sqlalchemy错误!,"开启debug模式后，debug=Ture的时候，flask_sqlalchemy的with self.app.app_context()会重复执行。
+例如我写入一条数据 {user:""123"",name:""youname""}, 在debug模式下 with self.app.app_context() 会执行完写入完毕后，会重新执行一次，导致程序退出，提示重复写入！
+我以为是我代码问题，我检查了无数次，都无法找到我代码问题，最后关闭debug模式后，就可以正常使用。
+
+复现办法：
+app.py:
+app.run(debug=True)
+
+model.py：
+pass
+
+userdb.py:
+        with self.app.app_context():
+            new_user = userdbmodel(userdb)(user='11eee',
+                                           name=input(""input"")
+                                           )
+            userdb.session.add(new_user)
+            userdb.session.commit()
+
+会出现两次input输入，之后会提示重复后程序停止。
+
+
+
+
+
+目前只要把app.run(debug=True)改为app.run(debug=False)，例如：
+app.py:
+app.run(debug=False)
+就只会执行一次，不会报错。",closed,2024-12-12T07:26:31+00:00,2024-12-12T15:52:07+00:00,2024-12-12T15:52:07+00:00,gitDebianD,[],0,[],,https://github.com/pallets/flask/issues/5655
+pallets/flask,5654,Mypy error when accessing flask.request.json,"I use mypy to validate my project, I upgraded from flask 2 to flask 3 and now I see plenty of errors when I try to access the json property or flask.request
+
+I just have a top level
+
+import flask
+
+Then:
+
+j = flask.request.json  # ""Request"" has no attribute ""json""
+
+Mypy: ""Request"" has no attribute ""json"" [attr-defined]
+
+Environment:
+
+- Python version: 3.13.0
+- Flask version: 3.1.0
+",closed,2024-12-11T16:15:26+00:00,2024-12-27T00:07:40+00:00,2024-12-11T17:15:31+00:00,skonstant,[],2,[],,https://github.com/pallets/flask/issues/5654
+pallets/flask,5653,Flash message with Markup fails,"Upgrading my platform from Python 3.8 + Flask 3.0.3 +  Flask-Session 0.8.0 with redis backend, to Python 3.11 + Flask 3.1.0 +  Flask-Session 0.8.0 with redis backend. Same user code.
+
+Issue: fancy flash message breaks on the new platform (work fine on the old platform).
+
+Flash message:
+`flash(Markup('press the play button <i class=""bi-play-btn-fill black""></i> below'), 'info')`
+
+Error:
+```
+[2024-12-10 19:01:28,998] ERROR in base: Failed to serialize session data: Encoding objects of type Markup is unsupported
+[2024-12-10 19:01:28,998] ERROR in app: Exception on / [POST]
+Traceback (most recent call last):
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 920, in full_dispatch_request
+    return self.finalize_request(rv)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 941, in finalize_request
+    response = self.process_response(response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 1322, in process_response
+    self.session_interface.save_session(self, ctx.session, response)
+  File ""/var/www/lib/python3.11/site-packages/flask_session/base.py"", line 305, in save_session
+    self._upsert_session(app.permanent_session_lifetime, session, store_id)
+  File ""/var/www/lib/python3.11/site-packages/flask_session/redis/redis.py"", line 78, in _upsert_session
+    serialized_session_data = self.serializer.encode(session)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask_session/base.py"", line 132, in encode
+    return self.encoder.encode(dict(session))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Encoding objects of type Markup is unsupported
+[2024-12-10 19:01:29,002] ERROR in base: Failed to serialize session data: Encoding objects of type Markup is unsupported
+[2024-12-10 19:01:29,002] ERROR in app: Request finalizing failed with an error while handling an error
+Traceback (most recent call last):
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 920, in full_dispatch_request
+    return self.finalize_request(rv)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 941, in finalize_request
+    response = self.process_response(response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 1322, in process_response
+    self.session_interface.save_session(self, ctx.session, response)
+  File ""/var/www/lib/python3.11/site-packages/flask_session/base.py"", line 305, in save_session
+    self._upsert_session(app.permanent_session_lifetime, session, store_id)
+  File ""/var/www/lib/python3.11/site-packages/flask_session/redis/redis.py"", line 78, in _upsert_session
+    serialized_session_data = self.serializer.encode(session)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask_session/base.py"", line 132, in encode
+    return self.encoder.encode(dict(session))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Encoding objects of type Markup is unsupported
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 941, in finalize_request
+    response = self.process_response(response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask/app.py"", line 1322, in process_response
+    self.session_interface.save_session(self, ctx.session, response)
+  File ""/var/www/lib/python3.11/site-packages/flask_session/base.py"", line 305, in save_session
+    self._upsert_session(app.permanent_session_lifetime, session, store_id)
+  File ""/var/www/lib/python3.11/site-packages/flask_session/redis/redis.py"", line 78, in _upsert_session
+    serialized_session_data = self.serializer.encode(session)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/var/www/lib/python3.11/site-packages/flask_session/base.py"", line 132, in encode
+    return self.encoder.encode(dict(session))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Encoding objects of type Markup is unsupported
+```",closed,2024-12-10T18:08:02+00:00,2024-12-26T00:10:42+00:00,2024-12-10T18:38:05+00:00,jeroen-80,[],1,[],,https://github.com/pallets/flask/issues/5653
+pallets/flask,5652,flask==2.2.4 incompatible with werkzeug==3.1.3,"I use flask==2.2.4 for my project and when I install flask, it pulls **any** werkzeug>=2.2.2 (which is the default behaviour). After [werkzeug==3.1.3](https://pypi.org/project/Werkzeug/3.1.3/) got released on 8 Nov, 2024, flask pulls the latest version of it. With this new version of werkzeug, while executing unit tests, I get an error saying `module 'werkzeug' has no attribute '__version__'`
+
+**A small example to reproduce the issue:**
+(myenv) root@6426d8424cca:~# python3
+Python 3.9.16 (main, Sep  2 2024, 12:46:28) 
+[GCC 10.2.1 20210110] on linux
+Type ""help"", ""copyright"", ""credits"" or ""license"" for more information.
+ **"">>> from flask import Flask
+ "">>> app = Flask(__name__)
+ "">>> my_test_client = app.test_client()
+Traceback (most recent call last):
+  File ""<stdin>"", line 1, in <module>
+  File ""/root/myenv/lib/python3.9/site-packages/flask/app.py"", line 1252, in test_client
+    return cls(  # type: ignore
+  File ""/root/myenv/lib/python3.9/site-packages/flask/testing.py"", line 116, in __init__
+    ""HTTP_USER_AGENT"": f""werkzeug/{werkzeug.__version__}"",
+**AttributeError: module 'werkzeug' has no attribute '__version__'****
+
+
+I shouldn't be seeing any error like above.
+
+Environment:
+
+- Python version: 3.9.16
+- Flask version: 2.2.4
+",closed,2024-12-05T11:56:45+00:00,2024-12-20T00:07:47+00:00,2024-12-05T14:50:24+00:00,ranaprathapthanneeru,[],1,[],,https://github.com/pallets/flask/issues/5652
+pallets/flask,5646,Remove unnecessary whitespace in slice notation to align with PEP 8 and Black standards,"File: flask/src/flask/cli.py
+Line: 701
+
+The return statement in the _path_is_ancestor function can be updated to improve readability and align with PEP 8 and Black formatting standards for slice notation. Currently, there is unnecessary whitespace around the colon (:) in the slice, which is inconsistent with these guidelines.
+
+Current Code:
+```return os.path.join(path, other[len(path) :].lstrip(os.sep)) == other```
+
+Suggested Change:
+Remove the unnecessary whitespace around the colon (:) in the slice notation to improve readability:
+```return os.path.join(path, other[len(path):].lstrip(os.sep)) == other```
+
+This change ensures compliance with PEP 8 and Black standards, contributing to cleaner and more consistent formatting across the codebase.",closed,2024-11-20T04:56:02+00:00,2024-12-05T00:11:28+00:00,2024-11-20T07:21:22+00:00,michaelwlin-osu,[],1,[],,https://github.com/pallets/flask/issues/5646
+pallets/flask,5645,Type hint for FlaskCliRunner.invoke is not specific,"The type hint of the return type of `FlaskCliRunner.invoke` ist `typing.Any` but should use `click.testing.Result`. This leads to missing auto completions in the IDE as well as errors from the type checker if not additional type narrowing is done.
+
+The Problem is here: https://github.com/pallets/flask/blob/main/src/flask/testing.py#L276
+
+To fix this `Result` must be imported from `click.testing` and used as a return type annotation.
+
+The documentation already specifies `click.testing.Result` as return type.
+
+Environment:
+
+- Python version: 3.12.2
+- Flask version: 3.1.0 but is also present in current main branch.
+",closed,2024-11-19T12:14:20+00:00,2024-12-10T00:08:35+00:00,2024-11-24T01:53:05+00:00,loewexy,[],1,"[""typing""]",3.1.1,https://github.com/pallets/flask/issues/5645
+pallets/flask,5642,PROVIDE_AUTOMATIC_OPTIONS causes KeyError if not set,"https://github.com/pallets/flask/blob/bc098406af9537aacc436cb2ea777fbc9ff4c5aa/src/flask/sansio/app.py#L641C12-L641C86
+
+Simply changing this to : `self.config.get(""PROVIDE_AUTOMATIC_OPTIONS"", False)` should resolve the problem.
+
+This change now released is causing upstream trouble in other packages such as Quart:
+https://github.com/pallets/quart/issues/371
+
+",closed,2024-11-14T12:01:51+00:00,2024-11-14T16:55:57+00:00,2024-11-14T15:25:04+00:00,develerltd,[],3,[],,https://github.com/pallets/flask/issues/5642
+pallets/flask,5639,merge app and request contexts into a single context,"Right now we have two separate contexts managed separately, the app and request contexts. This makes the implementation pretty complicated, as we need to maintain two context var stacks, and do a bunch of checks in the request context to make sure we're managing the correct app context. It makes an already confusing topic more complicated to explain: app context is active for requests and cli commands, don't push an app context before making a request, etc.
+
+I think merging the two contexts could be possible. The single context (`ExecutionContext`?) would have the `g`, `request`, and `session` attributes, but accessing `request` or `session` when not in a request would raise an error.",open,2024-11-13T16:28:05+00:00,2025-03-04T12:04:58+00:00,,davidism,"[""davidism""]",4,[],3.2.0,https://github.com/pallets/flask/issues/5639
+pallets/flask,5636,configure and check `request.trusted_hosts`,"If `request.trusted_hosts` is set, it will be checked when accessing `request.host`/`url`/etc. Add `TRUSTED_HOSTS` config, and check it during routing.",closed,2024-11-13T01:49:21+00:00,2024-11-28T00:08:25+00:00,2024-11-13T05:03:24+00:00,davidism,[],2,[],3.1.0,https://github.com/pallets/flask/issues/5636
+pallets/flask,5628,dotenv file arg should take precedence over default dotenv files,"As pointed out in #5532, `-e file` is loaded after the default `.env` and `.flaskenv` files, which means it won't override env vars that are set by the defaults. It will be a little tricky to track during CLI startup, but I think it should be possible to fix this so that precedence is: `os.environ` > `-e path` > `.env` > `.flaskenv`.",closed,2024-11-06T17:34:15+00:00,2024-11-22T00:08:14+00:00,2024-11-07T19:56:28+00:00,davidism,"[""davidism""]",0,"[""cli""]",3.1.0,https://github.com/pallets/flask/issues/5628
+pallets/flask,5625,extend config for Request form memory settings,"Werkzeug provides three settings on `Request` to control form parsing: `max_content_length`, `max_form_memory_size`, and `max_form_parts`. Only `max_content_length` is exposed as a Flask config right now, and the way it's implemented means it can only be set for the whole application, not per-request. Fix all that. Document these in the security page as well as the config page.",closed,2024-10-31T20:19:45+00:00,2024-11-16T00:08:50+00:00,2024-11-01T20:21:37+00:00,davidism,"[""davidism""]",0,[],3.1.0,https://github.com/pallets/flask/issues/5625
+pallets/flask,5621,Rotating secret keys,"I'd like to have a couple of secret keys available, like so
+```
+app.secret_keys = [
+   'key-1',
+   'key-2',
+]
+```
+To allow them to rotate.
+
+I've seen this issue which seems to have auto-closed
+https://github.com/pallets/flask/issues/1574
+
+It seems like itsdangerous now supports this
+https://github.com/pallets/itsdangerous/pull/141
+
+This would allow secret keys to be rotated regularly without sessions being invalidated.
+",closed,2024-10-25T13:50:09+00:00,2025-01-05T16:39:32+00:00,2024-11-08T16:16:05+00:00,CanaryWharf,"[""davidism""]",3,[],3.1.0,https://github.com/pallets/flask/issues/5621

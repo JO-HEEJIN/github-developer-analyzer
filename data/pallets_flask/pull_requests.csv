@@ -1,0 +1,2205 @@
+repo,number,title,body,state,created_at,updated_at,closed_at,merged_at,merge_commit_sha,author_login,additions,deletions,changed_files,comments,review_comments,commits,is_merged,url,reviewers
+pallets/flask,5742,Docs: Fix escaping in HTML escaping example,"The code in the [Quickstart's HTML Escaping section](https://flask.palletsprojects.com/en/stable/quickstart/#html-escaping) does not render name=<script>alert(""bad"")</script> to text because the slash in </script> gets interpreted as a trailing slash, leading to a 404.
+
+Adding the path type converter to the name variable allows:
+1. the script tag to be rendered as text if HTML escaping is done
+2. the alert in the script tag to be executed if HTML escaping is not done.
+
+Since its a simple one line change for code in the documentation, I wasn't sure if I needed to raise an issue regarding this first. I'd be happy to do so if its required.",open,2025-05-21T18:37:43+00:00,2025-05-21T18:48:47+00:00,,,433209c883288fbdcc5e6dfa421e3b42722aaee8,Badhreesh,1,1,1,1,0,1,False,https://github.com/pallets/flask/pull/5742,{}
+pallets/flask,5741,Docs: Fix escaping in HTML escaping example,"The code in the [Quickstart's HTML Escaping section](https://flask.palletsprojects.com/en/stable/quickstart/#html-escaping) does not render name=`<script>alert(""bad"")</script>` to text because the slash in `</script>` gets interpreted as a trailing slash, leading to a 404.
+
+Adding the `path` type converter to the `name` variable allows:
+1.  the script tag to be rendered as text if HTML escaping is done
+2.  the alert in the script tag to be executed if HTML escaping is not done.
+
+Since its a simple one line change for code in the documentation, I wasn't sure if I needed to raise an issue regarding this first. I'd be happy to do so if its required.
+
+",closed,2025-05-21T15:20:10+00:00,2025-05-21T18:46:47+00:00,2025-05-21T18:32:42+00:00,,f1eebb2a36174f132b1c1e593fb0e68878eaaa6e,Badhreesh,91,309,13,3,0,18,False,https://github.com/pallets/flask/pull/5741,{}
+pallets/flask,5739,Allow iterables for multiple template paths,"This allows app inherently support multiple templates 
+
+
+fixes #5738
+
+
+WIP
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-05-20T11:00:30+00:00,2025-05-20T12:19:35+00:00,2025-05-20T12:19:35+00:00,,faf3e5ab0dfa2abadaaf81501f96cefc12162bab,Tobey,40,20,5,0,0,2,False,https://github.com/pallets/flask/pull/5739,{}
+pallets/flask,5737,Fix global CONTRIBUTING link,"Fixes the live contributing guidelines link, which just links to https://flask.palletsprojects.com/en/stable/contributing/_contrib (i.e. it puts the RST slug in the URL somehow).
+
+I wrapped to 80 characters, let me know if that's incorrect.",closed,2025-05-18T15:13:11+00:00,2025-05-20T20:13:41+00:00,2025-05-20T16:30:06+00:00,2025-05-20T16:30:06+00:00,a42c4d54a3e5cd56c0700479ede75157a748acd6,strugee,1,1,1,8,0,1,True,https://github.com/pallets/flask/pull/5737,{}
+pallets/flask,5736,feat: support call template_filter without parens,"This PR enhances the App.template_filter decorator to support:
+
+- `@app.template_filter` (without parentheses)
+
+It also ensures that the original usage remains fully supported, with no breaking changes:
+
+- `@app.template_filter()`
+- `@app.template_filter(name=""..."")`
+- `@app.template_filter(""..."")`
+
+I’m not fully confident in the solution, so I’d like to confirm it first. If it’s good, I’ll apply the same change to template_global and template_test.
+
+---
+
+I considered the following implementation options:
+
+1. Rename the input parameter to func_or_name to better reflect the logic of how the input is interpreted:
+```
+def template_filter(self, func_or_name: t.Callable[..., t.Any] | str | None = None):
+```
+However, this would be a breaking change for calls like @app.template_filter(name=""...""), so I decided to keep the original parameter name for backward compatibility.
+
+2. Make func_or_name a positional-only parameter and keep name as keyword-only:
+```
+def template_filter(self, func_or_name: t.Callable[..., t.Any] | str | None = None, /, *, name: str | None = None):
+```
+
+This approach is type-safe, but it introduces the awkward case where both func_or_name and name are provided at the same time. It could also be confusing for users reading the function signature.
+
+So eventually, I decided to keep the original function parameter and distinguish the usage using `if callable(name):`. I’d like to discuss whether there’s a better approach, and I’m open to making improvements based on feedback and suggestions.
+
+---
+
+
+fixes https://github.com/pallets/flask/issues/5729
+
+---
+
+- [x] Add tests that demonstrate the correct behavior of the change. Tests should fail without the change.
+- [ ] Add or update relevant docs, in the docs folder and in code.
+- [ ] Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- [ ] Add `.. versionchanged::` entries in any relevant code docs.
+",open,2025-05-17T04:29:30+00:00,2025-05-17T04:50:59+00:00,,,34bf91dc0f1116ef752b992700569f2b042533e7,kadai0308,45,5,2,1,0,1,False,https://github.com/pallets/flask/pull/5736,{}
+pallets/flask,5735,fix #5729: raise TypeError when @app.template_filter is used without parenthesis,"Raise a clear `TypeError` when `@app.template_filter` is used without parentheses.
+
+This prevents silent failures when users mistakenly write `@app.template_filter` instead of `@app.template_filter()`, which previously led to confusing Jinja2 errors as mentioned by @alexwlchan like:
+
+```
+jinja2.exceptions.TemplateAssertionError: No filter named 'double'
+```
+
+when `app.py` is, for example,
+
+```
+from flask import Flask, render_template_string
+
+
+app = Flask(__name__)
+
+
+@app.template_filter
+def double(x):
+    return x * 2
+
+
+@app.route(""/"")
+def index():
+    return render_template_string(""2 times 2 is {{ 2 | double }}"")
+```
+
+Note:
+**reason i did it this way and not accept when its just `@app.template_filter` is because it aligns with the behavior of other Flask decorators such as `@app.route`, which already enforce required parentheses when arguments are expected.**
+
+---
+
+fixes #5729 
+
+---
+
+- [x] Added test: `test_template_filter_requires_parens` in `tests/test_templating.py`
+- [x] Confirmed `pytest` and `pre-commit` both pass
+",open,2025-05-16T22:20:48+00:00,2025-05-16T22:35:00+00:00,,,a37105892079e5803713d0b8d84f47627271cc36,Gable-github,17,0,2,4,0,1,False,https://github.com/pallets/flask/pull/5735,{}
+pallets/flask,5734,Fix template_filter decorator to support usage without parentheses,"
+<!-- Before opening a PR, open a ticket describing the issue or feature the PR will address. An issue is not required for fixing typos in documentation, or other simple non-code changes. Replace this comment with a description of the change. Describe how it addresses the linked ticket. -->
+This PR enhances the app.template_filter decorator to support being used without parentheses. Previously, writing @app.template_filter without () would not register the filter, which could confuse developers. This change allows both @app.template_filter and @app.template_filter() to work as expected.
+
+A fallback was added to check if the first argument is callable and treat it accordingly. This mirrors the behavior of other decorators like @app.route or @app.cli.command.
+
+<!-- Link to relevant issues or previous PRs, one per line. Use ""fixes"" to automatically close an issue. -->
+fixes #5729
+
+<!-- Ensure each step in CONTRIBUTING.rst is complete, especially the following: - Add tests that demonstrate the correct behavior of the change. Tests should fail without the change. - Add or update relevant docs, in the docs folder and in code. - Add an entry in CHANGES.rst summarizing the change and linking to the issue. - Add `.. versionchanged::` entries in any relevant code docs. -->
+✅ Added a test (test_template_filter.py) to verify correct behavior with and without parentheses.
+
+🔁 Updated docstring of the ""template_filter"" method to reflect the new usage.
+
+✅All tests pass successfully (478 passed, 6 skipped).
+
+📝 Changes are included in `CHANGES.rst` and will be updated upon PR approval.",closed,2025-05-16T09:27:18+00:00,2025-05-16T11:42:57+00:00,2025-05-16T11:39:23+00:00,,360c29c72583d16a62d6ef5e7603ca065794c365,Akshay9715,50,11,5,5,0,10,False,https://github.com/pallets/flask/pull/5734,{}
+pallets/flask,5733,Zadanie 14 - merge dev1,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-05-14T08:08:23+00:00,2025-05-14T09:33:43+00:00,2025-05-14T08:37:38+00:00,,a2a736077ae91ac07d6ddb41e44b21cb893e65b2,hatmic0101,3,1,2,2,0,3,False,https://github.com/pallets/flask/pull/5733,{}
+pallets/flask,5732,Dev0,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-05-14T08:00:01+00:00,2025-05-14T08:39:04+00:00,2025-05-14T08:00:20+00:00,,cf5faed17114fdac19f1e67afc463a464612a7e1,Wiczka03,2,1,2,1,0,2,False,https://github.com/pallets/flask/pull/5732,{}
+pallets/flask,5731,drop end of life python versions,"https://palletsprojects.com/versions
+
+> When a release is made, it supports all Python versions that are not within six months of end of life (EOL). See [Python's EOL calendar](https://devguide.python.org/versions/) for timing.",closed,2025-05-13T15:34:34+00:00,2025-05-13T15:35:43+00:00,2025-05-13T15:35:41+00:00,2025-05-13T15:35:41+00:00,a5f9742398c9429ef84ac8a57b0f3eb418394d9e,davidism,78,284,11,0,0,1,True,https://github.com/pallets/flask/pull/5731,{}
+pallets/flask,5730,release version 3.1.1,,closed,2025-05-13T14:51:56+00:00,2025-05-13T17:30:40+00:00,2025-05-13T15:01:42+00:00,2025-05-13T15:01:42+00:00,57e72869486e89b45f6fd0a07cdd0adf80f5db1b,davidism,4,4,3,1,0,1,True,https://github.com/pallets/flask/pull/5730,{}
+pallets/flask,5727,use uv,"Use uv to manage dev dependencies.
+
+- tox-uv sets up envs with uv and dependency groups
+- the min and dev test envs need to use a `uv pip` command to install specific versions after env setup, as there's no way to tell uv to use a different lock file or to tell tox-uv to use dependency groups and individual installs.
+- pre-commit-uv sets up envs with uv
+- workflows use uv to install dependencies, but still use setup-python to install python itself, since that's already cached by github.
+- use uv to build during publish workflow
+- read the docs uses a custom build step
+- tox config is moved into pyproject.toml
+- use new license metadata
+- add a `tox r -e docs-auto` to start a local server that rebuilds on docs changes
+
+New env setup steps are:
+
+1. install uv
+2. `uv sync`
+3. `uv tox` (or activate venv as before)",closed,2025-05-12T00:59:11+00:00,2025-05-12T01:04:37+00:00,2025-05-12T01:04:35+00:00,2025-05-12T01:04:35+00:00,941efd4a36ed0f27e13758874f95e3aa1d3ee163,davidism,1876,534,24,0,0,1,True,https://github.com/pallets/flask/pull/5727,{}
+pallets/flask,5724,Update errorhandling.rst,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-05-02T23:01:50+00:00,2025-05-18T00:09:52+00:00,2025-05-03T01:18:52+00:00,,018678bc1cefd4cec70874602aa639a3b5c3c267,Zephyr0071,2,2,1,0,0,1,False,https://github.com/pallets/flask/pull/5724,{}
+pallets/flask,5723,Update macOS UI reference to “System Settings”,"made changes to rename system preferences to system settings according to new mac os name change
+
+Docs: Update macOS UI reference to “System Settings”
+
+This PR updates the documentation in docs/server.rst to reflect the latest macOS UI terminology.
+Specifically, it replaces the outdated term “System Preferences” with “System Settings”, aligning with macOS Ventura and later versions.
+
+What Changed
+• Line updated in instructions to disable AirPlay Receiver from:
+• ""System Preferences"" → ""System Settings""
+
+Notes
+• No issue was created for this change, as it is a minor documentation correction.
+• This update does not affect any code or behavior.
+• No test or changelog entry required per contribution guidelines for doc typo-level fixes.",open,2025-05-01T15:48:38+00:00,2025-05-01T15:48:38+00:00,,,89820ac5884173f5d540b33ca2e1cca32cc020d5,abhiramk6,1,1,1,0,0,2,False,https://github.com/pallets/flask/pull/5723,{}
+pallets/flask,5722,"docs: add warning and best practices for url_for(..., _external=True)…","###  **Description of the Change**
+This pull request adds a warning and best practices to the Web Security documentation regarding the use of url_for(..., _external=True) without setting SERVER_NAME or trusted_hosts. The new section explains the risk of host header injection and provides recommendations for safer configuration. This aims to improve developer awareness and help prevent potential security vulnerabilities, as discussed in #5718.
+
+### **How it Addresses the Issue**
+-  Documents the risk of host header injection when generating external URLs.
+- Recommends setting SERVER_NAME and using trusted_hosts.
+- References the ProxyFix documentation for further guidance.
+
+**Relevant Issue**
+fixes #5718",open,2025-04-27T08:07:28+00:00,2025-05-02T18:00:56+00:00,,,f6ee14241fc9d5848dc856eca081d3523c6ce252,ranveer9,24,0,1,1,0,1,False,https://github.com/pallets/flask/pull/5722,{}
+pallets/flask,5717,Improve README.md structure and clarity for better onboarding,"This PR proposes an update to the README.md file to improve clarity, consistency, and readability. The goal is to make the introduction and usage instructions easier to understand for new users, while maintaining the original tone and technical accuracy.
+
+What’s Changed:
+- Reworded introductory paragraph for smoother flow and better structure.
+- Reformatted the “Why Flask?” section for visual clarity and balance.
+- Aligned paragraph lengths to improve readability and aesthetic consistency.
+- Updated headers and dividers to match the style of the original document.
+- Preserved all original links and key information without removing any content.
+
+Motivation:
+Flask is often one of the first web frameworks new Python developers try. Improving the readability of the README enhances the first impression and onboarding experience. These small refinements help make Flask even more beginner-friendly without changing its technical content.
+
+Notes:
+This PR does not alter any functionality, codebase, or behavior — it is strictly documentation-focused and intended to be helpful for readers.
+No issue was opened as this is a minor enhancement (per contributing guidelines).",closed,2025-04-12T21:02:30+00:00,2025-04-28T00:09:07+00:00,2025-04-13T00:10:51+00:00,,64d13b136fcf6170ae299bb10efe4fd2c5c0b84b,Wowieee4,24,14,1,1,0,2,False,https://github.com/pallets/flask/pull/5717,{}
+pallets/flask,5715,Fix Doc,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-04-11T03:11:02+00:00,2025-04-26T00:08:16+00:00,2025-04-11T04:17:17+00:00,,20169497ae3731eedf037e42648816c1b0f79536,EdgarPrueba,48432,102,192,0,0,4,False,https://github.com/pallets/flask/pull/5715,{}
+pallets/flask,5714,Doc sphinx,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-04-11T03:03:41+00:00,2025-04-26T00:08:17+00:00,2025-04-11T04:17:05+00:00,,9a9d0d58f3d2a7e81ffcc399eb18b6d10f387de0,EdgarPrueba,44473,13185,251,0,0,6,False,https://github.com/pallets/flask/pull/5714,{}
+pallets/flask,5713,try 3,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-04-10T22:25:36+00:00,2025-04-25T00:09:03+00:00,2025-04-10T22:28:07+00:00,,dea905113ba920f81c80c0fae5add2cd579df338,EdgarPrueba,48432,102,192,1,0,4,False,https://github.com/pallets/flask/pull/5713,{}
+pallets/flask,5712,Doc sphinx,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-04-10T22:13:17+00:00,2025-04-25T00:09:04+00:00,2025-04-10T22:16:48+00:00,,d3429ea077159fe03e6fb68c758f60328297b7e9,EdgarPrueba,48432,102,192,1,0,3,False,https://github.com/pallets/flask/pull/5712,{}
+pallets/flask,5710,fix for 5709: explicitly delete error references to prevent memory leaks,"Fix for https://github.com/pallets/flask/issues/5709
+Add explicit ""del error"" statement to prevent reference cycles between exception objects and local variables. This helps the garbage collector promptly reclaim memory after request processing, which is especially important in high-traffic web applications where exception objects with traceback information can consume significant memory.",closed,2025-04-06T08:14:30+00:00,2025-04-22T00:08:28+00:00,2025-04-07T18:00:25+00:00,,6a440c81d441e47595db102e3e579349b2d17983,tomasz-pankowski,2,0,2,0,0,2,False,https://github.com/pallets/flask/pull/5710,{}
+pallets/flask,5708,Update README.md,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-04-06T07:33:41+00:00,2025-04-21T00:09:04+00:00,2025-04-06T07:33:52+00:00,,1a5a8afc1265b95a2ef7c620cf0f3f909accc3ca,aswindevsp,2,2,1,0,0,1,False,https://github.com/pallets/flask/pull/5708,{}
+pallets/flask,5706,Add PR trigger to workflow,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-03-30T12:42:36+00:00,2025-04-14T00:09:10+00:00,2025-03-30T14:32:10+00:00,,e6be53cb763896c8fb33ea3e9b2d940ffbf8dd3e,Merida39,33,1,2,0,0,11,False,https://github.com/pallets/flask/pull/5706,{}
+pallets/flask,5705,Merge app and request contexts into a single context (#5639),"# Merge app and request contexts into a single context (#5639)
+
+This PR implements the proposal from #5639 to merge the app and request contexts into a single execution context. This simplifies the implementation by:
+
+1. Creating a new `ExecutionContext` class that combines both app and request contexts
+2. Using a single context variable `_cv_execution` instead of separate `_cv_app` and `_cv_request`
+3. Maintaining backward compatibility by setting both old context vars when needed
+4. Adding deprecation warnings for the old context methods
+5. Updating all globals to use the new execution context
+
+Key changes:
+
+- Added new `ExecutionContext` class in `ctx.py` that handles both app and request contexts
+- Updated `globals.py` to use the new execution context for all proxies
+- Modified `app.py` to create execution contexts instead of separate app/request contexts
+- Added deprecation warnings for `has_app_context()` and `has_request_context()`
+- Simplified context management by removing the need to track multiple context stacks
+
+The changes maintain backward compatibility while paving the way for a cleaner implementation in Flask 4.0. The new execution context:
+
+- Has a single context variable instead of two
+- Handles both app and request state in one place
+- Maintains the same behavior for existing code
+- Provides clearer error messages when contexts are missing
+
+This change will make the codebase simpler and easier to understand, while also making it more efficient by reducing the number of context variables that need to be managed.
+
+Closes #5639",closed,2025-03-30T07:33:08+00:00,2025-04-14T00:09:11+00:00,2025-03-30T11:47:33+00:00,,9233702a599e177120ffc7f8b6d22445a0b76d48,ascender1729,141,325,3,1,0,2,False,https://github.com/pallets/flask/pull/5705,{}
+pallets/flask,5703,Fix misleading docstring for teardown_request (closes #5102),"This PR fixes the misleading docstring for `Scaffold.teardown_request()`.
+
+The original docstring implied that teardown functions always run after every request, which is not true if exception propagation is enabled (e.g., in debug mode).
+
+This PR:
+- Clarifies when `teardown_request` functions are invoked
+- Adds context around typical usage (resource cleanup, connection closing)
+- Matches tone and structure of other Flask internal docstrings
+
+Closes #5102
+
+---
+
+No functional code was changed  
+This improves developer understanding and aligns with current Flask behavior
+
+Author: Michael Alexander Montoya (@cureprotocols)
+
+",closed,2025-03-30T02:56:35+00:00,2025-04-14T00:09:12+00:00,2025-03-30T04:00:05+00:00,,b33451dc5371df2ab8ec6ce318d3d3cdd267e07b,cureprotocols,7,24,1,0,0,1,False,https://github.com/pallets/flask/pull/5703,{}
+pallets/flask,5702,remove tests about deprecated pkgutil.get_loader,"Seems that the code being tested isn't affected by this anymore, and it will go away completely in Python 3.14, so remove these so tests can still pass at that point.
+
+fixes #5692 ",closed,2025-03-29T22:43:56+00:00,2025-04-13T00:33:01+00:00,2025-03-29T22:45:12+00:00,2025-03-29T22:45:11+00:00,73ce26c3e822cdc2ccf99625619a50c91f163f8d,davidism,3,35,2,0,0,1,True,https://github.com/pallets/flask/pull/5702,{}
+pallets/flask,5701,add endpoint name in favicon example,fixes #5688,closed,2025-03-29T22:31:22+00:00,2025-04-13T00:33:02+00:00,2025-03-29T22:32:30+00:00,2025-03-29T22:32:30+00:00,2732c4db66763462c2795d2287b61d4f77031342,davidism,5,2,1,0,0,1,True,https://github.com/pallets/flask/pull/5701,{}
+pallets/flask,5700,better type checking during deprecation,"This hides `__getattr__` from type checkers so that they do not allow through arbitrary names like `flask.InvalidName`.
+
+fixes #5691 ",closed,2025-03-29T22:26:58+00:00,2025-04-13T00:33:03+00:00,2025-03-29T22:28:27+00:00,2025-03-29T22:28:27+00:00,315ebc11765ed3b9da8b5271602e89a403376c24,davidism,14,13,1,0,0,1,True,https://github.com/pallets/flask/pull/5700,{}
+pallets/flask,5698,remove extra logic,"first_name_registration should always be True, as this check already happens:
+
+```
+        if name in app.blueprints:
+            bp_desc = ""this"" if app.blueprints[name] is self else ""a different""
+            existing_at = f"" '{name}'"" if self_name != name else """"
+            raise ValueError(
+                f""The name '{self_name}' is already registered for""
+                f"" {bp_desc} blueprint{existing_at}. Use 'name=' to""
+                f"" provide a unique name.""
+            )
+```",closed,2025-03-25T03:14:40+00:00,2025-04-09T00:08:30+00:00,2025-03-25T03:17:49+00:00,,9d769e44051b0d82535b9df7b1eb7caea1cecab4,moon548834,1,2,1,0,0,1,False,https://github.com/pallets/flask/pull/5698,{}
+pallets/flask,5697,Stable,"### Summary
+
+This PR enhances the test suite by introducing a new fixture in `tests/test_instance_config.py`, improving test coverage for environments with custom import loaders.
+
+### Key Changes
+
+- **Added `limit_loader` fixture** in `tests/test_instance_config.py` to simulate scenarios where custom import loaders lack the `get_filename` method or `archive` attribute.
+- The fixture uses `pytest` and `monkeypatch` to mock `importlib.util.find_spec`, running tests twice: once with and once without the simulated limitation.
+- Ensures compatibility with environments like Google App Engine’s `HardenedModulesHook`.
+
+### Fixes
+- #5692 
+
+### Notes
+
+- The change improves robustness by validating behavior in constrained environments.
+- No breaking changes introduced.
+",closed,2025-03-25T03:11:14+00:00,2025-04-09T00:08:29+00:00,2025-03-25T04:13:41+00:00,,d68f44e8ad1f0ddb7b6902107304e15941c2e223,degerahmet,48304,0,260,0,0,2,False,https://github.com/pallets/flask/pull/5697,{}
+pallets/flask,5696,add fixture to mock importlib.util.find_spec for custom loaders in tests,"### Summary
+
+This PR enhances the test suite by introducing a new fixture in `tests/test_instance_config.py`, improving test coverage for environments with custom import loaders.
+
+### Key Changes
+
+- **Added `limit_loader` fixture** in `tests/test_instance_config.py` to simulate scenarios where custom import loaders lack the `get_filename` method or `archive` attribute.
+- The fixture uses `pytest` and `monkeypatch` to mock `importlib.util.find_spec`, running tests twice: once with and once without the simulated limitation.
+- Ensures compatibility with environments like Google App Engine’s `HardenedModulesHook`.
+
+### Fixes
+- #5692 
+
+### Notes
+
+- The change improves robustness by validating behavior in constrained environments.
+- No breaking changes introduced.
+",closed,2025-03-25T03:05:59+00:00,2025-04-09T00:08:31+00:00,2025-03-25T03:10:39+00:00,,1343c6f14d7573c5cf6394e556df499d5ec57af7,degerahmet,48304,0,260,0,0,2,False,https://github.com/pallets/flask/pull/5696,{}
+pallets/flask,5695,Remove HTTP Public Key Pinning from docs,"This PR simply removes the section on HTTP Public Key Pinning from the security headers documentation.
+The header is considered obsolete and no longer supported by any major browser.
+The MDN link is dead/redirects to an explanation of the certificate transparency system. The only remaining reference I found within MDN is in the [glossary](https://developer.mozilla.org/en-US/docs/Glossary/HPKP).",closed,2025-03-24T09:49:53+00:00,2025-04-13T00:33:04+00:00,2025-03-29T22:17:48+00:00,2025-03-29T22:17:48+00:00,c7c8dc38ea2890d62b7aaff7e4c016e4b98101b0,s-hamann,0,13,1,0,0,1,True,https://github.com/pallets/flask/pull/5695,{}
+pallets/flask,5693,add fixture to mock importlib.util.find_spec for custom loaders in tests,"### Summary
+
+This PR enhances the test suite by introducing a new fixture in `tests/test_instance_config.py`, improving test coverage for environments with custom import loaders.
+
+### Key Changes
+
+- **Added `limit_loader` fixture** in `tests/test_instance_config.py` to simulate scenarios where custom import loaders lack the `get_filename` method or `archive` attribute.
+- The fixture uses `pytest` and `monkeypatch` to mock `importlib.util.find_spec`, running tests twice: once with and once without the simulated limitation.
+- Ensures compatibility with environments like Google App Engine’s `HardenedModulesHook`.
+
+### Fixes
+- #5692 
+
+### Notes
+
+- The change improves robustness by validating behavior in constrained environments.
+- No breaking changes introduced.
+",closed,2025-03-20T07:16:08+00:00,2025-04-09T00:08:32+00:00,2025-03-25T03:06:07+00:00,,b676b5488d027790f565a419c32ea41248fdcee9,degerahmet,35,0,1,0,0,1,False,https://github.com/pallets/flask/pull/5693,{}
+pallets/flask,5687,Fix inaccurate documentation for adding a favicon redirect,"The code sample in the existing documentation on how to redirect a favicon request assumes that add_url_rule takes a parameter named redirect_to. It does not.
+
+closes #5686",closed,2025-03-02T05:39:35+00:00,2025-03-17T00:09:05+00:00,2025-03-02T06:00:07+00:00,,fc4ebb37bc72d08b24f2c274dc69a6390d798db0,AluminumAngel,4,2,1,0,0,1,False,https://github.com/pallets/flask/pull/5687,{}
+pallets/flask,5685,Improve invalid response error messages,"## Description
+
+This PR enhances error messages for invalid return types from view functions to make them more helpful for developers, especially those new to Flask.
+
+When a view function returns an unsupported type, the current error message provides basic information but lacks comprehensive guidance about what return types are actually supported and how to format them correctly.
+
+## Changes
+
+- Expanded the error message in `make_response()` to include:
+  - Clear descriptions of all valid return types
+  - Examples of the correct format for each type
+  - A link to the relevant documentation
+  - Better formatting with newlines for readability
+
+## Why This Matters
+
+These improved error messages will significantly enhance the developer experience by:
+- Reducing debugging time when encountering this common error
+- Providing immediate guidance without requiring a search through documentation
+- Helping new Flask users learn the framework's patterns more quickly
+
+## Changelog Entry
+
+I'm not sure if this change warrants a changelog entry as it's a developer-facing enhancement rather than a user-facing feature or fix. If maintainers feel it should be included, I can add the following line:
+- Improved error messages for invalid return types from view functions, providing clearer guidance about supported return formats.
+
+## Related Issues
+
+While working with Flask in my own project, I encountered this error message and found myself having to look up the documentation to understand what return types were valid. I believe improving this error message will help other developers avoid the same confusion, especially those who are new to Flask.
+I'm submitting this PR without an associated issue since it's a simple improvement to error messaging/documentation rather than a functional change, as per the contribution guidelines.",closed,2025-03-01T01:29:13+00:00,2025-03-16T00:09:03+00:00,2025-03-01T03:24:22+00:00,,b2789ec879b5a574c9110ef70d857dd97549bc04,kavasg,13,5,2,1,0,2,False,https://github.com/pallets/flask/pull/5685,{}
+pallets/flask,5682,Use SPDX license identifier,"Followup to #5643
+
+Flit 3.11 was released today with basic support for PEP 639.
+https://flit.pypa.io/en/stable/history.html#version-3-11
+
+_If accepted, I'm happy to redo the other PRs as well._
+
+/CC: @davidism",closed,2025-02-19T13:05:06+00:00,2025-03-06T00:08:27+00:00,2025-02-19T17:55:23+00:00,,5fb327d746a8eba24e1b89d5a228a2d4489dc4e6,cdce8p,3,3,1,2,0,1,False,https://github.com/pallets/flask/pull/5682,{}
+pallets/flask,5681,"This closes #3 will act as a coverage tracker, to our functions","<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2025-02-18T10:10:17+00:00,2025-03-05T00:08:15+00:00,2025-02-18T10:11:34+00:00,,82e5efd4fdf7004829cfbbeec4a9afd33c3f82eb,Arbmani,9,0,1,1,0,2,False,https://github.com/pallets/flask/pull/5681,{}
+pallets/flask,5678,Enable PDF and ePub offline documentation downloads,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+
+Enable PDF and ePub offline documentation downloads on https://flask.palletsprojects.com.
+
+The formats option is documented on readthedocs:
+https://docs.readthedocs.com/platform/stable/downloadable-documentation.html#offline-formats-pdf-epub-html
+
+Expected result:
+![Screenshot 2025-02-16 at 22-30-25 Welcome to Flask — Flask Documentation (3 0 x)](https://github.com/user-attachments/assets/96c18082-c227-4c97-b4a8-919112f65612)
+",closed,2025-02-16T13:31:20+00:00,2025-03-03T00:08:45+00:00,2025-02-16T14:48:11+00:00,,e4df2777af09b7b94d5c768de879cb5690e139f5,HackingGate,3,0,1,1,0,1,False,https://github.com/pallets/flask/pull/5678,{}
+pallets/flask,5677,[Edited] Fix minor bug in the main function,"Changes made in branch: **MayureshMore:main**
+[Edited] Fix minor bug in the main function
+",closed,2025-02-15T02:40:24+00:00,2025-03-07T00:08:09+00:00,2025-02-15T02:53:14+00:00,,45e05f69a16d5115e5db9bbac354362200598b33,MayureshMore,4,0,1,1,0,2,False,https://github.com/pallets/flask/pull/5677,{}
+pallets/flask,5674,Handle help arg by itself the same as no args,"When the `flask` command is used with only the `--help` parameter, this change will make sure to try and load the app before the help callback is run. This was previously only being done when the `flask` command was used by itself. This meant when passing in `--help`, any custom commands were not getting shown in the help message. With this change, custom commands will be included in the help message when running `flask` on the command line by itself or with the `--help` parameter.
+
+This addresses #5673.
+
+If you want me to update anything else for this PR please let me know!",closed,2025-01-30T03:42:21+00:00,2025-04-14T00:09:10+00:00,2025-03-29T22:15:04+00:00,2025-03-29T22:15:04+00:00,5ea0ab8ea21b0c11ee6098e6b052463687af602a,dunkmann00,5,1,2,0,0,1,True,https://github.com/pallets/flask/pull/5674,{}
+pallets/flask,5672,Fixes typo in `globals`,Fixes a typo in `globals`.,closed,2025-01-27T21:26:10+00:00,2025-02-11T00:07:55+00:00,2025-01-27T22:31:14+00:00,,dc841ea6e663b123638f2edadbcb01e607989f19,danielvdao,2,2,1,1,0,1,False,https://github.com/pallets/flask/pull/5672,{}
+pallets/flask,5671,Update app factory docs,"Update app factory documentation
+
+1. 
+```
+> flask --app app:create_app(testing=True) run
+bash: syntax error near unexpected token `('
+```
+
+2. Update example application name from `myapp` (old name) to `hello`",closed,2025-01-25T22:31:09+00:00,2025-04-13T00:33:05+00:00,2025-03-29T22:10:56+00:00,2025-03-29T22:10:56+00:00,08c480b3b31e896698bb773069026a61eb53d158,kotvkvante,2,2,1,0,2,1,True,https://github.com/pallets/flask/pull/5671,{}
+pallets/flask,5665,Workflow,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",open,2025-01-02T21:10:36+00:00,2025-03-29T22:19:39+00:00,,,,pgjones,8,18,1,4,1,1,False,https://github.com/pallets/flask/pull/5665,"{""pamelafox"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-01-23T23:26:16+00:00""}], ""samuelpondugala"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2025-02-24T13:51:52+00:00""}]}"
+pallets/flask,5660,Move parts of the session code to sansio,"This will allow it to be used in Quart, thereby reducing duplication, and ensuring the APIs match.
+
+<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",open,2024-12-24T20:09:08+00:00,2024-12-24T20:12:45+00:00,,,c4441b7646f3bfd9aeba8daf27436cbf7e41fbac,pgjones,225,203,2,0,0,1,False,https://github.com/pallets/flask/pull/5660,{}
+pallets/flask,5659,Async Iterable Response,"In this pull request, we fix the typing for what is allowed to be used as a response type, allowing responses to be `AsyncIterable[str]` or `AsyncIterable[bytes]`.
+
+Flask sans-io is used by Quart
+
+Through a huge chain of things, this pull request fixes #5322, because https://github.com/pallets/quart/pull/341 doesn't actually fix the root issue unfortunately.",closed,2024-12-23T23:00:56+00:00,2025-04-15T00:08:41+00:00,2025-03-30T20:15:54+00:00,2025-03-30T20:15:54+00:00,e7851665071cb93b3c70b1e7103f82d1e6d01f5d,CoolCat467,6,0,2,2,0,1,True,https://github.com/pallets/flask/pull/5659,{}
+pallets/flask,5650,Fix typo in the docs,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-11-27T10:14:57+00:00,2025-04-13T00:33:06+00:00,2025-03-29T21:49:07+00:00,2025-03-29T21:49:06+00:00,04b070fa26b346b48bd66d317e72de75e001a2e7,zhuangzhuang,1,1,1,0,0,1,True,https://github.com/pallets/flask/pull/5650,{}
+pallets/flask,5649,update `__version__` deprecation,"`__version__` was marked to be removed in 3.1, but I forgot to actually remove it. Update the warning to say it will be removed in 3.2.
+",closed,2024-11-24T00:04:54+00:00,2024-12-08T00:10:08+00:00,2024-11-24T00:06:37+00:00,2024-11-24T00:06:37+00:00,ea08f155d8d37d515559534bbe0f80ef5185466c,davidism,1,1,1,0,0,1,True,https://github.com/pallets/flask/pull/5649,{}
+pallets/flask,5648,remove previously deprecated code,"`__version__` was marked to be removed in 3.1, but I forgot to actually remove it. So now it's removed in 3.2 instead.",closed,2024-11-23T23:57:37+00:00,2024-12-08T00:10:09+00:00,2024-11-23T23:59:30+00:00,2024-11-23T23:59:30+00:00,d5b7a05ab2a053c617149cfd4f7e3379bfd279e5,davidism,2,21,2,0,0,1,True,https://github.com/pallets/flask/pull/5648,{}
+pallets/flask,5647,fix type hint for `cli_runner.invoke`,"https://github.com/pallets/flask/issues/5645
+
+Hello! I love Flask! This is my first attempt to start participating in open source, so I'm very nervous, even though the changes I've made are insignificant. Thank you!
+
+From `testing.invoke() -> t.Any` to `testing.invoke() -> Result`",closed,2024-11-23T00:37:56+00:00,2024-12-10T00:08:38+00:00,2024-11-24T01:52:56+00:00,2024-11-24T01:52:56+00:00,f2674c5bb4f7a79f836069859a346b81771eeee5,kurtatter,4,1,2,6,0,1,True,https://github.com/pallets/flask/pull/5647,{}
+pallets/flask,5643,Use SPDX license identifier,"[PEP 639](https://peps.python.org/pep-0639/) recommends the use of SPDX license identifiers.
+
+At the moment the `license` key is ignored by `flit`, see https://github.com/pypa/flit/issues/525. However, it's still possible to replace it now. Once the support in flit is added, the value will be used automatically.
+
+_At some point, the table will need be be changed to just a string for full PEP 639 compliance. That requires support for it first though. The change is also pretty simple._
+```diff
+-license = {text = ""BSD-3-Clause""}
++license = ""BSD-3-Clause""
+```",closed,2024-11-17T18:21:04+00:00,2024-12-10T00:08:37+00:00,2024-11-24T00:30:51+00:00,,03ca1dfce224d73409a75d14271b937a263a94a9,cdce8p,2,1,1,5,0,2,False,https://github.com/pallets/flask/pull/5643,{}
+pallets/flask,5640,release version 3.1.0,,closed,2024-11-13T17:25:38+00:00,2024-11-28T00:08:27+00:00,2024-11-13T18:27:38+00:00,2024-11-13T18:27:38+00:00,bc098406af9537aacc436cb2ea777fbc9ff4c5aa,davidism,3,3,2,0,0,1,True,https://github.com/pallets/flask/pull/5640,{}
+pallets/flask,5638,use generic bases for session,Missed this when dropping Python 3.8 in #5614.,closed,2024-11-13T16:23:57+00:00,2024-11-28T00:08:28+00:00,2024-11-13T16:27:13+00:00,2024-11-13T16:27:13+00:00,2eab96a32a92ceb4b6947102626f896816a0291d,davidism,7,5,1,0,0,1,True,https://github.com/pallets/flask/pull/5638,{}
+pallets/flask,5637,configure and check `request.trusted_hosts`,"Add `TRUSTED_HOSTS` config. In `Flask.create_url_adapter`, which is called when creating a `RequestContext`, set `request.trusted_hosts` to the config. Call `get_host` with the config, and assign it to `request.host` to pre-cache the property.
+
+I considered making `flask.Request.trusted_hosts` a property, so that setting it would trigger validation again automatically. I'm not confident this difference in behavior from Werkzeug, where only accessing `request.host` triggers validation, would be good. If it's a good idea, it can be done in Werkzeug.
+
+fixes #5636 ",closed,2024-11-13T04:56:43+00:00,2024-11-28T00:08:29+00:00,2024-11-13T05:03:23+00:00,2024-11-13T05:03:23+00:00,7b21d43d4c763b874bc86d4c2d69a48ee492dc22,davidism,40,0,4,0,0,1,True,https://github.com/pallets/flask/pull/5637,{}
+pallets/flask,5634,setting `SERVER_NAME` does not restrict routing for both `subdomain_matching` and `host_matching`,"I wrote a bunch in #5553 about investigating this. Essentially, we need to pass `""""` to disable subdomain matching, not `None`. The two tests that had to change were accidentally working because setting `SERVER_NAME` was bypassing `subdomain_matching = False`, and the tests should have been setting it to `True` since they were working with subdomains.
+
+Now `SERVER_NAME` only affects routing if `subdomain_matching=True`, in which case it correctly limits routing to subdomains under that name.
+
+fixes #5553 ",closed,2024-11-11T04:18:14+00:00,2024-11-27T00:11:17+00:00,2024-11-12T18:13:39+00:00,2024-11-12T18:13:39+00:00,10bdf61a0f751f3cb000f8f8ac5ac5b4bb535677,davidism,98,43,5,2,0,1,True,https://github.com/pallets/flask/pull/5634,{}
+pallets/flask,5633,update min blinker version,"Update Blinker >= 1.9, the latest feature release.
+
+continue #5624 ",closed,2024-11-08T17:50:39+00:00,2024-11-25T00:08:17+00:00,2024-11-08T17:55:00+00:00,2024-11-08T17:55:00+00:00,07c7d5730a2685ef2281cc635e289685e5c3d478,davidism,4,4,4,0,0,1,True,https://github.com/pallets/flask/pull/5633,{}
+pallets/flask,5632,enable secret key rotation,"ItsDangerous 2.0 supports key rotation by passing a list instead of a single secret key. Add a new `SECRET_KEY_FALLBACKS` config that can be a list of old keys to try unsigning in order. The built-in session cookie implementation supports this, but other extensions will need to add support to use the fallback list if it makes sense. Updating the secret keys (or any config) always requires restarting the application, otherwise workers can be out of sync.
+
+closes #5621 
+closes #5428 
+closes #1574 ",closed,2024-11-08T16:14:40+00:00,2024-11-25T00:08:18+00:00,2024-11-08T16:16:04+00:00,2024-11-08T16:16:04+00:00,a20bcff8dc4e263312cfd74c11e432bfe8c194c1,davidism,55,7,9,0,0,1,True,https://github.com/pallets/flask/pull/5632,{}
+pallets/flask,5630,update env file precedence,"Precedence is now `os.environ` > `-e path` > `.env` > `.flaskenv`; previously `-e path` was lowest precedence. `load_dotenv` now loads the default files in addition to the given path unless `load_defaults=False` is passed; previously only the given path or the defaults were loaded, not both. `ScriptInfo.load_dotenv_defaults` was added to track the setting between `FlaskGroup` and `_env_file_callback`. `_env_file_callback` only errors if a value was given for the option, so that it handles calling `load_dotenv` for all cases rather than loading defaults in `make_context`.
+
+fixes #5628 ",closed,2024-11-07T19:37:42+00:00,2024-11-22T00:08:17+00:00,2024-11-07T19:56:27+00:00,2024-11-07T19:56:27+00:00,7522c4bcdb10449dc919e0ffbdebb92fe66822b5,davidism,90,47,3,0,0,1,True,https://github.com/pallets/flask/pull/5630,{}
+pallets/flask,5629,give priority to '-e/--env-file' option over default files (#5628),"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+This PR fixes issue #5628 . The issue arose from the fact that `FlaskGroup().make_context()` was loading the default env files before loading the arguments (by calling `super().make_context()`. Simply reversing the order of these actions fixes the issue. I have added the relevant tests to make sure it works.
+
+- [x] Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- [x] Add or update relevant docs, in the docs folder and in code.
+- [x] Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- [x] Add `.. versionchanged::` entries in any relevant code docs.",closed,2024-11-07T17:48:47+00:00,2024-11-22T00:08:18+00:00,2024-11-07T19:38:07+00:00,,8f812d257b74c9f76c2b01bd62316cd000236037,jalaj711,31,4,4,6,0,2,False,https://github.com/pallets/flask/pull/5629,{}
+pallets/flask,5627,fix example and tutorial compatibility and update metadata,"* In the tutorial, Python 3.12 now requires registering a converter for the timestamp type, rather than providing a default converter.
+* The JavaScript example updated to prefer fetch at some point, but the test wasn't updated.
+* Add a private classifier.
+
+fixes #5556 ",closed,2024-11-02T01:03:39+00:00,2024-11-17T00:13:01+00:00,2024-11-02T01:06:12+00:00,2024-11-02T01:06:12+00:00,c62b03bcfd6e6440f8195e02f4678488e16121ac,davidism,21,5,8,0,0,3,True,https://github.com/pallets/flask/pull/5627,{}
+pallets/flask,5626,add config and docs for limits,"Add setter to each property to set per-request limit. If that is set, use it regardless of app context. Otherwise, use the Werkzeug default out of app context, or Flask config in app context.
+
+fixes #5625 ",closed,2024-11-01T20:14:30+00:00,2024-11-16T00:08:51+00:00,2024-11-01T20:21:36+00:00,2024-11-01T20:21:36+00:00,6f2014d353d514e404c1f40e8f0a24e2bf62b941,davidism,231,33,7,0,0,1,True,https://github.com/pallets/flask/pull/5626,{}
+pallets/flask,5624,update minimum dependencies,"Update anything that has newer feature releases: Werkzeug >= 3.1, ItsDangerous >= 2.2, Blinker >= 1.8.",closed,2024-10-31T20:12:41+00:00,2024-11-15T00:08:17+00:00,2024-10-31T20:15:30+00:00,2024-10-31T20:15:30+00:00,62c56e08c43f5eb174d15dd050591cfba9aed548,davidism,76,74,12,0,0,3,True,https://github.com/pallets/flask/pull/5624,{}
+pallets/flask,5623,drop support for Python 3.8,"Python 3.8 is EOL https://devguide.python.org/versions/
+",closed,2024-10-31T19:30:34+00:00,2024-11-15T00:08:18+00:00,2024-10-31T19:32:11+00:00,2024-10-31T19:32:11+00:00,99ce7ed0e40686ec2583f90bd1cca37a207b4ea7,davidism,25,42,12,0,0,1,True,https://github.com/pallets/flask/pull/5623,{}
+pallets/flask,5620,fix pyright type errors,continues #5550 ,closed,2024-10-24T21:48:06+00:00,2024-11-08T00:07:43+00:00,2024-10-24T21:54:53+00:00,2024-10-24T21:54:53+00:00,e8b91cd38aadafdf733558bbcea4810fa65bb849,davidism,22,19,10,0,0,1,True,https://github.com/pallets/flask/pull/5620,{}
+pallets/flask,5618,Fix the issue link in the Flask 3.0.1 Changelog in the send_file argu…,…ment type entry,closed,2024-10-22T20:33:40+00:00,2024-11-06T00:07:32+00:00,2024-10-22T21:16:56+00:00,2024-10-22T21:16:56+00:00,68150d4cafc796dba2b595c320a09222394bfc1a,CatarinaPBressan,1,1,1,0,0,1,True,https://github.com/pallets/flask/pull/5618,{}
+pallets/flask,5617,Update CHANGES.rst,"Fix the issue link in the Flask 3.0.1 Changelog in the send_file argument type entry
+",closed,2024-10-22T18:44:41+00:00,2024-11-06T00:07:33+00:00,2024-10-22T20:34:39+00:00,,50c3132052544efd30aab1fa04500b761efe6f6d,CatarinaPBressan,129,62,14,4,0,97,False,https://github.com/pallets/flask/pull/5617,{}
+pallets/flask,5615,use python 3.9 to test dev versions,"Minimum supported version of dev versions is now Python 3.9 (MarkupSafe got there first). 3.8 is still supported by the 3.0.x branch, but testing dev versions needs to be bumped.
+",closed,2024-10-18T20:20:56+00:00,2024-11-02T00:07:35+00:00,2024-10-18T20:22:45+00:00,2024-10-18T20:22:45+00:00,d273f87a41e72db8ef1387f469ffa1c6eed39730,davidism,2,2,2,0,0,1,True,https://github.com/pallets/flask/pull/5615,{}
+pallets/flask,5614,Drop Python 3.8 support,"This addresses a failure in the `py38-dev` tests caused by markupsafe recently dropping Python 3.8 support. [[recent example](https://github.com/pallets/flask/actions/runs/11410252968/job/31752190363#step:5:87)]
+
+Changed in this commit:
+
+* Drop Python 3.8 support
+* Update CI and tox testing
+* Update docs references to Python 3.8
+* Remove a Windows / Python 3.8 admonition in the docs
+* Address type annotations
+* Incorporate style fixes
+
+Still to do:
+
+* `src/flask/sessions.py` contains these comments:
+
+  > TODO generic when Python > 3.8
+
+  This TODO should now be unblocked.
+
+<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-10-16T23:12:27+00:00,2024-11-04T00:08:11+00:00,2024-10-19T15:14:07+00:00,,c14394da169ff248b69d89d1a3bd9bff3dc22960,kurtmckee,22,29,9,4,0,1,False,https://github.com/pallets/flask/pull/5614,{}
+pallets/flask,5613,Address a mypy failure in CI,"mypy 1.11.1 is reporting that [`return-value` is an unused ignore in CI](https://github.com/pallets/flask/actions/runs/10655465924/job/29533008516#step:6:25), and when running `tox -e typing` locally.
+
+As this is a code comment for mypy's benefit, I'm anticipating that this doesn't need to be added to the CHANGELOG, but please let me know if that's incorrect. Thanks!",closed,2024-10-16T20:45:42+00:00,2024-11-02T00:07:34+00:00,2024-10-18T20:14:42+00:00,,59dd993eb7d893bee0c6e17c2d0bdb96ba9829a4,kurtmckee,1,1,1,1,0,1,False,https://github.com/pallets/flask/pull/5613,{}
+pallets/flask,5611,Update README.md,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-10-10T10:48:28+00:00,2024-10-25T00:07:51+00:00,2024-10-10T10:54:02+00:00,,6c7df798921e404a9e735d230c3b4bd4f3457951,Vrusharth,1,1,1,1,0,1,False,https://github.com/pallets/flask/pull/5611,{}
+pallets/flask,5610,helpers.py,"The type: ignore[return-value] was used to suppress a return type mismatch that likely no longer exists. Since mypy is now flagging it as unused, the directive can be safely removed.
+
+<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-09-29T06:36:57+00:00,2024-11-02T00:07:36+00:00,2024-10-18T20:14:33+00:00,,,Kartikeya-Kotkar,1,1,1,1,0,2,False,https://github.com/pallets/flask/pull/5610,{}
+pallets/flask,5609,Fix typo in the changelog,"~~Changed the naming rules to match the #2 of the [Recommended Extension Guidelines](https://flask.palletsprojects.com/en/3.0.x/extensiondev/#recommended-extension-guidelines) section.~~
+
+This PR also fixed a typo in the changelog.",closed,2024-09-22T13:44:44+00:00,2024-11-02T00:07:37+00:00,2024-10-18T19:59:21+00:00,2024-10-18T19:59:21+00:00,52c060f718e0f07e9d982d2d97973ead0f4d55ca,greyli,1,1,1,3,0,1,True,https://github.com/pallets/flask/pull/5609,{}
+pallets/flask,5608,adding documentation,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-09-22T13:31:14+00:00,2024-10-08T00:07:30+00:00,2024-09-22T14:10:45+00:00,,4c55722337e374860423d97b807ce9b51afb82d3,sanjaytaylor2012,34,0,1,0,0,2,False,https://github.com/pallets/flask/pull/5608,{}
+pallets/flask,5607,repo_path,,closed,2024-09-18T19:38:53+00:00,2024-10-04T00:07:41+00:00,2024-09-18T19:40:51+00:00,,dfc14208772b1cdbb2dff33f0856623ca83f2a1a,girishonweb,0,0,0,0,0,1,False,https://github.com/pallets/flask/pull/5607,{}
+pallets/flask,5603,Pagination,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-09-09T23:10:28+00:00,2024-09-25T00:07:39+00:00,2024-09-09T23:10:36+00:00,,b7ff93e233b98862a97b8826b27f8a717558d278,palako,466,33422,244,1,0,25,False,https://github.com/pallets/flask/pull/5603,{}
+pallets/flask,5602,Sept 6th demo,"<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-09-09T16:58:47+00:00,2024-09-25T00:07:40+00:00,2024-09-09T16:58:57+00:00,,a56a3364f5749e7bfef72d2c5940c7a76af4d447,palako,339,33219,238,1,0,12,False,https://github.com/pallets/flask/pull/5602,{}
+pallets/flask,5601,Updated deploy.rst for better clarity,"I changed deploy.rst for better clarity specifically this part:
+Before:
+$ python -c 'import secrets; print(secrets.token_hex())'
+
+    '192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'
+
+After:
+$ python -c 'import secrets; print(secrets.token_hex())'
+
+    Example secret key:
+    '192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'",closed,2024-09-09T09:00:42+00:00,2024-09-24T00:07:41+00:00,2024-09-09T14:04:08+00:00,,708fbe5ef22d2b32eb3c7dee224cba6eba1c8f7e,najasnake12,1,0,1,1,0,1,False,https://github.com/pallets/flask/pull/5601,{}
+pallets/flask,5599,update helpers.send_from_directory docstring,"Update helpers.send_from_directory docstring to match werkzeug.utils.send_from_directory docstring on the :param directory: line.
+
+The previous ""relative to the current application's root path"" is misleading to actual behaviour.
+
+[Current: send_from_directory](https://flask.palletsprojects.com/en/3.0.x/api/#flask.send_from_directory)",closed,2024-09-07T11:14:57+00:00,2024-11-21T00:08:14+00:00,2024-11-06T17:47:58+00:00,2024-11-06T17:47:58+00:00,6c44dd4bb8e4f2ca5f135f172de4725b2cada155,CheeseCake87,2,1,1,0,0,2,True,https://github.com/pallets/flask/pull/5599,{}
+pallets/flask,5555,Refactor helpers.py to Move Hard-Coded List to globals.py,"This pull request refactors the **` helpers.py `** file by moving a hard-coded list of false attributes to the **` globals.py `** file. The list, previously hard-coded in multiple locations, is now centralized in **` globals.py `** as a new global constant named **`_false_attributes`**.
+
+#### Changes Made:
+
+- Added _false_attributes list to globals.py with the value [""0"", ""false"", ""no"", ""null"", ""none""].
+- Updated helpers.py to use the new _false_attributes variable from globals.py.
+ 
+#### Benefits:
+
+- Improved Maintainability: Centralizing the list makes future updates easier and reduces duplication.
+- Enhanced Readability: Using a named constant improves code clarity and intention.
+
+#### Testing:
+
+- Verified that the changes do not introduce any regressions or break existing functionality.
+- Please review the changes and let me know if any additional modifications are needed. Thank you!",closed,2024-08-20T11:24:30+00:00,2024-09-04T00:07:22+00:00,2024-08-20T14:22:39+00:00,,12b0dc4ef9883b4555bbcfe81a12423fdeba0e4c,40gilad,5,2,2,1,3,6,False,https://github.com/pallets/flask/pull/5555,"{""ThiefMaster"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-20T11:28:15+00:00""}], ""RonnyPfannschmidt"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-20T11:50:14+00:00""}], ""40gilad"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-20T11:51:11+00:00""}]}"
+pallets/flask,5552,git add tox.ini requirements/typing.txt,"git commit -m ""Replace mypy with pyright in tox.ini for consistent type checking""
+
+<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-08-10T00:55:35+00:00,2024-08-29T00:07:17+00:00,2024-08-13T19:24:47+00:00,,3096d612586f3d818ffd94c99ccbca12964faedb,ComputerScienceGirl12,2,2,1,2,0,1,False,https://github.com/pallets/flask/pull/5552,{}
+pallets/flask,5551,"Provide more clear flask -e, --env-file flag desription","<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-08-08T13:00:52+00:00,2024-08-23T00:07:52+00:00,2024-08-08T13:01:05+00:00,,d4995d66ee3db3cafd78a7cb65a4ec1216aa8c19,chakib401,6,1,1,0,0,1,False,https://github.com/pallets/flask/pull/5551,{}
+pallets/flask,5550,Pyright types fixes,"Fixes various Pyright types errors.
+
+fixes #5549",closed,2024-08-07T02:19:06+00:00,2024-11-08T00:07:44+00:00,2024-10-24T21:48:20+00:00,,e28560cb329b0fecfedad9f1be55f076cc502a1e,brendon-codes,26,17,8,4,1,1,False,https://github.com/pallets/flask/pull/5550,"{""brendon-codes"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-07T04:40:14+00:00""}]}"
+pallets/flask,5548,Fixes Pyright type errors for `src/flask/helpers.py`,"Fixes Pyright type errors for `src/flask/helpers.py`.
+
+NOTE: This could be a risky fix.  I expect it probably needs extra scrutiny.
+
+fixes #5547",closed,2024-08-07T00:07:37+00:00,2024-08-23T00:07:54+00:00,2024-08-07T00:30:48+00:00,,a7a0b946b347a5b049d689d49b5e1cb92e9d5c40,brendon-codes,3,1,2,1,0,1,False,https://github.com/pallets/flask/pull/5548,{}
+pallets/flask,5546,Fixes Pyright type errors for `src/flask/blueprint.py`,"Fixes Pyright type errors for `src/flask/blueprint.py`.
+
+fixes #5545
+",closed,2024-08-06T23:22:09+00:00,2024-08-23T00:07:53+00:00,2024-08-07T00:31:05+00:00,,5c77a30cab9eddd80edca768b757b14b0ce927c3,brendon-codes,3,1,2,0,0,1,False,https://github.com/pallets/flask/pull/5546,{}
+pallets/flask,5544,Fixes Pyright type errors for `src/flask/app.py`,"Fixes Pyright type errors for `src/flask/app.py`.
+
+fixes #5543
+",closed,2024-08-06T22:58:41+00:00,2024-08-23T00:07:55+00:00,2024-08-07T00:29:39+00:00,,73eb1eb448f802af8a2988acec6bc8859995f475,brendon-codes,14,9,2,2,9,1,False,https://github.com/pallets/flask/pull/5544,"{""davidism"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-06T23:33:17+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-06T23:34:45+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-07T00:14:02+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-07T00:16:22+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-07T00:22:36+00:00""}], ""brendon-codes"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-06T23:53:55+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-06T23:58:07+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-07T00:19:11+00:00""}, {""state"": ""COMMENTED"", ""submitted_at"": ""2024-08-07T00:28:27+00:00""}]}"
+pallets/flask,5541,[pre-commit.ci] pre-commit autoupdate,"<!--pre-commit.ci start-->
+updates:
+- [github.com/astral-sh/ruff-pre-commit: v0.5.0 → v0.5.6](https://github.com/astral-sh/ruff-pre-commit/compare/v0.5.0...v0.5.6)
+<!--pre-commit.ci end-->",closed,2024-08-05T23:09:20+00:00,2024-08-21T00:07:51+00:00,2024-08-06T15:31:01+00:00,2024-08-06T15:31:01+00:00,8a6cdf1e2a5efa81c30f6166602064ceefb0a35b,pre-commit-ci[bot],1,1,1,0,0,1,True,https://github.com/pallets/flask/pull/5541,{}
+pallets/flask,5539,Bump the github-actions group with 3 updates,"Bumps the github-actions group with 3 updates: [actions/setup-python](https://github.com/actions/setup-python), [actions/upload-artifact](https://github.com/actions/upload-artifact) and [actions/download-artifact](https://github.com/actions/download-artifact).
+
+Updates `actions/setup-python` from 5.1.0 to 5.1.1
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/actions/setup-python/releases"">actions/setup-python's releases</a>.</em></p>
+<blockquote>
+<h2>v5.1.1</h2>
+<h2>What's Changed</h2>
+<h3>Bug fixes:</h3>
+<ul>
+<li>fix(ci): update all failing workflows by <a href=""https://github.com/mayeut""><code>@​mayeut</code></a> in <a href=""https://redirect.github.com/actions/setup-python/pull/863"">actions/setup-python#863</a>
+This update ensures compatibility and optimal performance of workflows on the latest macOS version.</li>
+</ul>
+<h3>Documentation changes:</h3>
+<ul>
+<li>Documentation update for cache by <a href=""https://github.com/gowridurgad""><code>@​gowridurgad</code></a> in <a href=""https://redirect.github.com/actions/setup-python/pull/873"">actions/setup-python#873</a></li>
+</ul>
+<h3>Dependency updates:</h3>
+<ul>
+<li>Bump braces from 3.0.2 to 3.0.3 and undici from 5.28.3 to 5.28.4 by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/setup-python/pull/893"">actions/setup-python#893</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a href=""https://github.com/gowridurgad""><code>@​gowridurgad</code></a> made their first contribution in <a href=""https://redirect.github.com/actions/setup-python/pull/873"">actions/setup-python#873</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href=""https://github.com/actions/setup-python/compare/v5...v5.1.1"">https://github.com/actions/setup-python/compare/v5...v5.1.1</a></p>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/actions/setup-python/commit/39cd14951b08e74b54015e9e001cdefcf80e669f""><code>39cd149</code></a> Documentation update for cache (<a href=""https://redirect.github.com/actions/setup-python/issues/873"">#873</a>)</li>
+<li><a href=""https://github.com/actions/setup-python/commit/a0d74c0c423f896bc4e7be91d5cb1e2d54438db3""><code>a0d74c0</code></a> fix(ci): update all failing workflows (<a href=""https://redirect.github.com/actions/setup-python/issues/863"">#863</a>)</li>
+<li><a href=""https://github.com/actions/setup-python/commit/4eb7dbcb9561cb76a85079ffa9d89b983166e00c""><code>4eb7dbc</code></a> Bump braces from 3.0.2 to 3.0.3 (<a href=""https://redirect.github.com/actions/setup-python/issues/893"">#893</a>)</li>
+<li>See full diff in <a href=""https://github.com/actions/setup-python/compare/82c7e631bb3cdc910f68e0081d67478d79c6982d...39cd14951b08e74b54015e9e001cdefcf80e669f"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `actions/upload-artifact` from 4.3.3 to 4.3.4
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/actions/upload-artifact/releases"">actions/upload-artifact's releases</a>.</em></p>
+<blockquote>
+<h2>v4.3.4</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Update <code>@​actions/artifact</code> version, bump dependencies by <a href=""https://github.com/robherley""><code>@​robherley</code></a> in <a href=""https://redirect.github.com/actions/upload-artifact/pull/584"">actions/upload-artifact#584</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href=""https://github.com/actions/upload-artifact/compare/v4.3.3...v4.3.4"">https://github.com/actions/upload-artifact/compare/v4.3.3...v4.3.4</a></p>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/actions/upload-artifact/commit/0b2256b8c012f0828dc542b3febcab082c67f72b""><code>0b2256b</code></a> Merge pull request <a href=""https://redirect.github.com/actions/upload-artifact/issues/584"">#584</a> from actions/robherley/bump-pkgs</li>
+<li><a href=""https://github.com/actions/upload-artifact/commit/488dcefb9bf01619ac19bad29c5c5409a1e4dd4c""><code>488dcef</code></a> licensed cache</li>
+<li><a href=""https://github.com/actions/upload-artifact/commit/04c51f57662651dd3333286989e2db1111c0fd07""><code>04c51f5</code></a> ncc</li>
+<li><a href=""https://github.com/actions/upload-artifact/commit/32a9e276a8f8ac18b4b2dce8213ed340ed4e5ed8""><code>32a9e27</code></a> bump <code>@​actions/artifact</code> and npm audit</li>
+<li><a href=""https://github.com/actions/upload-artifact/commit/552bf3722c16e81001aea7db72d8cedf64eb5f68""><code>552bf37</code></a> new version</li>
+<li><a href=""https://github.com/actions/upload-artifact/commit/79616d2ded92999fceefea2ca2e4bdf6101fa919""><code>79616d2</code></a> Merge pull request <a href=""https://redirect.github.com/actions/upload-artifact/issues/565"">#565</a> from actions/eggyhead/use-artifact-v2.1.6</li>
+<li>See full diff in <a href=""https://github.com/actions/upload-artifact/compare/65462800fd760344b1a7b4382951275a0abb4808...0b2256b8c012f0828dc542b3febcab082c67f72b"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `actions/download-artifact` from 4.1.7 to 4.1.8
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/actions/download-artifact/releases"">actions/download-artifact's releases</a>.</em></p>
+<blockquote>
+<h2>v4.1.8</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Update <code>@​actions/artifact</code> version, bump dependencies by <a href=""https://github.com/robherley""><code>@​robherley</code></a> in <a href=""https://redirect.github.com/actions/download-artifact/pull/341"">actions/download-artifact#341</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href=""https://github.com/actions/download-artifact/compare/v4...v4.1.8"">https://github.com/actions/download-artifact/compare/v4...v4.1.8</a></p>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/actions/download-artifact/commit/fa0a91b85d4f404e444e00e005971372dc801d16""><code>fa0a91b</code></a> Merge pull request <a href=""https://redirect.github.com/actions/download-artifact/issues/341"">#341</a> from actions/robherley/bump-pkgs</li>
+<li><a href=""https://github.com/actions/download-artifact/commit/b54d0883e196647f43ce531a3fc13b246cf908b6""><code>b54d088</code></a> Update <code>@​actions/artifact</code> version, bump dependencies</li>
+<li>See full diff in <a href=""https://github.com/actions/download-artifact/compare/65a9edc5881444af0b9093a5e628f2fe47ea3b2e...fa0a91b85d4f404e444e00e005971372dc801d16"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)
+- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)
+- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
+- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
+- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
+
+
+</details>",closed,2024-08-01T15:48:35+00:00,2024-08-18T00:07:39+00:00,2024-08-03T14:28:46+00:00,2024-08-03T14:28:46+00:00,a791997041b94b8a5effebc296cb427fde8e0ee5,dependabot[bot],6,6,2,0,0,1,True,https://github.com/pallets/flask/pull/5539,{}
+pallets/flask,5538,Bump the python-requirements group in /requirements with 6 updates,"Bumps the python-requirements group in /requirements with 6 updates:
+
+| Package | From | To |
+| --- | --- | --- |
+| [sphinx](https://github.com/sphinx-doc/sphinx) | `7.3.7` | `8.0.2` |
+| [pytest](https://github.com/pytest-dev/pytest) | `8.2.2` | `8.3.2` |
+| [cryptography](https://github.com/pyca/cryptography) | `42.0.8` | `43.0.0` |
+| [mypy](https://github.com/python/mypy) | `1.10.1` | `1.11.1` |
+| [pre-commit](https://github.com/pre-commit/pre-commit) | `3.7.1` | `3.8.0` |
+| [pyright](https://github.com/RobertCraigie/pyright-python) | `1.1.369` | `1.1.374` |
+
+Updates `sphinx` from 7.3.7 to 8.0.2
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/sphinx-doc/sphinx/releases"">sphinx's releases</a>.</em></p>
+<blockquote>
+<h2>Sphinx 8.0.2</h2>
+<p>Changelog: <a href=""https://www.sphinx-doc.org/en/master/changes.html"">https://www.sphinx-doc.org/en/master/changes.html</a></p>
+<h2>Sphinx 8.0.1</h2>
+<p>Changelog: <a href=""https://www.sphinx-doc.org/en/master/changes.html"">https://www.sphinx-doc.org/en/master/changes.html</a></p>
+<h2>Sphinx 8.0.0</h2>
+<p>Changelog: <a href=""https://www.sphinx-doc.org/en/master/changes.html"">https://www.sphinx-doc.org/en/master/changes.html</a></p>
+<h2>Dependencies</h2>
+<ul>
+<li><a href=""https://redirect.github.com/sphinx-doc/sphinx/issues/12633"">#12633</a>: Drop Python 3.9 support.</li>
+</ul>
+<h2>Incompatible changes</h2>
+<ul>
+<li>
+<p>Remove deprecated functions from <code>sphinx.util</code>:</p>
+<ul>
+<li>Removed <code>sphinx.util.path_stabilize</code>
+(use <code>sphinx.util.osutil.path_stabilize</code>).</li>
+<li>Removed <code>sphinx.util.display_chunk</code>
+(use <code>sphinx.util.display.display_chunk</code>).</li>
+<li>Removed <code>sphinx.util.status_iterator</code>
+(use <code>sphinx.util.display.status_iterator</code>).</li>
+<li>Removed <code>sphinx.util.SkipProgressMessage</code>
+(use <code>sphinx.util.display.SkipProgressMessage</code>).</li>
+<li>Removed <code>sphinx.util.progress_message</code>
+(use <code>sphinx.util.display.progress_message</code>).</li>
+<li>Removed <code>sphinx.util.epoch_to_rfc1123</code>
+(use <code>sphinx.http_date.epoch_to_rfc1123</code>).</li>
+<li>Removed <code>sphinx.util.rfc1123_to_epoch</code>
+(use <code>sphinx.http_date.rfc1123_to_epoch</code>).</li>
+<li>Removed <code>sphinx.util.save_traceback</code>
+(use <code>sphinx.exceptions.save_traceback</code>).</li>
+<li>Removed <code>sphinx.util.format_exception_cut_frames</code>
+(use <code>sphinx.exceptions.format_exception_cut_frames</code>).</li>
+<li>Removed <code>sphinx.util.xmlname_checker</code>
+(use <code>sphinx.builders.epub3._XML_NAME_PATTERN</code>).</li>
+</ul>
+<p>Patch by Adam Turner.</p>
+</li>
+<li>
+<p>Removed <code>sphinx.util.osutil.cd</code>
+(use <code>contextlib.chdir</code>).
+Patch by Adam Turner.</p>
+</li>
+<li>
+<p>Removed <code>sphinx.util.typing.stringify</code>
+(use <code>sphinx.util.typing.stringify_annotation</code>).
+Patch by Adam Turner.</p>
+</li>
+<li>
+<p><a href=""https://redirect.github.com/sphinx-doc/sphinx/issues/12593"">#12593</a>: Raise an error for invalid <code>html_sidebars</code> values.
+Patch by Adam Turner.</p>
+</li>
+<li>
+<p><a href=""https://redirect.github.com/sphinx-doc/sphinx/issues/12593"">#12593</a>: Raise an error in <code>Theme.get_config</code> for invalid sections.</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/sphinx-doc/sphinx/blob/v8.0.2/CHANGES.rst"">sphinx's changelog</a>.</em></p>
+<blockquote>
+<h1>Release 8.0.2 (released Jul 30, 2024)</h1>
+<h2>Bugs fixed</h2>
+<ul>
+<li>Fix the <code>pygments.Formatter.__class_getitem__</code> patch.
+Patch by Adam Turner.</li>
+</ul>
+<h1>Release 8.0.1 (released Jul 30, 2024)</h1>
+<h2>Bugs fixed</h2>
+<ul>
+<li>Patch <code>pygments.Formatter.__class_getitem__</code> in Pygments 2.17.
+Patch by Adam Turner.</li>
+</ul>
+<h1>Release 8.0.0 (released Jul 29, 2024)</h1>
+<h2>Dependencies</h2>
+<ul>
+<li><a href=""https://redirect.github.com/sphinx-doc/sphinx/issues/12633"">#12633</a>: Drop Python 3.9 support.</li>
+</ul>
+<h2>Incompatible changes</h2>
+<p>.. rst-class:: compact</p>
+<ul>
+<li>
+<p>Remove deprecated functions from <code>sphinx.util</code>:</p>
+<ul>
+<li>Removed <code>sphinx.util.path_stabilize</code>
+(use <code>sphinx.util.osutil.path_stabilize</code>).</li>
+<li>Removed <code>sphinx.util.display_chunk</code>
+(use <code>sphinx.util.display.display_chunk</code>).</li>
+<li>Removed <code>sphinx.util.status_iterator</code>
+(use <code>sphinx.util.display.status_iterator</code>).</li>
+<li>Removed <code>sphinx.util.SkipProgressMessage</code>
+(use <code>sphinx.util.display.SkipProgressMessage</code>).</li>
+<li>Removed <code>sphinx.util.progress_message</code>
+(use <code>sphinx.util.display.progress_message</code>).</li>
+<li>Removed <code>sphinx.util.epoch_to_rfc1123</code>
+(use <code>sphinx.http_date.epoch_to_rfc1123</code>).</li>
+<li>Removed <code>sphinx.util.rfc1123_to_epoch</code>
+(use <code>sphinx.http_date.rfc1123_to_epoch</code>).</li>
+<li>Removed <code>sphinx.util.save_traceback</code>
+(use <code>sphinx.exceptions.save_traceback</code>).</li>
+<li>Removed <code>sphinx.util.format_exception_cut_frames</code></li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/043750e406d8fe03953f5b565b36e05aef6866ec""><code>043750e</code></a> Bump to 8.0.2 final</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/cee9efc0ab3068e05a853ffb27c82ada869372fe""><code>cee9efc</code></a> Use <code>classmethod</code> for a class method</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/16fed3576ca76ebdbc5cfe3eada743fb4fff7928""><code>16fed35</code></a> Bump version</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/d9bda77b79b054dc19aec679b179d8b8eaf6e165""><code>d9bda77</code></a> Bump to 8.0.1 final</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/006a6a7fcf680bed229dbb58bdda1af06dd68d87""><code>006a6a7</code></a> Fix Flake8</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/d0915ab25b7214ca6441a6bb93fe1f939d915237""><code>d0915ab</code></a> Fix mypy</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/865b513cf2c88d3e30450718914aa896d90fd14e""><code>865b513</code></a> Patch <code>pygments.Formatter.__class_getitem__</code> in Pygments 2.17</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/f1d3c3f465b7239bf0f34de8e5b80e694c1474e2""><code>f1d3c3f</code></a> Bump version</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/0e8a6383be58ed1528c26a924abb73c0b4672e69""><code>0e8a638</code></a> Bump to 8.0.0 final</li>
+<li><a href=""https://github.com/sphinx-doc/sphinx/commit/5750d0e3fe8905fb582a6db95512f28b4c26159e""><code>5750d0e</code></a> [bot]: Update message catalogues (<a href=""https://redirect.github.com/sphinx-doc/sphinx/issues/12641"">#12641</a>)</li>
+<li>Additional commits viewable in <a href=""https://github.com/sphinx-doc/sphinx/compare/v7.3.7...v8.0.2"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `pytest` from 8.2.2 to 8.3.2
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/pytest-dev/pytest/releases"">pytest's releases</a>.</em></p>
+<blockquote>
+<h2>8.3.2</h2>
+<h1>pytest 8.3.2 (2024-07-24)</h1>
+<h2>Bug fixes</h2>
+<ul>
+<li>
+<p><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12652"">#12652</a>: Resolve regression [conda]{.title-ref} environments where no longer being automatically detected.</p>
+<p>-- by <code>RonnyPfannschmidt</code>{.interpreted-text role=&quot;user&quot;}</p>
+</li>
+</ul>
+<h2>8.3.1</h2>
+<h1>pytest 8.3.1 (2024-07-20)</h1>
+<p>The 8.3.0 release failed to include the change notes and docs for the release. This patch release remedies this. There are no other changes.</p>
+<h2>8.3.0</h2>
+<h1>pytest 8.3.0 (2024-07-20)</h1>
+<h2>New features</h2>
+<ul>
+<li>
+<p><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12231"">#12231</a>: Added [--xfail-tb]{.title-ref} flag, which turns on traceback output for XFAIL results.</p>
+<ul>
+<li>If the [--xfail-tb]{.title-ref} flag is not given, tracebacks for XFAIL results are NOT shown.</li>
+<li>The style of traceback for XFAIL is set with [--tb]{.title-ref}, and can be [auto|long|short|line|native|no]{.title-ref}.</li>
+<li>Note: Even if you have [--xfail-tb]{.title-ref} set, you won't see them if [--tb=no]{.title-ref}.</li>
+</ul>
+<p>Some history:</p>
+<p>With pytest 8.0, [-rx]{.title-ref} or [-ra]{.title-ref} would not only turn on summary reports for xfail, but also report the tracebacks for xfail results. This caused issues with some projects that utilize xfail, but don't want to see all of the xfail tracebacks.</p>
+<p>This change detaches xfail tracebacks from [-rx]{.title-ref}, and now we turn on xfail tracebacks with [--xfail-tb]{.title-ref}. With this, the default [-rx]{.title-ref}/ [-ra]{.title-ref} behavior is identical to pre-8.0 with respect to xfail tracebacks. While this is a behavior change, it brings default behavior back to pre-8.0.0 behavior, which ultimately was considered the better course of action.</p>
+</li>
+<li>
+<p><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12281"">#12281</a>: Added support for keyword matching in marker expressions.</p>
+<p>Now tests can be selected by marker keyword arguments.
+Supported values are <code>int</code>{.interpreted-text role=&quot;class&quot;}, (unescaped) <code>str</code>{.interpreted-text role=&quot;class&quot;}, <code>bool</code>{.interpreted-text role=&quot;class&quot;} &amp; <code>None</code>{.interpreted-text role=&quot;data&quot;}.</p>
+<p>See <code>marker examples &lt;marker_keyword_expression_example&gt;</code>{.interpreted-text role=&quot;ref&quot;} for more information.</p>
+<p>-- by <code>lovetheguitar</code>{.interpreted-text role=&quot;user&quot;}</p>
+</li>
+<li>
+<p><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12567"">#12567</a>: Added <code>--no-fold-skipped</code> command line option.</p>
+<p>If this option is set, then skipped tests in short summary are no longer grouped
+by reason but all tests are printed individually with their nodeid in the same
+way as other statuses.</p>
+<p>-- by <code>pbrezina</code>{.interpreted-text role=&quot;user&quot;}</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/bbcec9c46509c417ef58e4849847b4aa43f4591e""><code>bbcec9c</code></a> Prepare release version 8.3.2</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/78fe8b61fa716cd9775f1e37b395bab7679734a6""><code>78fe8b6</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12657"">#12657</a> from pytest-dev/patchback/backports/8.3.x/6c806b499...</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/238bad2d2a1f1dbb47d740c84b5b4f5224f8a965""><code>238bad2</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12656"">#12656</a> from RonnyPfannschmidt/fix-12652-detect-conda-env</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/ae6034a781a50b572fa700911e5d8e0eb074ca17""><code>ae6034a</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12641"">#12641</a> from pytest-dev/patchback/backports/8.3.x/c03989cee...</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/31337aba02a7698a87a6792eacf887fceff08af2""><code>31337ab</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12640"">#12640</a> from pytest-dev/update-user</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/ca3070b1356e5edf43f085d8c4ec1b34627061dd""><code>ca3070b</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12637"">#12637</a> from pytest-dev/release-8.3.1</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/de98446075cc07c768387cf64ba497dd75c205de""><code>de98446</code></a> Prepare release version 8.3.1</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/bd0a0424037825bc23b9bf299115e92c53a67a9c""><code>bd0a042</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12636"">#12636</a> from pytest-dev/update-release-notes</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/664325bc9fd90217f51fe7cc0e9fff2f29a41a15""><code>664325b</code></a> doc/changelog: update 8.3.0 notes</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/19d225d0ab0f586a9a1fc878dff871495c12bd06""><code>19d225d</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12635"">#12635</a> from pytest-dev/release-8.3.0</li>
+<li>Additional commits viewable in <a href=""https://github.com/pytest-dev/pytest/compare/8.2.2...8.3.2"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `cryptography` from 42.0.8 to 43.0.0
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst"">cryptography's changelog</a>.</em></p>
+<blockquote>
+<p>43.0.0 - 2024-07-20</p>
+<pre><code>
+* **BACKWARDS INCOMPATIBLE:** Support for OpenSSL less than 1.1.1e has been
+  removed.  Users on older version of OpenSSL will need to upgrade.
+* **BACKWARDS INCOMPATIBLE:** Dropped support for LibreSSL &lt; 3.8.
+* Updated Windows, macOS, and Linux wheels to be compiled with OpenSSL 3.3.1.
+* Updated the minimum supported Rust version (MSRV) to 1.65.0, from 1.63.0.
+* :func:`~cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key`
+  now enforces a minimum RSA key size of 1024-bit. Note that 1024-bit is still
+  considered insecure, users should generally use a key size of 2048-bits.
+* :func:`~cryptography.hazmat.primitives.serialization.pkcs7.serialize_certificates`
+  now emits ASN.1 that more closely follows the recommendations in :rfc:`2315`.
+* Added new :doc:`/hazmat/decrepit/index` module which contains outdated and
+  insecure cryptographic primitives.
+  :class:`~cryptography.hazmat.primitives.ciphers.algorithms.CAST5`,
+  :class:`~cryptography.hazmat.primitives.ciphers.algorithms.SEED`,
+  :class:`~cryptography.hazmat.primitives.ciphers.algorithms.IDEA`, and
+  :class:`~cryptography.hazmat.primitives.ciphers.algorithms.Blowfish`, which were
+  deprecated in 37.0.0, have been added to this module. They will be removed
+  from the ``cipher`` module in 45.0.0.
+* Moved :class:`~cryptography.hazmat.primitives.ciphers.algorithms.TripleDES`
+  and :class:`~cryptography.hazmat.primitives.ciphers.algorithms.ARC4` into
+  :doc:`/hazmat/decrepit/index` and deprecated them in the ``cipher`` module.
+  They will be removed from the ``cipher`` module in 48.0.0.
+* Added support for deterministic
+  :class:`~cryptography.hazmat.primitives.asymmetric.ec.ECDSA` (:rfc:`6979`)
+* Added support for client certificate verification to the
+  :mod:`X.509 path validation &lt;cryptography.x509.verification&gt;` APIs in the
+  form of :class:`~cryptography.x509.verification.ClientVerifier`,
+  :class:`~cryptography.x509.verification.VerifiedClient`, and
+  ``PolicyBuilder``
+  :meth:`~cryptography.x509.verification.PolicyBuilder.build_client_verifier`.
+* Added Certificate
+  :attr:`~cryptography.x509.Certificate.public_key_algorithm_oid`
+  and Certificate Signing Request
+  :attr:`~cryptography.x509.CertificateSigningRequest.public_key_algorithm_oid`
+  to determine the :class:`~cryptography.hazmat._oid.PublicKeyAlgorithmOID`
+  Object Identifier of the public key found inside the certificate.
+* Added :attr:`~cryptography.x509.InvalidityDate.invalidity_date_utc`, a
+  timezone-aware alternative to the naïve ``datetime`` attribute
+  :attr:`~cryptography.x509.InvalidityDate.invalidity_date`.
+* Added support for parsing empty DN string in
+  :meth:`~cryptography.x509.Name.from_rfc4514_string`.
+* Added the following properties that return timezone-aware ``datetime`` objects:
+  :meth:`~cryptography.x509.ocsp.OCSPResponse.produced_at_utc`,
+  :meth:`~cryptography.x509.ocsp.OCSPResponse.revocation_time_utc`,
+  :meth:`~cryptography.x509.ocsp.OCSPResponse.this_update_utc`,
+  :meth:`~cryptography.x509.ocsp.OCSPResponse.next_update_utc`,
+  :meth:`~cryptography.x509.ocsp.OCSPSingleResponse.revocation_time_utc`,
+&lt;/tr&gt;&lt;/table&gt; 
+</code></pre>
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/pyca/cryptography/commit/ebf14f2edc8536f36797979cb0e075e766d978c5""><code>ebf14f2</code></a> bump for 43.0.0 and update changelog (<a href=""https://redirect.github.com/pyca/cryptography/issues/11311"">#11311</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/42788a0353e0ca0d922b6b8b9bde77cbb1c65984""><code>42788a0</code></a> Fix exchange with keys that had Q automatically computed (<a href=""https://redirect.github.com/pyca/cryptography/issues/11309"">#11309</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/2dbdfb8f3913cb9cef08218fcd48a9b4eaa8b57d""><code>2dbdfb8</code></a> don't assign unused name (<a href=""https://redirect.github.com/pyca/cryptography/issues/11310"">#11310</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/ccc66e6cdf92f4c29012f86f44ad183161eccaad""><code>ccc66e6</code></a> Bump openssl from 0.10.64 to 0.10.65 in /src/rust (<a href=""https://redirect.github.com/pyca/cryptography/issues/11308"">#11308</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/4310c8727b50fa5f713a0e863ee3defc0c831921""><code>4310c87</code></a> Bump sphinxcontrib-qthelp from 1.0.7 to 1.0.8 (<a href=""https://redirect.github.com/pyca/cryptography/issues/11307"">#11307</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/f66a9c4b4fe9b87825872fef7a36c319b823f322""><code>f66a9c4</code></a> Bump sphinxcontrib-htmlhelp from 2.0.5 to 2.0.6 (<a href=""https://redirect.github.com/pyca/cryptography/issues/11306"">#11306</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/a8fcf18ee0bb0570bd4c9041cf387dc7a9c1968a""><code>a8fcf18</code></a> Bump openssl-sys from 0.9.102 to 0.9.103 in /src/rust (<a href=""https://redirect.github.com/pyca/cryptography/issues/11305"">#11305</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/2fe32b28b05d8918dda6f7a34e6d9d4148dde818""><code>2fe32b2</code></a> Bump mypy from 1.10.1 to 1.11.0 (<a href=""https://redirect.github.com/pyca/cryptography/issues/11303"">#11303</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/ee24e827fc226ad8dc9edacf3dbe1823602d0a8b""><code>ee24e82</code></a> Bump setuptools from 71.0.3 to 71.0.4 in /.github/requirements (<a href=""https://redirect.github.com/pyca/cryptography/issues/11304"">#11304</a>)</li>
+<li><a href=""https://github.com/pyca/cryptography/commit/7249ccd5c658e2965909d970cc9735ae7f049d15""><code>7249ccd</code></a> Bump portable-atomic from 1.6.0 to 1.7.0 in /src/rust (<a href=""https://redirect.github.com/pyca/cryptography/issues/11302"">#11302</a>)</li>
+<li>Additional commits viewable in <a href=""https://github.com/pyca/cryptography/compare/42.0.8...43.0.0"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `mypy` from 1.10.1 to 1.11.1
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/python/mypy/blob/master/CHANGELOG.md"">mypy's changelog</a>.</em></p>
+<blockquote>
+<h1>Mypy Release Notes</h1>
+<h2>Next release</h2>
+<h2>Mypy 1.11</h2>
+<p>We’ve just uploaded mypy 1.11 to the Python Package Index (<a href=""https://pypi.org/project/mypy/"">PyPI</a>). Mypy is a static type checker for Python. This release includes new features, performance improvements and bug fixes. You can install it as follows:</p>
+<pre><code>python3 -m pip install -U mypy
+</code></pre>
+<p>You can read the full documentation for this release on <a href=""http://mypy.readthedocs.io"">Read the Docs</a>.</p>
+<h4>Support Python 3.12 Syntax for Generics (PEP 695)</h4>
+<p>Mypy now supports the new type parameter syntax introduced in Python 3.12 (<a href=""https://peps.python.org/pep-0695/"">PEP 695</a>).
+This feature is still experimental and must be enabled with the <code>--enable-incomplete-feature=NewGenericSyntax</code> flag, or with <code>enable_incomplete_feature = NewGenericSyntax</code> in the mypy configuration file.
+We plan to enable this by default in the next mypy feature release.</p>
+<p>This example demonstrates the new syntax:</p>
+<pre lang=""python""><code># Generic function
+def f[T](https://github.com/python/mypy/blob/master/x: T) -&gt; T: ...
+<p>reveal_type(f(1))  # Revealed type is 'int'</p>
+<h1>Generic class</h1>
+<p>class C[T]:
+def <strong>init</strong>(self, x: T) -&gt; None:
+self.x = x</p>
+<p>c = C('a')
+reveal_type(c.x)  # Revealed type is 'str'</p>
+<h1>Type alias</h1>
+<p>type A[T] = C[list[T]]
+</code></pre></p>
+<p>This feature was contributed by Jukka Lehtosalo.</p>
+<h4>Support for <code>functools.partial</code></h4>
+<p>Mypy now type checks uses of <code>functools.partial</code>. Previously mypy would accept arbitrary arguments.</p>
+<p>This example will now produce an error:</p>
+<pre lang=""python""><code>from functools import partial
+&lt;/tr&gt;&lt;/table&gt; 
+</code></pre>
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/python/mypy/commit/570b90a7a368f04c64f60af339d0ac1808c49c15""><code>570b90a</code></a> Bump version to 1.11</li>
+<li><a href=""https://github.com/python/mypy/commit/b3a102ef31f63a8a8ba32c8dbe160ddef3c43054""><code>b3a102e</code></a> Fix <code>RawExpressionType.accept</code> crash with <code>--cache-fine-grained</code> (<a href=""https://redirect.github.com/python/mypy/issues/17588"">#17588</a>)</li>
+<li><a href=""https://github.com/python/mypy/commit/aec04c74488d46a81a95ed3553b8e953a6ec59a7""><code>aec04c7</code></a> Fix PEP 604 isinstance caching (<a href=""https://redirect.github.com/python/mypy/issues/17563"">#17563</a>)</li>
+<li><a href=""https://github.com/python/mypy/commit/cb44e4d8f18b9bc874f1076b33eec7ad67de165c""><code>cb44e4d</code></a> Fix <code>typing.TypeAliasType</code> being undefined on python &lt; 3.12 (<a href=""https://redirect.github.com/python/mypy/issues/17558"">#17558</a>)</li>
+<li><a href=""https://github.com/python/mypy/commit/6cf9180e1411dab2ee91b57374f696d391eb24f4""><code>6cf9180</code></a> Fix types.GenericAlias lookup crash (<a href=""https://redirect.github.com/python/mypy/issues/17543"">#17543</a>)</li>
+<li><a href=""https://github.com/python/mypy/commit/64c1ebf7cff51c13b1771174e3bb6bce9fe0d5dc""><code>64c1ebf</code></a> Bump version to 1.11.1+dev</li>
+<li><a href=""https://github.com/python/mypy/commit/dbd5f5cdb62b4dcd1e498c3a91c204b812609fdf""><code>dbd5f5c</code></a> Remove +dev from version for 1.11 release</li>
+<li><a href=""https://github.com/python/mypy/commit/f0a8c6931485364d918f7b4920e5f2832a6be22f""><code>f0a8c69</code></a> Update CHANGELOG for mypy 1.11 (<a href=""https://redirect.github.com/python/mypy/issues/17540"">#17540</a>)</li>
+<li><a href=""https://github.com/python/mypy/commit/371f7801e9bff13803a228e6cc8dd4cee6c8e472""><code>371f780</code></a> CHANGELOG.md update for 1.11 (<a href=""https://redirect.github.com/python/mypy/issues/17539"">#17539</a>)</li>
+<li><a href=""https://github.com/python/mypy/commit/2563da0c721a89725bfd009da12dd6378554bfc6""><code>2563da0</code></a> Fix daemon crash on invalid type in TypedDict (<a href=""https://redirect.github.com/python/mypy/issues/17495"">#17495</a>)</li>
+<li>Additional commits viewable in <a href=""https://github.com/python/mypy/compare/v1.10.1...v1.11.1"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `pre-commit` from 3.7.1 to 3.8.0
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/pre-commit/pre-commit/releases"">pre-commit's releases</a>.</em></p>
+<blockquote>
+<h2>pre-commit v3.8.0</h2>
+<h3>Features</h3>
+<ul>
+<li>Implement health checks for <code>language: r</code> so environments are recreated if the system version of R changes.
+<ul>
+<li><a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3206"">#3206</a> issue by <a href=""https://github.com/lorenzwalthert""><code>@​lorenzwalthert</code></a>.</li>
+<li><a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3265"">#3265</a> PR by <a href=""https://github.com/lorenzwalthert""><code>@​lorenzwalthert</code></a>.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/pre-commit/pre-commit/blob/main/CHANGELOG.md"">pre-commit's changelog</a>.</em></p>
+<blockquote>
+<h1>3.8.0 - 2024-07-28</h1>
+<h3>Features</h3>
+<ul>
+<li>Implement health checks for <code>language: r</code> so environments are recreated if
+the system version of R changes.
+<ul>
+<li><a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3206"">#3206</a> issue by <a href=""https://github.com/lorenzwalthert""><code>@​lorenzwalthert</code></a>.</li>
+<li><a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3265"">#3265</a> PR by <a href=""https://github.com/lorenzwalthert""><code>@​lorenzwalthert</code></a>.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/d46423ffe14a37a06a0bcb6fe1b8294a27b6c289""><code>d46423f</code></a> v3.8.0</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/8133abd7308547355a524526366a62b3a6aa3acd""><code>8133abd</code></a> Merge pull request <a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3265"">#3265</a> from lorenzwalthert/issue-3206</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/da0c1d0cfa19f6dc0d6ed97820c7cc93fe7e7c58""><code>da0c1d0</code></a> implement health check for language:r</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/f641f6a15701671dc31e661ee319268ee361d721""><code>f641f6a</code></a> Merge pull request <a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3264"">#3264</a> from pre-commit/pre-commit-ci-update-config</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/a68a19d217d0d1067828622fde9044d9502693b3""><code>a68a19d</code></a> fixes for mypy 1.11</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/88317ddb34ac8c60b4be7e22198fb550dcae995e""><code>88317dd</code></a> [pre-commit.ci] pre-commit autoupdate</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/faa6f8c70ccef865884adb0cb079c8162013bf19""><code>faa6f8c</code></a> Merge pull request <a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3244"">#3244</a> from pre-commit/pre-commit-ci-update-config</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/f632459bc67834a200aac26f1129fc16f82fb625""><code>f632459</code></a> [pre-commit.ci] pre-commit autoupdate</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/0252908c27b4e5539978ec8e676576a5e9ea8c2f""><code>0252908</code></a> Merge pull request <a href=""https://redirect.github.com/pre-commit/pre-commit/issues/3240"">#3240</a> from pre-commit/pre-commit-ci-update-config</li>
+<li><a href=""https://github.com/pre-commit/pre-commit/commit/69b5dce12ab0674cd7a622ca8b55f1afa720211b""><code>69b5dce</code></a> [pre-commit.ci] pre-commit autoupdate</li>
+<li>Additional commits viewable in <a href=""https://github.com/pre-commit/pre-commit/compare/v3.7.1...v3.8.0"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `pyright` from 1.1.369 to 1.1.374
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/c35c2ee91b70d8746ef15927a0055feb0156264d""><code>c35c2ee</code></a> [pyright updated to 1.1.374] Update Version (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/286"">#286</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/5d315f986f4e5a48897f4d8ff089c8679be9f927""><code>5d315f9</code></a> [pyright updated to 1.1.373] Update Version (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/284"">#284</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/59a4bdf8446e1bde6ba2282cb0e017c18b360869""><code>59a4bdf</code></a> [pyright updated to 1.1.372] Update Version (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/283"">#283</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/ca00a93bfd9c3238890d662befa957cdb122c210""><code>ca00a93</code></a> [pyright updated to 1.1.371] Update Version (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/282"">#282</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/14f3e584c35ec8fad0de80287b36bd912635c175""><code>14f3e58</code></a> Pyright NPM Package update to 1.1.370 (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/281"">#281</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/804dafbe7ab1b9c8766c2b4755fb29db37959ab7""><code>804dafb</code></a> chore(internal): loosen twine dependency</li>
+<li>See full diff in <a href=""https://github.com/RobertCraigie/pyright-python/compare/v1.1.369...v1.1.374"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)
+- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)
+- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
+- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
+- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
+
+
+</details>",closed,2024-08-01T15:28:29+00:00,2024-09-08T00:07:58+00:00,2024-08-24T01:04:20+00:00,,6c47886dfc86f0b51a47427e1e2526c4de8ab51c,dependabot[bot],12,12,4,1,0,1,False,https://github.com/pallets/flask/pull/5538,{}
+pallets/flask,5535,Add contact section,,closed,2024-07-28T06:23:37+00:00,2024-08-12T00:07:01+00:00,2024-07-28T08:28:49+00:00,,e73183d04c57102d34c06822a84f09afd5e9af64,01DarshanPatni,5,0,2,1,0,3,False,https://github.com/pallets/flask/pull/5535,{}
+pallets/flask,5532,"Provide more clear flask -e, --env-file flag desription","Currently the description for `flask` cli command `-e, --env-file` flag is misleading. I understand that this functionality is covered and perfectly explained in docs, but in case you are not familiar with documentation you will just use `flask --help` command to read which flags are allowed.
+
+This PR just adds few sentences to make `-e, --env-file` flag description more clear and exhaustive.
+**Before:**
+![image](https://github.com/user-attachments/assets/39b7fb57-93b6-4604-bb3e-3eccfe44cb29)
+**After**
+![image](https://github.com/user-attachments/assets/7957d673-685e-4bee-aecf-65922bdd3886)
+
+Initial PR with for `-e, --env-file` flag: https://github.com/pallets/flask/pull/4646
+",closed,2024-07-19T00:20:44+00:00,2024-11-21T00:08:15+00:00,2024-11-06T17:35:24+00:00,,334934b55f96fe5f6199b78d8ba74eff934b5c24,differencialx,7,2,2,2,0,1,False,https://github.com/pallets/flask/pull/5532,{}
+pallets/flask,5526,Add encoding parameter to open resource,"- Add encoding parameter to open_resource method and pass it to built-in open function
+- Remove skip mark from unittests, that checks this functionality
+
+This PR fixes #5504 
+",closed,2024-07-10T11:57:00+00:00,2024-07-26T00:06:24+00:00,2024-07-11T02:16:46+00:00,2024-07-11T02:16:46+00:00,a8956feba1e40105e7bc78fa62ce36c58d1c91e1,markparonyan,81,53,4,1,0,1,True,https://github.com/pallets/flask/pull/5526,{}
+pallets/flask,5525,"Add unit tests to show, that encoding parameter in open_resource method is required","I am creating this PR so you can see the necessity of fixing issue #5504 
+Tests are marked as skipped, so it will not break.
+",closed,2024-07-10T11:47:09+00:00,2024-07-25T00:06:36+00:00,2024-07-10T12:22:57+00:00,,28218e88d1da8cdbc1825c7d41b75196326b87d2,markparonyan,13,0,1,0,1,3,False,https://github.com/pallets/flask/pull/5525,"{""ThiefMaster"": [{""state"": ""COMMENTED"", ""submitted_at"": ""2024-07-10T11:56:13+00:00""}]}"
+pallets/flask,5524,bumping werkzueg version to 3.0.3,"Update Werkzeug to 3.0.3 to address vulnerability found in Werkzeug debugger.
+https://werkzeug.palletsprojects.com/en/3.0.x/changes/
+
+Updating Werkzeug to version 3.0.3 addresses the debugger vulnerability.
+
+fixes #5523
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-07-09T21:47:32+00:00,2024-07-24T00:07:33+00:00,2024-07-09T22:04:00+00:00,,5887cb5bb5136c846a53a37e1585c0129a7ecec1,gaburn,8,3,4,2,0,2,False,https://github.com/pallets/flask/pull/5524,{}
+pallets/flask,5522,Update waitress.rst,"fixed a small typo
+
+<!--
+Before opening a PR, open a ticket describing the issue or feature the
+PR will address. An issue is not required for fixing typos in
+documentation, or other simple non-code changes.
+
+Replace this comment with a description of the change. Describe how it
+addresses the linked ticket.
+-->
+
+<!--
+Link to relevant issues or previous PRs, one per line. Use ""fixes"" to
+automatically close an issue.
+
+fixes #<issue number>
+-->
+
+<!--
+Ensure each step in CONTRIBUTING.rst is complete, especially the following:
+
+- Add tests that demonstrate the correct behavior of the change. Tests
+  should fail without the change.
+- Add or update relevant docs, in the docs folder and in code.
+- Add an entry in CHANGES.rst summarizing the change and linking to the issue.
+- Add `.. versionchanged::` entries in any relevant code docs.
+-->
+",closed,2024-07-09T10:21:00+00:00,2024-07-26T00:06:25+00:00,2024-07-11T01:08:49+00:00,2024-07-11T01:08:49+00:00,5353f306fe0c64ffa9e73f256ba3cb200652354d,amrear,1,1,1,1,0,1,True,https://github.com/pallets/flask/pull/5522,{}
+pallets/flask,5517,[pre-commit.ci] pre-commit autoupdate,"<!--pre-commit.ci start-->
+updates:
+- [github.com/astral-sh/ruff-pre-commit: v0.4.7 → v0.5.0](https://github.com/astral-sh/ruff-pre-commit/compare/v0.4.7...v0.5.0)
+<!--pre-commit.ci end-->",closed,2024-07-02T00:15:34+00:00,2024-07-17T00:07:02+00:00,2024-07-02T11:17:59+00:00,2024-07-02T11:17:59+00:00,66af0e55ef6631d05c691707da19d0f1c46921ea,pre-commit-ci[bot],1,1,1,0,0,1,True,https://github.com/pallets/flask/pull/5517,{}
+pallets/flask,5516,Bump the github-actions group with 2 updates,"Bumps the github-actions group with 2 updates: [actions/checkout](https://github.com/actions/checkout) and [pypa/gh-action-pypi-publish](https://github.com/pypa/gh-action-pypi-publish).
+
+Updates `actions/checkout` from 4.1.6 to 4.1.7
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/actions/checkout/releases"">actions/checkout's releases</a>.</em></p>
+<blockquote>
+<h2>v4.1.7</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Bump the minor-npm-dependencies group across 1 directory with 4 updates by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1739"">actions/checkout#1739</a></li>
+<li>Bump actions/checkout from 3 to 4 by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1697"">actions/checkout#1697</a></li>
+<li>Check out other refs/* by commit by <a href=""https://github.com/orhantoy""><code>@​orhantoy</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1774"">actions/checkout#1774</a></li>
+<li>Pin actions/checkout's own workflows to a known, good, stable version. by <a href=""https://github.com/jww3""><code>@​jww3</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1776"">actions/checkout#1776</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a href=""https://github.com/orhantoy""><code>@​orhantoy</code></a> made their first contribution in <a href=""https://redirect.github.com/actions/checkout/pull/1774"">actions/checkout#1774</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href=""https://github.com/actions/checkout/compare/v4.1.6...v4.1.7"">https://github.com/actions/checkout/compare/v4.1.6...v4.1.7</a></p>
+</blockquote>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/actions/checkout/blob/main/CHANGELOG.md"">actions/checkout's changelog</a>.</em></p>
+<blockquote>
+<h1>Changelog</h1>
+<h2>v4.1.7</h2>
+<ul>
+<li>Bump the minor-npm-dependencies group across 1 directory with 4 updates by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1739"">actions/checkout#1739</a></li>
+<li>Bump actions/checkout from 3 to 4 by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1697"">actions/checkout#1697</a></li>
+<li>Check out other refs/* by commit by <a href=""https://github.com/orhantoy""><code>@​orhantoy</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1774"">actions/checkout#1774</a></li>
+<li>Pin actions/checkout's own workflows to a known, good, stable version. by <a href=""https://github.com/jww3""><code>@​jww3</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1776"">actions/checkout#1776</a></li>
+</ul>
+<h2>v4.1.6</h2>
+<ul>
+<li>Check platform to set archive extension appropriately by <a href=""https://github.com/cory-miller""><code>@​cory-miller</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1732"">actions/checkout#1732</a></li>
+</ul>
+<h2>v4.1.5</h2>
+<ul>
+<li>Update NPM dependencies by <a href=""https://github.com/cory-miller""><code>@​cory-miller</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1703"">actions/checkout#1703</a></li>
+<li>Bump github/codeql-action from 2 to 3 by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1694"">actions/checkout#1694</a></li>
+<li>Bump actions/setup-node from 1 to 4 by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1696"">actions/checkout#1696</a></li>
+<li>Bump actions/upload-artifact from 2 to 4 by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1695"">actions/checkout#1695</a></li>
+<li>README: Suggest <code>user.email</code> to be <code>41898282+github-actions[bot]@users.noreply.github.com</code> by <a href=""https://github.com/cory-miller""><code>@​cory-miller</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1707"">actions/checkout#1707</a></li>
+</ul>
+<h2>v4.1.4</h2>
+<ul>
+<li>Disable <code>extensions.worktreeConfig</code> when disabling <code>sparse-checkout</code> by <a href=""https://github.com/jww3""><code>@​jww3</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1692"">actions/checkout#1692</a></li>
+<li>Add dependabot config by <a href=""https://github.com/cory-miller""><code>@​cory-miller</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1688"">actions/checkout#1688</a></li>
+<li>Bump the minor-actions-dependencies group with 2 updates by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1693"">actions/checkout#1693</a></li>
+<li>Bump word-wrap from 1.2.3 to 1.2.5 by <a href=""https://github.com/dependabot""><code>@​dependabot</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1643"">actions/checkout#1643</a></li>
+</ul>
+<h2>v4.1.3</h2>
+<ul>
+<li>Check git version before attempting to disable <code>sparse-checkout</code> by <a href=""https://github.com/jww3""><code>@​jww3</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1656"">actions/checkout#1656</a></li>
+<li>Add SSH user parameter by <a href=""https://github.com/cory-miller""><code>@​cory-miller</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1685"">actions/checkout#1685</a></li>
+<li>Update <code>actions/checkout</code> version in <code>update-main-version.yml</code> by <a href=""https://github.com/jww3""><code>@​jww3</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1650"">actions/checkout#1650</a></li>
+</ul>
+<h2>v4.1.2</h2>
+<ul>
+<li>Fix: Disable sparse checkout whenever <code>sparse-checkout</code> option is not present <a href=""https://github.com/dscho""><code>@​dscho</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1598"">actions/checkout#1598</a></li>
+</ul>
+<h2>v4.1.1</h2>
+<ul>
+<li>Correct link to GitHub Docs by <a href=""https://github.com/peterbe""><code>@​peterbe</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1511"">actions/checkout#1511</a></li>
+<li>Link to release page from what's new section by <a href=""https://github.com/cory-miller""><code>@​cory-miller</code></a> in <a href=""https://redirect.github.com/actions/checkout/pull/1514"">actions/checkout#1514</a></li>
+</ul>
+<h2>v4.1.0</h2>
+<ul>
+<li><a href=""https://redirect.github.com/actions/checkout/pull/1396"">Add support for partial checkout filters</a></li>
+</ul>
+<h2>v4.0.0</h2>
+<ul>
+<li><a href=""https://redirect.github.com/actions/checkout/pull/1067"">Support fetching without the --progress option</a></li>
+<li><a href=""https://redirect.github.com/actions/checkout/pull/1436"">Update to node20</a></li>
+</ul>
+<h2>v3.6.0</h2>
+<ul>
+<li><a href=""https://redirect.github.com/actions/checkout/pull/1377"">Fix: Mark test scripts with Bash'isms to be run via Bash</a></li>
+<li><a href=""https://redirect.github.com/actions/checkout/pull/579"">Add option to fetch tags even if fetch-depth &gt; 0</a></li>
+</ul>
+<h2>v3.5.3</h2>
+<ul>
+<li><a href=""https://redirect.github.com/actions/checkout/pull/1196"">Fix: Checkout fail in self-hosted runners when faulty submodule are checked-in</a></li>
+<li><a href=""https://redirect.github.com/actions/checkout/pull/1287"">Fix typos found by codespell</a></li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/actions/checkout/commit/692973e3d937129bcbf40652eb9f2f61becf3332""><code>692973e</code></a> Prepare 4.1.7 release (<a href=""https://redirect.github.com/actions/checkout/issues/1775"">#1775</a>)</li>
+<li><a href=""https://github.com/actions/checkout/commit/6ccd57f4c5d15bdc2fef309bd9fb6cc9db2ef1c6""><code>6ccd57f</code></a> Pin actions/checkout's own workflows to a known, good, stable version. (<a href=""https://redirect.github.com/actions/checkout/issues/1776"">#1776</a>)</li>
+<li><a href=""https://github.com/actions/checkout/commit/b17fe1e4d59a9d1d95a7aead5e6fcd13e50939a5""><code>b17fe1e</code></a> Handle hidden refs (<a href=""https://redirect.github.com/actions/checkout/issues/1774"">#1774</a>)</li>
+<li><a href=""https://github.com/actions/checkout/commit/b80ff79f1755d06ba70441c368a6fe801f5f3a62""><code>b80ff79</code></a> Bump actions/checkout from 3 to 4 (<a href=""https://redirect.github.com/actions/checkout/issues/1697"">#1697</a>)</li>
+<li><a href=""https://github.com/actions/checkout/commit/b1ec3021b8fa02164da82ca1557d017d83b0e179""><code>b1ec302</code></a> Bump the minor-npm-dependencies group across 1 directory with 4 updates (<a href=""https://redirect.github.com/actions/checkout/issues/1739"">#1739</a>)</li>
+<li>See full diff in <a href=""https://github.com/actions/checkout/compare/a5ac7e51b41094c92402da3b24376905380afc29...692973e3d937129bcbf40652eb9f2f61becf3332"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `pypa/gh-action-pypi-publish` from 1.8.14 to 1.9.0
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/pypa/gh-action-pypi-publish/releases"">pypa/gh-action-pypi-publish's releases</a>.</em></p>
+<blockquote>
+<h2>v1.9.0</h2>
+<h2>💅 Cosmetic Output Improvements</h2>
+<ul>
+<li><a href=""https://github.com/woodruffw""><code>@​woodruffw</code></a><a href=""https://github.com/sponsors/woodruffw"">💰</a> updated the tense on password nudge in <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/234"">#234</a></li>
+<li><a href=""https://github.com/shenxianpeng""><code>@​shenxianpeng</code></a><a href=""https://github.com/sponsors/shenxianpeng"">💰</a> helped us disable the progress bar that was being produced by the <code>twine upload</code> command via <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/231"">#231</a></li>
+<li><a href=""https://github.com/woodruffw""><code>@​woodruffw</code></a><a href=""https://github.com/sponsors/woodruffw"">💰</a> also linked the PyPI status dashboard in the trusted publishing error message via <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/pull/243"">pypa/gh-action-pypi-publish#243</a></li>
+</ul>
+<h2>🛠️ Internal Dependencies</h2>
+<ul>
+<li>pre-commit linters got auto-updated @ <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/225"">#225</a></li>
+<li>some notable dependency bumps include
+<ul>
+<li><code>cryptography == 42.0.7</code></li>
+<li><code>id == 1.4.0</code></li>
+<li><code>idna == 3.7</code> via <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/228"">#228</a></li>
+<li><code>requests == 2.32.0</code> via <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/240"">#240</a></li>
+<li><code>Twine == 5.1.0</code></li>
+</ul>
+</li>
+</ul>
+<h2>⚙️ Secret Stuff</h2>
+<p>In <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/241"">#241</a>, <a href=""https://github.com/br3ndonland""><code>@​br3ndonland</code></a><a href=""https://github.com/sponsors/br3ndonland"">💰</a> added a Docker label linking the container image to this repository for GHCR to display it nicely. This is preparatory work for a big performance-focused refactoring he's working on in <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/230"">#230</a>.</p>
+<h2>💪 New Contributors</h2>
+<ul>
+<li><a href=""https://github.com/shenxianpeng""><code>@​shenxianpeng</code></a> made their first contribution in <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/pull/231"">pypa/gh-action-pypi-publish#231</a></li>
+<li><a href=""https://github.com/br3ndonland""><code>@​br3ndonland</code></a> made their first contribution in <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/pull/241"">pypa/gh-action-pypi-publish#241</a></li>
+</ul>
+<p><strong>🪞 Full Diff</strong>: <a href=""https://github.com/pypa/gh-action-pypi-publish/compare/v1.8.14...v1.9.0"">https://github.com/pypa/gh-action-pypi-publish/compare/v1.8.14...v1.9.0</a></p>
+<p><strong>🧔‍♂️ Release Manager:</strong> <a href=""https://github.com/sponsors/webknjaz""><code>@​webknjaz 🇺🇦</code></a></p>
+<p><strong>🙏 Special Thanks</strong> to <a href=""https://github.com/pradyunsg""><code>@​pradyunsg</code></a><a href=""https://github.com/sponsors/pradyunsg"">💰</a> for promptly unblocking this release to Marketplace as GitHub started asking for yet another developer agreement signature from the organization admins.</p>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/ec4db0b4ddc65acdf4bff5fa45ac92d78b56bdf0""><code>ec4db0b</code></a> Merge PR <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/243"">#243</a> into unstable/v1</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/e7908444c66f5eb9b434207e3ecfef975ea3294e""><code>e790844</code></a> oidc-exchange: link to status dashboard</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/87b624f8716b1150d93f45fa364e49eceebf3ffd""><code>87b624f</code></a> 💅Update homepage @ Dockerfile to GH Marketplace</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/da2f9bb91e4befc116f611d2977e267bfc852706""><code>da2f9bb</code></a> Merge pull request <a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/241"">#241</a> from br3ndonland/ghcr-label</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/abbea2dd5c5802d41c4b6d88c355c64e10207278""><code>abbea2d</code></a> Add Docker label for GHCR</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/2734d07314198e3efbc2a559db0dd8ee41311611""><code>2734d07</code></a> build(deps): bump requests from 2.31.0 to 2.32.0 in /requirements (<a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/240"">#240</a>)</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/a54b9b8952a40829f62ac2bc7855f676d46f9738""><code>a54b9b8</code></a> ---</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/699cd6103f50bf5c3b2f070c70712d109c168e6c""><code>699cd61</code></a> ⇪📦 Bump the runtime dep lockfile</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/8414fc245772bb111cb480a62446d4bdfff3ddb0""><code>8414fc2</code></a> [pre-commit.ci] pre-commit autoupdate (<a href=""https://redirect.github.com/pypa/gh-action-pypi-publish/issues/225"">#225</a>)</li>
+<li><a href=""https://github.com/pypa/gh-action-pypi-publish/commit/67a07ebbede58a32f17e8cae6b08094c1f2a5c95""><code>67a07eb</code></a> Disable the progress bar when running <code>twine upload</code></li>
+<li>Additional commits viewable in <a href=""https://github.com/pypa/gh-action-pypi-publish/compare/81e9d935c883d0b210363ab89cf05f3894778450...ec4db0b4ddc65acdf4bff5fa45ac92d78b56bdf0"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)
+- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)
+- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
+- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
+- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
+
+
+</details>",closed,2024-07-01T15:56:21+00:00,2024-07-16T00:07:02+00:00,2024-07-01T19:47:02+00:00,2024-07-01T19:47:02+00:00,088b58dbceb09b3234926af8488c016227bd7c0e,dependabot[bot],5,5,2,0,0,1,True,https://github.com/pallets/flask/pull/5516,{}
+pallets/flask,5514,Bump the python-requirements group in /requirements with 5 updates,"Bumps the python-requirements group in /requirements with 5 updates:
+
+| Package | From | To |
+| --- | --- | --- |
+| [cryptography](https://github.com/pyca/cryptography) | `42.0.7` | `42.0.8` |
+| [mypy](https://github.com/python/mypy) | `1.10.0` | `1.10.1` |
+| [pyright](https://github.com/RobertCraigie/pyright-python) | `1.1.365` | `1.1.369` |
+| [pytest](https://github.com/pytest-dev/pytest) | `8.2.1` | `8.2.2` |
+| [tox](https://github.com/tox-dev/tox) | `4.15.0` | `4.15.1` |
+
+Updates `cryptography` from 42.0.7 to 42.0.8
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst"">cryptography's changelog</a>.</em></p>
+<blockquote>
+<p>42.0.8 - 2024-06-04</p>
+<pre><code>
+* Updated Windows, macOS, and Linux wheels to be compiled with OpenSSL 3.2.2.
+<p>.. _v42-0-7:<br />
+</code></pre></p>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/pyca/cryptography/commit/761ef4b955697c63e83734096f672224224082e1""><code>761ef4b</code></a> bump for 42.0.8 release (<a href=""https://redirect.github.com/pyca/cryptography/issues/11072"">#11072</a>)</li>
+<li>See full diff in <a href=""https://github.com/pyca/cryptography/compare/42.0.7...42.0.8"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `mypy` from 1.10.0 to 1.10.1
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/python/mypy/blob/master/CHANGELOG.md"">mypy's changelog</a>.</em></p>
+<blockquote>
+<h4>Mypy 1.10.1</h4>
+<ul>
+<li>Fix error reporting on cached run after uninstallation of third party library (Shantanu, PR <a href=""https://redirect.github.com/python/mypy/pull/17420"">17420</a>)</li>
+</ul>
+<h4>Acknowledgements</h4>
+<p>Thanks to all mypy contributors who contributed to this release:</p>
+<ul>
+<li>Alex Waygood</li>
+<li>Ali Hamdan</li>
+<li>Edward Paget</li>
+<li>Evgeniy Slobodkin</li>
+<li>Hashem</li>
+<li>hesam</li>
+<li>Hugo van Kemenade</li>
+<li>Ihor</li>
+<li>James Braza</li>
+<li>Jelle Zijlstra</li>
+<li>jhance</li>
+<li>Jukka Lehtosalo</li>
+<li>Loïc Simon</li>
+<li>Marc Mueller</li>
+<li>Matthieu Devlin</li>
+<li>Michael R. Crusoe</li>
+<li>Nikita Sobolev</li>
+<li>Oskari Lehto</li>
+<li>Riccardo Di Maio</li>
+<li>Richard Si</li>
+<li>roberfi</li>
+<li>Roman Solomatin</li>
+<li>Sam Xifaras</li>
+<li>Shantanu</li>
+<li>Spencer Brown</li>
+<li>Srinivas Lade</li>
+<li>Tamir Duberstein</li>
+<li>youkaichao</li>
+</ul>
+<p>I’d also like to thank my employer, Dropbox, for supporting mypy development.</p>
+<h2>Mypy 1.9</h2>
+<p>We’ve just uploaded mypy 1.9 to the Python Package Index (<a href=""https://pypi.org/project/mypy/"">PyPI</a>). Mypy is a static type checker for Python. This release includes new features, performance improvements and bug fixes. You can install it as follows:</p>
+<pre><code>python3 -m pip install -U mypy
+</code></pre>
+<p>You can read the full documentation for this release on <a href=""http://mypy.readthedocs.io"">Read the Docs</a>.</p>
+<h4>Breaking Changes</h4>
+<p>Because the version of typeshed we use in mypy 1.9 doesn't support 3.7, neither does mypy 1.9. (Jared Hance, PR <a href=""https://redirect.github.com/python/mypy/pull/16883"">16883</a>)</p>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/python/mypy/commit/c28b5257b528f65a028e7d0dbecbcd81c7997356""><code>c28b525</code></a> [1.10 backport] Fix error reporting on cached run after uninstallation of thi...</li>
+<li>See full diff in <a href=""https://github.com/python/mypy/compare/v1.10.0...v1.10.1"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `pyright` from 1.1.365 to 1.1.369
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/903dbc65aaae3fd5db91db637f35d6ad5ab1ed75""><code>903dbc6</code></a> chore(ci): enable workflow_dispatch for releasing</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/82d28c784faec6219b3cf3b7c00bd160912a8846""><code>82d28c7</code></a> chore(internal): pin twine dependency</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/ffa917f5173f703503b4f7ef1a5e8ec1a793b928""><code>ffa917f</code></a> [pyright updated to 1.1.369] Update Version (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/279"">#279</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/604a0a0b620825aac310af9cce25c0fc569a3a60""><code>604a0a0</code></a> [pyright updated to 1.1.368] Update Version (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/278"">#278</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/dd680bad2637799e57aa285c18bf942316473dc9""><code>dd680ba</code></a> Pyright NPM Package update to 1.1.367 (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/277"">#277</a>)</li>
+<li><a href=""https://github.com/RobertCraigie/pyright-python/commit/d337bcf583c3e82def58bf73d3da5da30e81d190""><code>d337bcf</code></a> [pyright updated to 1.1.366] Update Version (<a href=""https://redirect.github.com/RobertCraigie/pyright-python/issues/276"">#276</a>)</li>
+<li>See full diff in <a href=""https://github.com/RobertCraigie/pyright-python/compare/v1.1.365...v1.1.369"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `pytest` from 8.2.1 to 8.2.2
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/pytest-dev/pytest/releases"">pytest's releases</a>.</em></p>
+<blockquote>
+<h2>8.2.2</h2>
+<h1>pytest 8.2.2 (2024-06-04)</h1>
+<h2>Bug Fixes</h2>
+<ul>
+<li><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12355"">#12355</a>: Fix possible catastrophic performance slowdown on a certain parametrization pattern involving many higher-scoped parameters.</li>
+<li><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12367"">#12367</a>: Fix a regression in pytest 8.2.0 where unittest class instances (a fresh one is created for each test) were not released promptly on test teardown but only on session teardown.</li>
+<li><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12381"">#12381</a>: Fix possible &quot;Directory not empty&quot; crashes arising from concurent cache dir (<code>.pytest_cache</code>) creation. Regressed in pytest 8.2.0.</li>
+</ul>
+<h2>Improved Documentation</h2>
+<ul>
+<li><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12290"">#12290</a>: Updated Sphinx theme to use Furo instead of Flask, enabling Dark mode theme.</li>
+<li><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12356"">#12356</a>: Added a subsection to the documentation for debugging flaky tests to mention
+lack of thread safety in pytest as a possible source of flakyness.</li>
+<li><a href=""https://redirect.github.com/pytest-dev/pytest/issues/12363"">#12363</a>: The documentation webpages now links to a canonical version to reduce outdated documentation in search engine results.</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/329d3712146e69c471be3e30883d54bdde2f76cb""><code>329d371</code></a> Prepare release version 8.2.2</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/214d098fcce88940f5ce9353786b3cc8f0bd3938""><code>214d098</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12414"">#12414</a> from bluetech/backport-12409</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/153a436bc40c9e89d90d62255ef5a89e9a762dca""><code>153a436</code></a> [8.2.x] fixtures: fix catastrophic performance problem in <code>reorder_items</code></li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/b41d5a52bbb808780ab310456d71e5ce509fd402""><code>b41d5a5</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12412"">#12412</a> from pytest-dev/backport-12408-to-8.2.x</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/9bb73d734ff40f52d7bbebd708b5e3ab1ba20798""><code>9bb73d7</code></a> [8.2.x] cacheprovider: fix &quot;Directory not empty&quot; crash from cache directory c...</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/4569a01e3d20d64811d48b0b09539596520ea5a6""><code>4569a01</code></a> [8.2.x] doc: Update trainings/events (<a href=""https://redirect.github.com/pytest-dev/pytest/issues/12402"">#12402</a>)</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/1d103e5cdc1cb08f332e61a5b20fb205fa5228e7""><code>1d103e5</code></a> [8.2.x] Clarify pytest_ignore_collect docs (<a href=""https://redirect.github.com/pytest-dev/pytest/issues/12386"">#12386</a>)</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/240a252d34fff26efad5b3a92e62be4c9af94b70""><code>240a252</code></a> [8.2.x] Add html_baseurl to sphinx conf.py (<a href=""https://redirect.github.com/pytest-dev/pytest/issues/12372"">#12372</a>)</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/a5ee3c41268199c2c0af59c33050326b1c4a342e""><code>a5ee3c4</code></a> Merge pull request <a href=""https://redirect.github.com/pytest-dev/pytest/issues/12370"">#12370</a> from pytest-dev/backport-12368-to-8.2.x</li>
+<li><a href=""https://github.com/pytest-dev/pytest/commit/f7358aec2884720b4de4594ffd0811b46316514c""><code>f7358ae</code></a> [8.2.x] unittest: fix class instances no longer released on test teardown sin...</li>
+<li>Additional commits viewable in <a href=""https://github.com/pytest-dev/pytest/compare/8.2.1...8.2.2"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `tox` from 4.15.0 to 4.15.1
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href=""https://github.com/tox-dev/tox/releases"">tox's releases</a>.</em></p>
+<blockquote>
+<h2>4.15.1</h2>
+<!-- raw HTML omitted -->
+<h2>What's Changed</h2>
+<ul>
+<li>fix skip with package = wheel by <a href=""https://github.com/MarcinKonowalczyk""><code>@​MarcinKonowalczyk</code></a> in <a href=""https://redirect.github.com/tox-dev/tox/pull/3269"">tox-dev/tox#3269</a></li>
+<li>Fixed typo in user guide. by <a href=""https://github.com/carltongibson""><code>@​carltongibson</code></a> in <a href=""https://redirect.github.com/tox-dev/tox/pull/3277"">tox-dev/tox#3277</a></li>
+<li>Fix broad build privileges @ GHA release workflow by <a href=""https://github.com/webknjaz""><code>@​webknjaz</code></a> in <a href=""https://redirect.github.com/tox-dev/tox/pull/3281"">tox-dev/tox#3281</a></li>
+<li>Allow <code>ConfigSet.add_config</code> to receive parameterized generics for <code>of_type</code>. by <a href=""https://github.com/ssbarnea""><code>@​ssbarnea</code></a> in <a href=""https://redirect.github.com/tox-dev/tox/pull/3288"">tox-dev/tox#3288</a></li>
+<li>Fix section substitution with setenv by <a href=""https://github.com/JJLLWW""><code>@​JJLLWW</code></a> in <a href=""https://redirect.github.com/tox-dev/tox/pull/3289"">tox-dev/tox#3289</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a href=""https://github.com/MarcinKonowalczyk""><code>@​MarcinKonowalczyk</code></a> made their first contribution in <a href=""https://redirect.github.com/tox-dev/tox/pull/3269"">tox-dev/tox#3269</a></li>
+<li><a href=""https://github.com/carltongibson""><code>@​carltongibson</code></a> made their first contribution in <a href=""https://redirect.github.com/tox-dev/tox/pull/3277"">tox-dev/tox#3277</a></li>
+<li><a href=""https://github.com/JJLLWW""><code>@​JJLLWW</code></a> made their first contribution in <a href=""https://redirect.github.com/tox-dev/tox/pull/3289"">tox-dev/tox#3289</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href=""https://github.com/tox-dev/tox/compare/4.15.0...4.15.1"">https://github.com/tox-dev/tox/compare/4.15.0...4.15.1</a></p>
+</blockquote>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href=""https://github.com/tox-dev/tox/blob/main/docs/changelog.rst"">tox's changelog</a>.</em></p>
+<blockquote>
+<h2>v4.15.1 (2024-06-05)</h2>
+<p>Features - 4.15.1</p>
+<pre><code>- Fix ``skip_missing_interpreters`` option for ``package = wheel`` (:issue:`3269`)
+<p>Bugfixes - 4.15.1
+</code></pre></p>
+<ul>
+<li>Fix section substitution with setenv. (:issue:<code>3262</code>)</li>
+<li>Allow <code>ConfigSet.add_config</code> to receive parameterized generics for <code>of_type</code>. (:issue:<code>3288</code>)</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href=""https://github.com/tox-dev/tox/commit/079000fe80bb9baa3eb0e7f8f53f932810942d14""><code>079000f</code></a> release 4.15.1</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/489ad821e5b9c6d5aff500e1b3abc4292f52a2dc""><code>489ad82</code></a> Fix section substitution with setenv (<a href=""https://redirect.github.com/tox-dev/tox/issues/3289"">#3289</a>)</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/7317225d179a7bd70cbe409f5273d6aa3ffac488""><code>7317225</code></a> Allow <code>ConfigSet.add_config</code> to receive parameterized generics for <code>of_type</code>....</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/406f80887f757ba430c79280ad767492cf046296""><code>406f808</code></a> [pre-commit.ci] pre-commit autoupdate (<a href=""https://redirect.github.com/tox-dev/tox/issues/3283"">#3283</a>)</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/5c28d9c180679ee712a2974f4bb7d4765295bd48""><code>5c28d9c</code></a> [pre-commit.ci] pre-commit autoupdate (<a href=""https://redirect.github.com/tox-dev/tox/issues/3279"">#3279</a>)</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/f4e257c3a4ea000e07d5b670836d439f5e11fce6""><code>f4e257c</code></a> Fix broad build privileges @ GHA release workflow (<a href=""https://redirect.github.com/tox-dev/tox/issues/3281"">#3281</a>)</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/77564a1aa04300a8b2cecf8f871864d60019d645""><code>77564a1</code></a> Fixed typo in user guide.</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/e2f66b1b890f57a468c639c8c5ce7993d98ce447""><code>e2f66b1</code></a> [pre-commit.ci] auto fixes from pre-commit.com hooks</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/9afc9cba99ed0f1b163a1a96727a3bf231a4f951""><code>9afc9cb</code></a> [pre-commit.ci] pre-commit autoupdate</li>
+<li><a href=""https://github.com/tox-dev/tox/commit/3db98229ac0730e204b832c911861249d389070c""><code>3db9822</code></a> fix skip with package = wheel (<a href=""https://redirect.github.com/tox-dev/tox/issues/3269"">#3269</a>)</li>
+<li>See full diff in <a href=""https://github.com/tox-dev/tox/compare/4.15.0...4.15.1"">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)
+- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)
+- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
+- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
+- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
+
+
+</details>",closed,2024-07-01T15:28:18+00:00,2024-07-16T00:07:01+00:00,2024-07-01T23:14:08+00:00,2024-07-01T23:14:08+00:00,926ab92118006c74a0a33bcb8f770522d007349a,dependabot[bot],10,10,3,0,0,1,True,https://github.com/pallets/flask/pull/5514,{}
+pallets/flask,5511,Dev test jannes,Final version of the tests and documentation to be pulled to the main branch,closed,2024-06-27T00:05:37+00:00,2024-07-12T00:06:29+00:00,2024-06-27T00:07:35+00:00,,6da1247ba54be6551dab01451226d09fe16d4100,JannesvandenBogert,211,34,14,1,0,5,False,https://github.com/pallets/flask/pull/5511,{}
+pallets/flask,5499,add SESSION_COOKIE_PARTITIONED config,"**This pull request is related to Add support for partitioned session cookies** 
+
+fixes #5472
+
+Regarding the commit [Adding code to handle SESSION_COOKIE_SECURE](https://github.com/pallets/flask/commit/1864dde5d9458ce3ebe7cc5cab8e9b3bccbf64b0) I see that in the test_basic.py in line 20 is using `import flask`, I believe this is the reason I got this error as it's using the package installed via `pip install flask` and not the code contained in /src/flask/
+
+```
+E       AssertionError: assert 'partitioned' in 'session=eyj0zxn0aw5nijo0mn0.zmzhyw.hgj68cffl4hz1avfswp08uya5ya; domain=example.com; secure; path=/; samesite=lax'
+```
+
+I'd like to learn if I'm doing something wrong with this to correct it and modify the PR
+
+- [x] Test case modified for the behavior of the change
+- [x] Updated relevant docs, based on the appearances of SESSION_COOKIE_SECURE
+- [x] Added entry to CHANGES.rst
+",closed,2024-06-10T02:23:45+00:00,2024-11-22T00:08:16+00:00,2024-11-01T23:26:38+00:00,2024-11-01T23:26:38+00:00,ce08bc704e24c01582052f5c544fae181d08386f,Josecespedesant,34,0,5,4,0,1,True,https://github.com/pallets/flask/pull/5499,{}
+pallets/flask,5498,Added return type hinting ,Added return type hinting ,closed,2024-06-09T23:14:21+00:00,2024-06-26T00:06:21+00:00,2024-06-09T23:56:37+00:00,,68c7739e65ec63f440bbc0035e743b4a266d4113,ThisIzAli2,11,11,8,0,0,1,False,https://github.com/pallets/flask/pull/5498,{}
+pallets/flask,5497,Update README.md - Add badges,"Added a badge displaying the package age and monthly download count from pip Trends. You can view more details at - https://piptrends.com/package/flask
+
+(If necessary, the link from the badge to the package's pip Trends page can be removed. We just want to showcase a badge we have created. Didn't open a issue since this is just documentation change.)
+",closed,2024-06-07T06:33:32+00:00,2024-06-22T00:06:36+00:00,2024-06-07T12:03:50+00:00,,9d9c4388661aa9677374c3f88781414c01d7a950,ayushjain01,3,0,1,0,0,1,False,https://github.com/pallets/flask/pull/5497,{}

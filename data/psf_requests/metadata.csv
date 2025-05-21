@@ -1,0 +1,2 @@
+name,full_name,description,created_at,updated_at,language,stargazers_count,forks_count,open_issues_count,topics,license,size,default_branch,organization,is_archived,is_fork
+requests,psf/requests,"A simple, yet elegant, HTTP library.",2011-02-13T18:38:17+00:00,2025-05-21T11:03:16+00:00,Python,52890,9462,281,"['python', 'http', 'forhumans', 'requests', 'python-requests', 'client', 'humans', 'cookies']",Apache License 2.0,13160,main,psf,False,False

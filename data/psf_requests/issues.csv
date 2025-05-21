@@ -1,0 +1,3925 @@
+repo,number,title,body,state,created_at,updated_at,closed_at,author_login,assignees,comments,labels,milestone,url
+psf/requests,6950,digest  bug,"import requests
+from requests.auth import HTTPDigestAuth
+# 认证凭据
+USERNAME = ""Default User""
+PASSWORD = ""robotics""
+
+# 创建一个保持会话和Cookies的对象
+session = requests.Session()
+
+# 设置目标URL
+url = ""http://127.0.0.1:80/subscription""
+
+# 准备POST数据
+post_data = {
+    ""resources"": ""1"",
+    ""1"":""/rw/panel/ctrlstate"",
+    ""1-p"":""0""
+}
+
+try:
+    # 发送带Digest认证的POST请求
+    post_response = session.post(
+        url,
+        data=post_data,
+        auth=HTTPDigestAuth(USERNAME, PASSWORD)
+    )
+    post_response.raise_for_status()
+
+    print(f""POST响应状态码: {post_response.status_code}"")
+    print(""POST请求后的Cookies:"")
+    print(session.cookies.get_dict())
+    print(""\n响应内容:"")
+    print(post_response.text)
+    # 发送带相同认证的GET请求
+    get_response = session.get(
+        url,
+        auth=HTTPDigestAuth(USERNAME, PASSWORD)
+    )
+    get_response.raise_for_status()
+
+    print(f""\nGET响应状态码: {get_response.status_code}"")
+    print(""GET请求后的Cookies:"")
+    print(session.cookies.get_dict())
+    print(""\n响应内容:"")
+    print(get_response.text)
+
+except requests.exceptions.HTTPError as http_err:
+    print(f""HTTP错误发生: {http_err}"")
+    if post_response.status_code == 401:
+        print(""认证失败，请检查用户名密码"")
+except requests.exceptions.RequestException as req_err:
+    print(f""请求异常: {req_err}"")
+except Exception as e:
+    print(f""其他错误: {e}"")
+
+
+
+
+POST状态码: 201
+POST Cookies:
+-http-session-=23::http.session::5ed62c3908feb133b8a771f64e631c5a
+ABBCX=53
+
+POST响应内容:
+<?xml version=""1.0"" encoding=""utf-8""?><html xmlns=""http://www.w3.org/1999/xhtml""> <head> <title>Event</title><base href=""http://localhost:80/""/> </head> <body>  <div class=""state""><a href=""subscription/24"" rel=""group""></a><a href=""ws://localhost:80/poll/24"" rel=""self""></a><a href=""subscription/24?action=show"" rel=""action""></a> <ul> <li class=""pnl-ctrlstate-ev"" title=""ctrlstate""><a href=""/rw/panel/ctrlstate"" rel=""self""></a><span class=""ctrlstate"">motoron</span></li>  </ul> </div> </body></html>
+
+GET状态码: 200
+GET Cookies:
+-http-session-=23::http.session::5ed62c3908feb133b8a771f64e631c5a
+ABBCX=54
+
+GET响应内容:
+<?xml version=""1.0"" encoding=""utf-8""?><html xmlns=""http://www.w3.org/1999/xhtml""> <head> <title>Groups</title> <base href=""http://localhost:80/subscription/""/></head> <body> <div class=""state""><a href="""" rel=""self""></a><a href=""?action=show"" rel=""action""></a><ul></ul></div></body></html>
+
+
+
+ABBCX Error",open,2025-05-21T08:48:27+00:00,2025-05-21T08:48:27+00:00,,cqwuxiaolong,[],0,[],,https://github.com/psf/requests/issues/6950
+psf/requests,6949,QuickStart documentation error,"httpbin post has a header item '""X-Amzn-Trace-Id"" which causes an result which is contrary to the  documentation. 
+
+## Quickstart documentation 
+### ""More complicated POST requests""
+```
+payload_tuples = [('key1', 'value1'), ('key1', 'value2')]
+r1 = requests.post('https://httpbin.org/post', data=payload_tuples)
+payload_dict = {'key1': ['value1', 'value2']}
+r2 = requests.post('https://httpbin.org/post', data=payload_dict)
+print(r1.text)
+{
+  ...
+  ""form"": {
+    ""key1"": [
+      ""value1"",
+      ""value2""
+    ]
+  },
+  ...
+}
+r1.text == r2.text
+True
+```
+
+## Actual Result
+
+<!-- What happened instead. -->
+
+## Reproduction Steps
+
+```python
+import requests
+payload_tuples = [('key1', ' ""value1'),('key1', 'value2')]
+payload_dict = {'key1': ['value1', 'value2']}
+r1 = requests.post('https://httpbin.org/post', data=payload_tuples)
+r2 = requests.post('https://httpbin.org/post', data=payload_dict)
+r1.text == r2.text
+False
+r1.json()['form'] == r2.json()['form']
+True
+
+```
+
+## Diagnostic Information
+
+pprint.pprint(r1.text)
+('{…
+ '  ""form"": {\n'
+ '    ""key1"": [\n'
+ '      ""value1"", \n'
+ '      ""value2""\n'
+ '    ]}
+…
+ '    ""X-Amzn-Trace-Id"": ""Root=1-682cb364-67bf5e846c56c77e24839642""\n'
+ '… },
+…
+
+pprint.pprint(r2.text)
+('{…
+ '  ""form"": {\n'
+ '    ""key1"": [\n'
+ '      ""value1"", \n'
+ '      ""value2""\n'
+ '    ]}
+…
+ '    ""X-Amzn-Trace-Id"": ""Root=1-682cb30f-208ede8e2eda5cf75cf578ac""\n'
+ ' … }, 
+ …
+",open,2025-05-20T17:23:29+00:00,2025-05-20T17:23:29+00:00,,trin5tensa,[],0,[],,https://github.com/psf/requests/issues/6949
+psf/requests,6947,verify=False crashes on py3.13 on windows (FileNotFoundError),"I have a tests where I do `self._session.verify = False` to my requests session, it fails:
+
+```
+src\ansys\simai\core\api\mixin.py:99: in _get
+    return self._request(""GET"", url, *args, **kwargs)
+src\ansys\simai\core\api\mixin.py:149: in _request
+    self._session.request(method, full_url, *args, **kwargs),
+.venv\Lib\site-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+.venv\Lib\site-packages\requests\sessions.py:746: in send
+    r.content
+.venv\Lib\site-packages\requests\models.py:902: in content
+    self._content = b"""".join(self.iter_content(CONTENT_CHUNK_SIZE)) or b""""
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def generate():
+        # Special case for urllib3.
+        if hasattr(self.raw, ""stream""):
+            try:
+                yield from self.raw.stream(chunk_size, decode_content=True)
+            except ProtocolError as e:
+>               raise ChunkedEncodingError(e)
+E               requests.exceptions.ChunkedEncodingError: (""Connection broken: FileNotFoundError(2, 'No such file or directory')"", FileNotFoundError(2, 'No such file or directory'))
+```
+
+See action run: https://github.com/ansys/pysimai/actions/runs/14931636639/job/41949246539
+See the same test without `self._session.verify = False`: https://github.com/ansys/pysimai/actions/runs/14932156717/job/41951055780
+
+
+## Expected Result
+
+`session.verify = False` works.
+
+## Actual Result
+
+`session.verify = False` causes `FileNotFoundError`.
+
+## Reproduction Steps
+
+TODO (the only windows env I have except github actions is the great windows XP)",open,2025-05-09T15:32:07+00:00,2025-05-12T14:17:20+00:00,,awoimbee,[],2,[],,https://github.com/psf/requests/issues/6947
+psf/requests,6946,[Security] Medium Severity Vulnerability (CVE-2015-2296) in Requests v2.32.3,"A potential medium-severity security issue has been identified in the requests library, version 2.32.3, due to indirect implications of https://github.com/advisories/GHSA-pg2w-x9wp-vw92.
+
+The resolve_redirects function in sessions.py in requests 2.1.0 through 2.5.3 allows remote attackers to conduct session fixation attacks via a cookie without a host value in a redirect.
+
+References:
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-2296
+https://nvd.nist.gov/vuln/detail/CVE-2015-2296",closed,2025-05-07T12:45:50+00:00,2025-05-07T16:32:05+00:00,2025-05-07T16:32:04+00:00,salmankadaya,[],2,[],,https://github.com/psf/requests/issues/6946
+psf/requests,6945,`SSLCertVerificationError` when fetching `https://od.moi.gov.tw/api/v1/`,"Fetching API under `https://od.moi.gov.tw/api/v1/` raises an `SSLCertVerificationError`, while no certificate issue is reported when opening the same URL in the browser (latest Chrome or Firefox).
+
+## Expected Result
+
+No error should be raised.
+
+## Actual Result
+
+An error is raised: `requests.exceptions.SSLError: HTTPSConnectionPool(host='od.moi.gov.tw', port=443): Max retries exceeded with url: /api/v1/rest/datastore/A01010000C-002150-013?limit=1 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))`
+
+## Reproduction Steps
+
+```python
+import requests
+import certifi
+url = 'https://od.moi.gov.tw/api/v1/rest/datastore/A01010000C-002150-013?limit=1'
+requests.get(url, verify=certifi.where())
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": ""5.2.0""
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.2""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.13.3""
+  },
+  ""platform"": {
+    ""release"": ""10"",
+    ""system"": ""Windows""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30000100""
+  },
+  ""urllib3"": {
+    ""version"": ""2.4.0""
+  },
+  ""using_charset_normalizer"": false,
+  ""using_pyopenssl"": false
+}
+```
+",closed,2025-05-06T17:03:58+00:00,2025-05-19T13:24:22+00:00,2025-05-19T02:03:23+00:00,danny0838,[],9,[],,https://github.com/psf/requests/issues/6945
+psf/requests,6944,Project Control / Ownership,"In light of this tweet (https://x.com/kennethreitz42/status/1919466982467940750):
+
+<img width=""602"" alt=""Image"" src=""https://github.com/user-attachments/assets/ed8e8541-90fc-4506-aaa8-4aebed881dc1"" />
+
+Does Kenneth Reitz have the permissions required to remove this project from GitHub and/or PyPI?
+",closed,2025-05-05T21:36:13+00:00,2025-05-05T21:50:22+00:00,2025-05-05T21:50:21+00:00,rjschave,[],2,[],,https://github.com/psf/requests/issues/6944
+psf/requests,6943,Error de red o descarga: ('Connection broken: IncompleteRead (ayuda no puedo descargar .zip de copernicus)  thanks!,"import requests
+import pandas as pd
+import geopandas as gpd
+from shapely.geometry import shape
+from requests.exceptions import RequestException
+import time
+
+# Credenciales
+copernicus_user = ""usuario_name""
+copernicus_password = ""password""
+client_id = ""cdse-public""
+
+# Área de interés (WKT)
+ft = ""POLYGON((-6.305113 37.195728, -6.305113 37.205728, -6.295113 37.205728, -6.295113 37.195728, -6.305113 37.195728))""
+
+# Colección y fechas
+data_collection = ""SENTINEL-2""
+start_date = ""2025-04-24""
+end_date = ""2025-04-25""
+
+# Tile específico a descargar
+tile_to_download = ""S2B_MSIL2A_20250425T110619_N0511_R137_T29SQB_20250425T140306.SAFE""
+
+# Función para obtener tokens
+def get_tokens(username=None, password=None, refresh_token=None):
+    url = ""https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token""
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
+    if refresh_token:
+        data = {
+            ""grant_type"": ""refresh_token"",
+            ""refresh_token"": refresh_token,
+            ""client_id"": client_id
+        }
+    else:
+        data = {
+            ""grant_type"": ""password"",
+            ""username"": username,
+            ""password"": password,
+            ""client_id"": client_id
+        }
+
+    r = requests.post(url, headers=headers, data=data)
+    r.raise_for_status()
+    token_json = r.json()
+    return token_json[""access_token""], token_json.get(""refresh_token"")
+
+# Obtener tokens inicialmente
+try:
+    access_token, refresh_token = get_tokens(username=copernicus_user, password=copernicus_password)
+except Exception as e:
+    print(""❌ Error autenticando:"", e)
+    exit()
+
+# Consultar catálogo
+print(""🔎 Consultando catálogo..."")
+catalog_url = (
+    f""https://catalogue.dataspace.copernicus.eu/odata/v1/Products?""
+    f""$filter=Collection/Name eq '{data_collection}' and ""
+    f""OData.CSC.Intersects(area=geography'SRID=4326;{ft}') and ""
+    f""ContentDate/Start ge {start_date}T00:00:00.000Z and ""
+    f""ContentDate/Start le {end_date}T23:59:59.999Z&$count=True&$top=1000""
+)
+
+response = requests.get(catalog_url)
+products = response.json().get(""value"", [])
+
+if not products:
+    print(""⚠️ No se encontraron productos."")
+    exit()
+
+# Procesar productos
+df = pd.DataFrame(products)
+df[""geometry""] = df[""GeoFootprint""].apply(shape)
+gdf = gpd.GeoDataFrame(df, geometry=""geometry"")
+gdf = gdf[~gdf[""Name""].str.contains(""L1C"")]  # Solo L2A
+
+print(f""📦 Total escenas L2A encontradas: {len(gdf)}"")
+for name in gdf[""Name""]:
+    print("" -"", name)
+
+# Filtrar tile deseado
+tile = gdf[gdf[""Name""] == tile_to_download]
+
+if tile.empty:
+    print(f""⚠️ Tile no encontrado: {tile_to_download}"")
+    exit()
+
+row = tile.iloc[0]
+session = requests.Session()
+session.headers.update({""Authorization"": f""Bearer {access_token}""})
+
+# Iniciar descarga
+try:
+    print(f""\n⬇️ Descargando: {row['Name']}"")
+    url = f""https://catalogue.dataspace.copernicus.eu/odata/v1/Products({row['Id']})/$value""
+    response = session.get(url, allow_redirects=False)
+
+    # Seguir redirecciones
+    while response.status_code in (301, 302, 303, 307):
+        url = response.headers[""Location""]
+        response = session.get(url, allow_redirects=False)
+
+    # Si el token ha vencido, intentar renovarlo
+    if response.status_code == 401 and refresh_token:
+        print(""🔁 Token vencido, renovando..."")
+        try:
+            access_token, refresh_token = get_tokens(refresh_token=refresh_token)
+            session.headers.update({""Authorization"": f""Bearer {access_token}""})
+            response = session.get(url, allow_redirects=False)
+            while response.status_code in (301, 302, 303, 307):
+                url = response.headers[""Location""]
+                response = session.get(url, allow_redirects=False)
+        except Exception as e:
+            print(""❌ Error al renovar el token:"", e)
+            exit()
+
+    # Descargar archivo final
+    file = session.get(url, verify=False, stream=True)
+    file.raise_for_status()
+
+    filename = f""{row['Name']}.zip""
+    with open(filename, ""wb"") as f:
+        for chunk in file.iter_content(chunk_size=1024 * 1024):  # 1 MB
+            if chunk:
+                f.write(chunk)
+
+    print(f""✅ Descarga completa: {filename}"")
+
+except RequestException as e:
+    print(""❌ Error de red o descarga:"", e)
+except Exception as e:
+    print(""❌ Error inesperado:"", e)
+",closed,2025-05-05T15:28:45+00:00,2025-05-05T15:29:20+00:00,2025-05-05T15:29:20+00:00,Jesuslemus7,[],0,[],,https://github.com/psf/requests/issues/6943
+psf/requests,6942,[Security] Medium Severity Vulnerability (CVE-2015-2296) in Requests v2.32.3,"A potential medium-severity security issue has been identified in the requests library, version 2.32.3, due to indirect implications of CVE-2015-2296.
+
+The resolve_redirects function in sessions.py in requests 2.1.0 through 2.5.3 allows remote attackers to conduct session fixation attacks via a cookie without a host value in a redirect.
+
+*References:*
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-2296
+https://nvd.nist.gov/vuln/detail/CVE-2015-2296",closed,2025-05-05T12:58:07+00:00,2025-05-05T12:58:19+00:00,2025-05-05T12:58:18+00:00,salmankadaya,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6942
+psf/requests,6938,Bug: URL parameters lost when hash fragment exists,"## 问题描述  
+URL中包含`#`时，`?`后的查询参数被错误丢弃  
+
+## 复现步骤  
+```python
+import requests
+r = requests.get(""http://example.com?key=value#fragment"")
+print(r.url)  # 实际输出：http://example.com/",closed,2025-04-26T14:14:07+00:00,2025-04-27T02:15:51+00:00,2025-04-27T02:15:50+00:00,wlyxxx,[],1,[],,https://github.com/psf/requests/issues/6938
+psf/requests,6935,tests: add trailing slashes to mount to match docs recommendation?,"I was digging into the docs and noticed this:
+> The adapter will be chosen based on a longest prefix match. Be mindful prefixes such as http://localhost will also match http://localhost.other.com or http://localhost@other.com. It’s recommended to terminate full hostnames with a /.
+
+[link](https://requests.readthedocs.io/en/latest/user/advanced/)
+
+While checking out some tests that uses the `Session.mount()`, I saw that a few don’t follow this recommendation. For example, in test_session_get_adapter_prefix_matching  (https://github.com/psf/requests/blob/main/tests/test_requests.py#L1620):
+
+```python
+prefix = ""https://example.com""  # no trailing slash
+more_specific_prefix = prefix + ""/some/path""  # no trailing slash
+...
+s.mount(prefix, prefix_adapter)
+s.mount(more_specific_prefix, more_specific_prefix_adapter)
+```
+
+I know that the tests work great and do their job, but adding trailing slashes (e.g., https://example.com/ and https://example.com/some/path/) would align them with the docs and make the prefixes more precise.
+
+Here are the tests I noticed:
+- test_transport_adapter_ordering
+- test_session_get_adapter_prefix_matching
+- test_session_get_adapter_prefix_matching_mixed_case
+- test_session_get_adapter_prefix_matching_is_case_insensitive
+
+Would it be worth opening a PR to update these to include trailing slashes? The tests would stay the same, just following the docs best practice.",closed,2025-04-22T18:39:58+00:00,2025-05-03T16:39:16+00:00,2025-05-03T16:39:15+00:00,allrob23,[],2,[],,https://github.com/psf/requests/issues/6935
+psf/requests,6934,Test regressions with urllib3 2.4.0 on Python 3.13,"<!-- Summary. -->
+
+## Expected Result
+
+(all tests pass)
+
+## Actual Result
+
+```
+====================================== short test summary info =======================================
+FAILED tests/test_requests.py::TestRequests::test_proxy_error - Failed: DID NOT RAISE <class 'requests.exceptions.ProxyError'>
+FAILED tests/test_requests.py::TestRequests::test_pyopenssl_redirect - requests.exceptions.SSLError: HTTPSConnectionPool(host='127.0.0.1', port=36165): Max retries exce...
+FAILED tests/test_requests.py::TestRequests::test_auth_is_stripped_on_http_downgrade - requests.exceptions.SSLError: HTTPSConnectionPool(host='127.0.0.1', port=36165): Max retries exce...
+FAILED tests/test_requests.py::TestPreparingURLs::test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert - requests.exceptions.SSLError: HTTPSConnectionPool(host='localhost', port=43243): Max retries exce...
+============ 4 failed, 586 passed, 15 skipped, 1 xfailed, 18 warnings in 71.93s (0:01:11) ============
+```
+
+## Reproduction Steps
+
+```
+$ git clone https://github.com/psf/requests
+$ cd requests
+$ git checkout v2.32.3
+$ tox -e py313
+```
+
+Observe the output from “Actual result,” above.
+
+Now, try upper-bounding the version of `urllib3` as an experiment:
+
+```diff
+diff --git a/setup.py b/setup.py
+index 1b0eb377..97baee5f 100755
+--- a/setup.py
++++ b/setup.py
+@@ -61,7 +61,7 @@ if sys.argv[-1] == ""publish"":
+ requires = [
+     ""charset_normalizer>=2,<4"",
+     ""idna>=2.5,<4"",
+-    ""urllib3>=1.21.1,<3"",
++    ""urllib3>=1.21.1,<2.4.0"",
+     ""certifi>=2017.4.17"",
+ ]
+ test_requirements = [
+```
+
+```
+$ tox -e py313
+====================================== short test summary info =======================================
+FAILED tests/test_requests.py::TestRequests::test_proxy_error - Failed: DID NOT RAISE <class 'requests.exceptions.ProxyError'>
+============ 1 failed, 589 passed, 15 skipped, 1 xfailed, 18 warnings in 77.36s (0:01:17) ============
+```
+
+This appears to confirm that three of the failing tests are associated with the upgrade from `urllib3` 2.3.0 to 2.4.0.
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.13.2""
+  },
+  ""platform"": {
+    ""release"": ""6.13.9-200.fc41.x86_64"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30200040""
+  },
+  ""urllib3"": {
+    ""version"": ""2.4.0""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+```
+
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+",open,2025-04-12T14:32:06+00:00,2025-04-15T14:59:02+00:00,,musicinmybrain,[],3,[],,https://github.com/psf/requests/issues/6934
+psf/requests,6933,Next release,"Dear Maintainer,
+
+Our projects depends on requests lib. 
+Our internal tool (Blackduck) has reported an operational issue as there is no release from the repo since long time.
+
+We noticed that there are many PRs, and if they could incorporate into a minor release, it would be of great help.
+We could then upgrade to newer version of requests lib.
+
+Can you please let us know the timeline of upcoming release.
+
+We appreciate your response at the earliest!",closed,2025-04-11T09:26:05+00:00,2025-04-11T11:18:01+00:00,2025-04-11T11:17:57+00:00,ShrinidhiRao15,[],1,[],,https://github.com/psf/requests/issues/6933
+psf/requests,6932,[Query] Is there any plan to release out a new version of requests lib in 2025?,"Dear requests lib contributor,
+
+Our projects depends **requests** lib a lot, and we want to know if there is a plan to release out a new version in 2025, so that we can upgrade our dependency to the latest version of requests lib.
+
+Thanks a lot for your response in advance!
+",closed,2025-04-11T08:53:54+00:00,2025-04-11T08:54:08+00:00,2025-04-11T08:54:07+00:00,forrestxia,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6932
+psf/requests,6931,Deadlock with geaddrinfo(),"I am using flask app that is served by gunicorn and it has to send requests to third-party APIs, but from time to time I am experiencing deadlocks leading to leaving the gunicorn process in RAM.
+
+For now I am mitigating the issue with sending the IP address of the third-party API server. I observe the issue with python 3.7 (bare metal) and python 3.10 (docker).
+
+When using `dig` all is good and site resolves each time.
+
+One of my services in this app is using socket logging module
+https://docs.python.org/3/library/logging.handlers.html#sockethandler
+
+## Expected Result
+
+Request is sent and response is consumed.
+
+## Actual Result
+Deadlock - dump from py-spy
+```
+Thread 1724128 (idle): ""MainThread""
+    getaddrinfo (socket.py:752)
+    create_connection (urllib3/util/connection.py:72)
+    _new_conn (urllib3/connection.py:175)
+    connect (urllib3/connection.py:358)
+    _validate_conn (urllib3/connectionpool.py:1042)
+    _make_request (urllib3/connectionpool.py:386)
+    urlopen (urllib3/connectionpool.py:710)
+    send (requests/adapters.py:499)
+    send (requests/sessions.py:701)
+    request (requests/sessions.py:587)
+    request (requests/api.py:59)
+    post (requests/api.py:115)
+```
+
+## Reproduction Steps
+
+Can't provide exact steps because it happens at random times
+
+## System Information
+
+    $ python -m requests.help
+
+bare metal
+```
+{
+  ""chardet"": {
+    ""version"": ""3.0.4""
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.0.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""2.6""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.7.17""
+  },
+  ""platform"": {
+    ""release"": ""5.4.0-148-generic"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.28.2""
+  },
+  ""system_ssl"": {
+    ""version"": ""1010106f""
+  },
+  ""urllib3"": {
+    ""version"": ""1.26.14""
+  },
+  ""using_charset_normalizer"": false,
+  ""using_pyopenssl"": false
+}
+```
+docker
+```
+{
+  ""chardet"": {
+    ""version"": ""5.2.0""
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.3.2""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.7""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.10.17""
+  },
+  ""platform"": {
+    ""release"": ""5.15.0-113-generic"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""300000f0""
+  },
+  ""urllib3"": {
+    ""version"": ""2.4.0""
+  },
+  ""using_charset_normalizer"": false,
+  ""using_pyopenssl"": false
+}
+```",closed,2025-04-11T05:54:21+00:00,2025-04-12T12:59:59+00:00,2025-04-12T12:59:59+00:00,antonpetrov145,[],5,[],,https://github.com/psf/requests/issues/6931
+psf/requests,6930,Not able to connect anymore,"Since today it ain't able to connect. Yesterday I see it still worked
+Tried to restart and rebuild, but want resolving. Login via the normal app of the solar panels works fine and there is data available of today
+
+
+
+See logging
+
+Getting mqtt data...
+[18:43:24] INFO: null
+[18:43:24] INFO: {""supervisor"":""2025.03.4"",""homeassistant"":""2025.4.1"",""hassos"":""15.1"",""docker"":""28.0.4"",""hostname"":""homeassistant"",""operating_system"":""Home Assistant OS 15.1"",""features"":[""reboot"",""shutdown"",""services"",""network"",""hostname"",""timedate"",""os_agent"",""haos"",""resolved"",""journal"",""disk"",""mount""],""machine"":""raspberrypi4-64"",""arch"":""aarch64"",""state"":""running"",""supported_arch"":[""aarch64"",""armv7"",""armhf""],""supported"":true,""channel"":""stable"",""logging"":""info"",""timezone"":""Europe/Amsterdam""}
+[18:43:24] INFO: {""supervisor"":""2025.03.4"",""homeassistant"":""2025.4.1"",""hassos"":""15.1"",""docker"":""28.0.4"",""hostname"":""homeassistant"",""operating_system"":""Home Assistant OS 15.1"",""features"":[""reboot"",""shutdown"",""services"",""network"",""hostname"",""timedate"",""os_agent"",""haos"",""resolved"",""journal"",""disk"",""mount""],""machine"":""raspberrypi4-64"",""arch"":""aarch64"",""state"":""running"",""supported_arch"":[""aarch64"",""armv7"",""armhf""],""supported"":true,""channel"":""stable"",""logging"":""info"",""timezone"":""Europe/Amsterdam""}
+dmslabs - Home Assistant HoyMiles Solar Data Gateway Add-on
+2025-04-08 18:43:25,419 - HoymilesAdd-on - INFO - ********** dmslabs&Cosik Hoymiles Gateway  v.1.4.1
+2025-04-08 18:43:25,419 - HoymilesAdd-on - INFO - Starting up... 2025-04-08 18:43:25
+2025-04-08 18:43:25,420 - HoymilesAdd-on - INFO - Using Internal MQTT Server: core-mosquitto
+2025-04-08 18:43:25,421 - HoymilesAdd-on - INFO - Using Internal MQTT User: addons
+2025-04-08 18:43:25,421 - HoymilesAdd-on.mqttapi.Mqtt - INFO - mqtt.Client 974895be-1498-11f0-9f1e-d83add5f0236
+2025-04-08 18:43:25,421 - HoymilesAdd-on.mqttapi.Mqtt - INFO - Starting MQTT core-mosquitto
+2025-04-08 18:43:25,740 - HoymilesAdd-on.mqttapi.Mqtt - INFO - MQTT connected with result code 0
+2025-04-08 18:43:25,740 - HoymilesAdd-on.mqttapi.Mqtt - INFO - Connected to core-mosquitto
+2025-04-08 18:43:26,426 - HoymilesAdd-on.hoymilesapi.Hoymiles - INFO - Loading: https://global.hoymiles.com/platform/api/gateway/iam/auth_login
+2025-04-08 18:43:27,489 - HoymilesAdd-on.hoymilesapi.Hoymiles - ERROR - Access error: https://global.hoymiles.com/platform/api/gateway/iam/auth_login
+2025-04-08 18:43:27,490 - HoymilesAdd-on.hoymilesapi.Hoymiles - ERROR - Status code: 404Not Found
+2025-04-08 18:43:27,491 - HoymilesAdd-on.hoymilesapi.Hoymiles - ERROR - Wrong user/password 404 Not Found
+2025-04-08 18:43:27,492 - HoymilesAdd-on.hoymilesapi.Hoymiles - ERROR - I can't get access token",closed,2025-04-08T16:47:56+00:00,2025-04-08T17:23:33+00:00,2025-04-08T17:22:52+00:00,ErikSabel,[],1,[],,https://github.com/psf/requests/issues/6930
+psf/requests,6928,Python 3.13: an unexpected `Authorization` header because of NETRC file,"When sending POST request using Python 3.13 with `requests` v2.32.3 there appear an unexpected `Authorization` header.
+This is not the case with Python 3.10 with the same version of `requests` lib.
+
+## Expected Result
+
+POST request does not get updated with an unexpected `Authorization` header.
+
+## Actual Result
+
+Python 3.13
+```shell
+> ~/tmp/zzz.py 2>&1 | egrep -m 1 ""^send: ""
+send: b'POST /oauth2/v1/device/authorize HTTP/1.1\r\nHost: okta.oktapreview.com\r\nUser-Agent: gimme-aws-creds 2.8.2;linux;3.13.2\r\nAccept-Encoding: gzip, deflate\r\nAccept: application/json\r\nConnection: keep-alive\r\nContent-Length: 52\r\nContent-Type: application/x-www-form-urlencoded\r\nAuthorization: Basic Og==\r\n\r\n'
+```
+Python 3.10
+```shell
+> ~/tmp/zzz.py 2>&1 | egrep -m 1 ""^send: ""
+send: b'POST /oauth2/v1/device/authorize HTTP/1.1\r\nHost: okta.oktapreview.com\r\nUser-Agent: gimme-aws-creds 2.8.2;linux;3.13.2\r\nAccept-Encoding: gzip, deflate, br\r\nAccept: application/json\r\nConnection: keep-alive\r\nContent-Length: 52\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n'
+```
+
+## Reproduction Steps
+
+```python
+import requests
+import logging
+
+try:
+    import http.client as http_client
+except ImportError:
+    # Python 2
+    import httplib as http_client
+http_client.HTTPConnection.debuglevel = 1
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
+requests_log = logging.getLogger(""requests.packages.urllib3"")
+requests_log.setLevel(logging.DEBUG)
+requests_log.propagate = True
+
+data = {
+    ""client_id"": ""<client_id>"",
+    ""scope"": ""openid okta.apps.sso""
+}
+url = ""https://okta.oktapreview.com/oauth2/v1/device/authorize""
+headers = {'User-Agent': 'gimme-aws-creds 2.8.2;linux;3.13.2', 'Accept': 'application/json'}
+
+response = requests.post(url, data=data, headers=headers, verify=True)
+
+print(response.text)
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.13.2""
+  },
+  ""platform"": {
+    ""release"": ""6.8.0-52-generic"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30400010""
+  },
+  ""urllib3"": {
+    ""version"": ""2.3.0""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+```
+
+Ref: https://github.com/Nike-Inc/gimme-aws-creds/issues/485",open,2025-04-04T22:09:06+00:00,2025-04-08T20:40:52+00:00,,yermulnik,[],8,[],,https://github.com/psf/requests/issues/6928
+psf/requests,6922,"`proxies=None` seem to be ""overridden"" by env vars even on when specifed on the individual requests","Hey.
+
+According to the [documentaion](https://requests.readthedocs.io/en/latest/user/advanced/#proxies):
+> Setting `session.proxies` may behave differently than expected. Values provided will be overwritten by environmental proxies (those returned by [urllib.request.getproxies](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies)). To ensure the use of proxies in the presence of environmental proxies, explicitly specify the `proxies` argument on all individual requests as initially explained above.
+
+any `proxies=` specified on the requests (I assume on `requests.get()`, etc.  should **not** be overridden by env vars.
+
+This does however not work for the case when one explicitly specifies no proxy, simply because there is no real notion for that and `None` is merely used as a default for ""nothing specified"".
+
+So I think this should at least be documented above, and it would be nice if there was a way to actually say 'don't use a proxy'.
+
+Perhaps by using `proxies=False` or so?
+
+Cheers,
+Chris.",closed,2025-03-27T03:31:58+00:00,2025-03-27T13:31:57+00:00,2025-03-27T13:31:57+00:00,calestyo,[],1,[],,https://github.com/psf/requests/issues/6922
+psf/requests,6921,Implement Happy Eyeballs?,"Requests is not accepting feature requests at this time.
+
+The above said, would implementing Happy Eyeballs be difficult?",closed,2025-03-24T18:12:38+00:00,2025-03-24T18:12:51+00:00,2025-03-24T18:12:50+00:00,brianjmurrell,[],1,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6921
+psf/requests,6917,Incorrect Content-Length header with StringIO body,"When requests is used with an `io.StringIO` as the `data` type, and the body contains characters whose utf-8 encoding is multiple bytes, the Content-Length header is set incorrectly.
+
+Looking at the [implementation of `super_len`](https://github.com/psf/requests/blob/1764cc938efc3cc9720188dfa6c3852c45211aa0/src/requests/utils.py#L189-L199), it appears that `io.StringIO` has its length measured using `seek` and `tell`.
+It has been implemented that way since June 2016 (af7729f64a97ab35e83a1a7971781e69d124d99e).
+
+It looks like this was fixed for `str` inputs in #6586 in 2023 but was never fixed for io.StringIO
+
+I am happy to send a PR if the implementation is straightforward.
+Off the top of my head I don't know how to count the bytes in a utf-8 encoded StringIO without copying, and previous PRs have tried to avoid a copy in `super_len`
+
+
+## Expected Result
+
+Content-Length should match the number of bytes sent when using io.StringIO
+
+## Actual Result
+
+Content-Length is the length of the string, not the bytes sent.
+
+## Reproduction Steps
+
+Run the following script, which shows the problem in detail
+
+```python
+import io
+import requests
+from urllib3.connection import HTTPConnection
+from requests.utils import super_len
+from requests.models import PreparedRequest
+
+# A string that is 1 character but 4 bytes in UTF-8.
+# requests will always send 4 bytes, but the Content-Length header depends on the type passed as `data`.
+value = ""💩""
+
+body_types = [{
+  ""name"": ""str"",
+  ""value"": value,
+}, {
+  ""name"": ""bytes"",
+  ""value"": value.encode(""utf-8""),
+}, {
+  ""name"": ""io.BytesIO"",
+  ""value"": io.BytesIO(value.encode(""utf-8"")),
+},
+{
+  ""name"": ""io.StringIO"",
+  ""value"": io.StringIO(value),
+}]
+
+print(""## Super Len"")
+for body_type in body_types:
+  print(""Body Type:"", body_type[""name""])
+  print(""Super Len:"", super_len(body_type[""value""]))
+  p = PreparedRequest()
+  p.prepare(
+      method=""POST"",
+      url=""http://example.com"",
+      data=body_type[""value""],
+  )
+  print(""Prepared Headers:"", p.headers)
+
+# Monkey patch to print the data sent.
+old_send = HTTPConnection.send
+def new_send(self, data):
+  print(""Sending Data:"", data)
+  old_send(self, data)
+HTTPConnection.send = new_send
+
+
+print(""## Requests"")
+for body_type in body_types:
+  r = requests.post(
+    ""http://example.com"",
+    data=body_type[""value""],
+  )
+```
+
+Here is my output:
+```
+## Super Len
+Body Type: str
+Super Len: 4
+Prepared Headers: {'Content-Length': '4'}
+Body Type: bytes
+Super Len: 4
+Prepared Headers: {'Content-Length': '4'}
+Body Type: io.BytesIO
+Super Len: 4
+Prepared Headers: {'Content-Length': '4'}
+Body Type: io.StringIO
+Super Len: 1
+Prepared Headers: {'Content-Length': '1'}
+## Requests
+Sending Data: b'POST / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: python-requests/2.32.3\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\nContent-Length: 4\r\n\r\n'
+Sending Data: b'\xf0\x9f\x92\xa9'
+Sending Data: b'POST / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: python-requests/2.32.3\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\nContent-Length: 4\r\n\r\n'
+Sending Data: b'\xf0\x9f\x92\xa9'
+Sending Data: b'POST / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: python-requests/2.32.3\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\nContent-Length: 4\r\n\r\n'
+Sending Data: b'\xf0\x9f\x92\xa9'
+Sending Data: b'POST / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: python-requests/2.32.3\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\nContent-Length: 1\r\n\r\n'
+Sending Data: b'\xf0\x9f\x92\xa9'
+```
+
+Notice that the request is always the same, except that the `Content-Length` header is `1` instead of `4` when io.StringIO is used.
+
+
+
+## System Information
+
+```json
+{
+  ""chardet"": {
+    ""version"": ""5.2.0""
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.12.9""
+  },
+  ""platform"": {
+    ""release"": ""22.6.0"",
+    ""system"": ""Darwin""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30400010""
+  },
+  ""urllib3"": {
+    ""version"": ""2.3.0""
+  },
+  ""using_charset_normalizer"": false,
+  ""using_pyopenssl"": false
+}
+```
+",open,2025-03-21T08:39:21+00:00,2025-03-21T20:42:15+00:00,,mgraczyk,[],5,[],,https://github.com/psf/requests/issues/6917
+psf/requests,6915,HTTPDigestAuth add optional Realm parameter to the authentication,"I noticed that urllib allows to specify the realm of a HTTPDigestAuth but the requests library doesn't allow it. Is it possible to add it on the standard requests library?
+
+There are many devices that specify the realm where it is not the url domain name.
+It is possible to do it with the urllib library that requests uses underneath.
+
+Example (A Hickvision network camera):
+==========================
+#0000: GET /ISAPI/notification/alertStream HTTP/1.1
+#002e: Host: 192.168.10.64
+#0043: Authorization: Digest username=""admin"",realm=""iDS-TCM403-BI"",non
+#0083: ce=""4e45497a4d4459774e45553659544d334d6d55344d7a6b3d"",uri=""/ISAP
+#00c3: I/notification/alertStream"",cnonce=""c9bc93c864ef47d8e6879678ad85
+#0103: 511c"",nc=00000001,algorithm=MD5,response=""ffeaecca50dc4b23a7bc68
+#0143: 6c0200c339"",qop=""auth""
+#015b: User-Agent: curl/8.10.1
+#0174: Accept: */*
+#0181: Connection: keep-alive
+
+Where it would be a good idea to implement it:
+====================================
+from requests.auth import HTTPDigestAuth
+At the auth.py file
+
+It now only accepts two parameters:
+https://requests.readthedocs.io/en/latest/user/authentication/
+
+Use example with urllib without the requests library:
+=======================================
+import urllib
+import urllib.request
+
+# Examples:
+Username=""oneusername""
+Password=""onepassword""
+Realm =""iDS-TCM403-BI""
+
+password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+password_mgr.add_password(Realm, ""http://192.168.10.64/"", Username, Password)
+
+handler = urllib.request.HTTPDigestAuthHandler(password_mgr)
+opener = urllib.request.build_opener(handler)
+urllib.request.install_opener(opener)
+
+response = urllib.request.urlopen(URL)
+
+=========================================",closed,2025-03-18T15:04:14+00:00,2025-03-18T15:04:27+00:00,2025-03-18T15:04:25+00:00,ideechaniz,[],1,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6915
+psf/requests,6914,The docs say raise_for_status() returns the Response when status is 200. It does not do that.,"=== Summary ===
+
+`Response.raise_for_status()` should return the `Response` object when the status_code is 200, as specified by the docs: https://3.python-requests.org/user/quickstart/#response-status-codes
+
+=== What you expected ===
+
+`Response.raise_for_status()` returns the Response object when status code is 200.
+
+=== What happened instead ===
+
+`Response.raise_for_status()` does not have a return statement anywhere, so on a 200 it just returns None.
+
+```python
+import requests
+
+response = requests.get('https://pypi.org')
+print(response.raise_for_status())
+```
+Assuming pypi.org's homepage doesn't error, this should print a `Response` object. Instead, it always prints `None`.
+
+=== System Information ===
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": ""43.0.3""
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.10.11""
+  },
+  ""platform"": {
+    ""release"": ""6.12.5-linuxkit"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": ""30300020"",
+    ""version"": ""24.2.1""
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""1010111f""
+  },
+  ""urllib3"": {
+    ""version"": ""1.26.20""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": true
+}
+",closed,2025-03-17T18:16:28+00:00,2025-03-18T00:42:30+00:00,2025-03-17T20:43:51+00:00,coredumperror,[],5,[],,https://github.com/psf/requests/issues/6914
+psf/requests,6912,asyncio,Requests is not accepting feature reque,closed,2025-03-12T10:38:43+00:00,2025-03-12T10:38:54+00:00,2025-03-12T10:38:53+00:00,JiuCai66666,[],1,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6912
+psf/requests,6911,Enforce Latest Stable urllib3 Dependency in Requests,"We encountered a PUT issue on one of our legacy clusters that appears to be due to an outdated version of urllib3 (v1.25.8) being used in the system’s default Python environment—even though we're running the latest stable version of Requests (v2.32.3).
+
+### Expected Behavior:
+When using [AIStore](https://github.com/NVIDIA/aistore), a PUT request is sent to the proxy, which then issues a redirect to the target for object storage. This process should be completed successfully without errors.
+
+### Issue Observed:
+On the affected cluster, the outdated urllib3 fails during the redirect handling, resulting in the following error:
+
+```
+raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.150.56.227', port=51080): Max retries exceeded with url: /v1/objects/nnn/test?provider=ais (Caused by ProtocolError('Connection aborted.', BrokenPipeError(32, 'Broken pipe')))
+```
+
+### **Request:**
+Could we update the dependency requirements in Requests to enforce a minimum stable version of urllib3 (for example, >=2.2.3) so that we can benefit from the latest fixes and avoid such issues? There are numerous improvements and bug fixes in newer urllib3 releases that would help ensure proper handling of redirects and connections.
+
+",closed,2025-03-10T23:12:23+00:00,2025-03-11T00:31:56+00:00,2025-03-11T00:31:56+00:00,gaikwadabhishek,[],3,[],,https://github.com/psf/requests/issues/6911
+psf/requests,6910,"Version 2.32.3 takes a long time for ""connectionpool:Starting""","Using version 2.32.3 takes a very long time (in the order of minutes) at:
+
+`DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): some/url.com`
+
+However, downgrading to version 2.32.2 solves this problem.
+
+## Reproduction Steps
+
+```python
+import requests
+
+url = 'some/url.com'
+requests.get(url, timeout=some_timeout)
+
+```
+
+## System Information
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.11.10""
+  },
+  ""platform"": {
+    ""release"": ""23.6.0"",
+    ""system"": ""Darwin""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30400010""
+  },
+  ""urllib3"": {
+    ""version"": ""2.3.0""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}",open,2025-03-06T10:09:30+00:00,2025-03-06T10:10:51+00:00,,florianhitz,[],0,[],,https://github.com/psf/requests/issues/6910
+psf/requests,6908,requests.exceptions.SSLError,"<!-- Summary. -->
+```
+Traceback (most recent call last):
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\connectionpool.py"", line 715, in urlopen
+    httplib_response = self._make_request(
+                       ^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\connectionpool.py"", line 404, in _make_request
+    self._validate_conn(conn)
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\connectionpool.py"", line 1058, in _validate_conn
+    conn.connect()
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\connection.py"", line 419, in connect
+    self.sock = ssl_wrap_socket(
+                ^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\util\ssl_.py"", line 449, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\util\ssl_.py"", line 493, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\ssl.py"", line 517, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\ssl.py"", line 1108, in _create
+    self.do_handshake()
+  File ""C:\Users\11989\anaconda3\Lib\ssl.py"", line 1379, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLError: [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1006)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\requests\adapters.py"", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\connectionpool.py"", line 799, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\urllib3\util\retry.py"", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='gxj.wuhu.gov.cn', port=443): Max retries exceeded with url: /content/column/6788071?pageIndex=1 (Caused by SSLError(SSLError(1, '[SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1006)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""<stdin>"", line 1, in <module>
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\requests\api.py"", line 73, in get
+    return request(""get"", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\requests\api.py"", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\requests\sessions.py"", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\requests\sessions.py"", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\11989\anaconda3\Lib\site-packages\requests\adapters.py"", line 698, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='gxj.wuhu.gov.cn', port=443): Max retries exceeded with url: /content/column/6788071?pageIndex=1 (Caused by SSLError(SSLError(1, '[SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1006)')))
+```
+## Reproduction Steps
+
+```python
+import requests
+headers = {""User-Agent"": ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36""}
+url = ""https://gxj.wuhu.gov.cn/content/column/6788071?pageIndex=1""
+requests.get(url, headers=headers)
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": ""4.0.0""
+  },
+  ""charset_normalizer"": {
+    ""version"": ""2.0.4""
+  },
+  ""cryptography"": {
+    ""version"": ""42.0.5""
+  },
+  ""idna"": {
+    ""version"": ""3.4""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.11.5""
+  },
+  ""platform"": {
+    ""release"": ""10"",
+    ""system"": ""Windows""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": ""300000d0"",
+    ""version"": ""25.0.0""
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""300000f0""
+  },
+  ""urllib3"": {
+    ""version"": ""1.26.18""
+  },
+  ""using_charset_normalizer"": false,
+  ""using_pyopenssl"": true
+}
+```
+
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+Python version: Python 3.11.5 | packaged by Anaconda, Inc. | (main, Sep 11 2023, 13:26:23) [MSC v.1916 64 bit (AMD64)] on win32
+OS: windows 11
+",closed,2025-02-27T06:38:54+00:00,2025-03-13T09:34:16+00:00,2025-03-13T09:34:12+00:00,zemelLeong,[],2,[],,https://github.com/psf/requests/issues/6908
+psf/requests,6906,"Improve ""import requests"" time by delaying ssl context preload","Requests is not accepting feature requests at this time.
+
+In requests/adapters.py there is initialization for _preloaded_ssl_context in global scope.
+In corporate environment this operation consumes significant portion of the ""import requests"" time.
+
+Wrapping this initialization into a function that is called where this context is actually needed would eliminate the overhead.
+
+Estimates based on my machine:
+
+# original:
+$ time python -c 'import requests'
+real    0m0.918s
+...
+
+# with a function wrapper:
+$ time python -c 'import requests'
+real    0m0.356s
+...
+",closed,2025-02-23T18:11:10+00:00,2025-02-23T18:11:20+00:00,2025-02-23T18:11:19+00:00,gregory-shklover,[],1,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6906
+psf/requests,6905,Support for Python 3.13 compatibility,Are there any plans or timelines for releasing a version of the requests package compatible with Python 3.13? And I'd like to know when we can expect support for this version in requests.,closed,2025-02-21T11:17:01+00:00,2025-03-03T05:25:29+00:00,2025-03-03T05:24:43+00:00,geethu910,[],3,[],,https://github.com/psf/requests/issues/6905
+psf/requests,6904,Compatibility with Python 3.13,Are there any plans or timelines for releasing a version of the requests package compatible with Python 3.13? And I'd like to know when we can expect support for this version in requests.,closed,2025-02-21T11:11:03+00:00,2025-02-21T11:11:17+00:00,2025-02-21T11:11:15+00:00,geethu910,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6904
+psf/requests,6903,Help with POST request with XML payload,"The following curl request works,
+
+`curl -v -u ""user:password"" -X POST 'https://example.com/Webservice/ConnectorSOAP' --header 'Content-Type: application/xml' --data @payload.xml`
+
+However, `requests.post` fails with status code 411 - Length Required
+```
+content_length = str(len(payload))
+headers = {'Content-Type': 'application/xml', 'Content-Length': content_length}
+response = requests.post('http://example.com/Webservice/ConnectorSOAP', auth=('user', 'password'), data=payload, headers=headers)
+```
+
+Sample payload,
+```
+<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:tic=""http://www.otrs.org/TicketConnector/"">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <tic:TicketGet>
+                    <UserLogin>?</UserLogin>
+                    <Password>?</Password>
+                    <TicketID>?</TicketID>
+                    <DynamicFields>?</DynamicFields>
+                    <Extended>?</Extended>
+                    <AllArticles>?</AllArticles>
+                    <ArticleSenderType>?</ArticleSenderType>
+                    <ArticleOrder>?</ArticleOrder>
+                    <ArticleLimit>?</ArticleLimit>
+                    <Attachments>?</Attachments>
+                    <GetAttachmentContents>?</GetAttachmentContents>
+                    <HTMLBodyAsAttachment>?</HTMLBodyAsAttachment>
+                </tic:TicketGet>
+            </soapenv:Body>
+        </soapenv:Envelope>
+```
+
+Any help on this would be appreciated.",closed,2025-02-21T00:39:53+00:00,2025-02-21T00:40:06+00:00,2025-02-21T00:40:05+00:00,Vathsan,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6903
+psf/requests,6902,support http3 quic,"Please consider using curl python binding for http3 quic  support 
+",closed,2025-02-20T04:33:30+00:00,2025-02-20T04:33:43+00:00,2025-02-20T04:33:42+00:00,ghost,[],1,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6902
+psf/requests,6900,Unable to request a private URL endpoint with custom SNI and self-signed CA when the proxy is set,"Recently I was using [requests_toolbelt](https://github.com/requests/toolbelt) alongside the `requests` library, more specifically,  I was leveraging the `HostHeaderSSLAdapter` from `requests_toolbelt` to make sure I could request a private URL endpoint (e.g. `https://1.2.3.4:5678/api/check`) with the custom SNI and self-signed CA certificate.
+It works great until I try to request the same thing with a proxy, and it starts to occur the SSL verification exception as follows:
+``` python
+requests.exceptions.SSLError: HTTPSConnectionPool(host='1.2.3.4', port=5678): Max retries exceeded with url: /api/check_token (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '1.2.3.4:'. (_ssl.c:1006)"")))
+```
+I thought this was a bug related to the `requests_toolbelt` at first, like the existing bug report [#276](https://github.com/requests/toolbelt/issues/276), but after doing some digging, I'm pretty sure it is bound to the `requests` itself, hence I report the bug here and a PR that for it later.
+
+## Expected Result
+
+Everything works the same way with or without a proxy.
+
+## Actual Result
+
++ Private URL endpoint + custom SNI + self-signed CA  ✅
++ Private URL endpoint + custom SNI + self-signed CA + **HTTP Proxy** ❌
+
+## Reproduction Steps
+
+```python
+import requests
+from requests_toolbelt.adapters.host_header_ssl import HostHeaderSSLAdapter
+
+session = requests.Session()
+session.trust_env = False
+session.mount('https://', HostHeaderSSLAdapter())
+# Modify http://127.0.0.1:20809 to your actual proxy url
+session.proxies.update({'https': 'http://127.0.0.1:20809',
+                        'http': 'http://127.0.0.1:20809'})
+# Modify https://1.2.3.4:5678/api/check to your actual private URL endpoint
+resp = session.get('https://1.2.3.4:5678/api/check',
+                   headers={'Host': '{YOUR_HOST_NAME}'},
+                   verify='{YOUR_SELF_SIGNED_CA_FILE}')
+print(resp.status_code, resp.content)
+```
+
+## System Information
+No need
+",open,2025-02-19T12:07:21+00:00,2025-02-19T12:07:21+00:00,,bughandler,[],0,[],,https://github.com/psf/requests/issues/6900
+psf/requests,6896,Regenerating tests/certs/ with OpenSSL >= 3.2.0 causes test failures,"Regenerating `tests/certs/` using the provided `Makefile`s causes test failures.
+
+## Expected Result
+
+https://bugs.debian.org/1091503 reports that requests 2.32.3 as packaged in Debian fails tests if run on a system whose time has been artificially set to 2028.  It occurred to me that a simple time-trap-free approach to this might be to change the Debian packaging to regenerate the various certificates in `tests/certs/` using the provided `Makefile`s immediately before running the tests, which seems as though it ought to work.
+
+## Actual Result
+
+`tests/test_requests.py::TestPreparingURLs::test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert` and `tests/test_requests.py::TestPreparingURLs::test_different_connection_pool_for_mtls_settings` fail with errors indicating an invalid CA certificate.
+
+## Reproduction Steps
+
+```console
+$ for cert in expired mtls valid/server; do make -C tests/certs/$cert clean all; done
+$ tox -e py313-default -- -k 'test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert or test_different_connection_pool_for_mtls_settings'
+.pkg: _optional_hooks> python /home/cjwatson/.local/pipx/venvs/tox/lib/python3.12/site-packages/pyproject_api/_backend.py True setuptools.build_meta __legacy__
+.pkg: get_requires_for_build_sdist> python /home/cjwatson/.local/pipx/venvs/tox/lib/python3.12/site-packages/pyproject_api/_backend.py True setuptools.build_meta __legacy__
+.pkg: get_requires_for_build_wheel> python /home/cjwatson/.local/pipx/venvs/tox/lib/python3.12/site-packages/pyproject_api/_backend.py True setuptools.build_meta __legacy__
+.pkg: prepare_metadata_for_build_wheel> python /home/cjwatson/.local/pipx/venvs/tox/lib/python3.12/site-packages/pyproject_api/_backend.py True setuptools.build_meta __legacy__
+.pkg: build_sdist> python /home/cjwatson/.local/pipx/venvs/tox/lib/python3.12/site-packages/pyproject_api/_backend.py True setuptools.build_meta __legacy__
+py313-default: install_package> python -I -m pip install --force-reinstall --no-deps /home/cjwatson/src/python/requests/.tox/.tmp/package/7/requests-2.32.3.tar.gz
+py313-default: commands[0]> pytest -k 'test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert or test_different_connection_pool_for_mtls_settings'
+============================================================================= test session starts ==============================================================================
+platform linux -- Python 3.13.2, pytest-8.3.4, pluggy-1.5.0
+cachedir: .tox/py313-default/.pytest_cache
+rootdir: /home/cjwatson/src/python/requests
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-6.0.0, httpbin-2.1.0
+collected 606 items / 604 deselected / 2 selected
+
+tests/test_requests.py FF                                                                                                                                                [100%]
+
+=================================================================================== FAILURES ===================================================================================
+________________________________________ TestPreparingURLs.test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert ________________________________________
+
+self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f15fd876350>, conn = <urllib3.connection.HTTPSConnection object at 0x7f15fd8765d0>, method = 'GET', url = '/'
+body = None, headers = {'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate, br', 'Accept': '*/*', 'Connection': 'keep-alive'}
+retries = Retry(total=0, connect=None, read=False, redirect=None, status=None), timeout = Timeout(connect=None, read=None, total=None), chunked = False
+response_conn = <urllib3.connection.HTTPSConnection object at 0x7f15fd8765d0>, preload_content = False, decode_content = False, enforce_content_length = True
+
+    def _make_request(
+        self,
+        conn: BaseHTTPConnection,
+        method: str,
+        url: str,
+        body: _TYPE_BODY | None = None,
+        headers: typing.Mapping[str, str] | None = None,
+        retries: Retry | None = None,
+        timeout: _TYPE_TIMEOUT = _DEFAULT_TIMEOUT,
+        chunked: bool = False,
+        response_conn: BaseHTTPConnection | None = None,
+        preload_content: bool = True,
+        decode_content: bool = True,
+        enforce_content_length: bool = True,
+    ) -> BaseHTTPResponse:
+        """"""
+        Perform a request on a given urllib connection object taken from our
+        pool.
+
+        :param conn:
+            a connection from one of our connection pools
+
+        :param method:
+            HTTP request method (such as GET, POST, PUT, etc.)
+
+        :param url:
+            The URL to perform the request on.
+
+        :param body:
+            Data to send in the request body, either :class:`str`, :class:`bytes`,
+            an iterable of :class:`str`/:class:`bytes`, or a file-like object.
+
+        :param headers:
+            Dictionary of custom headers to send, such as User-Agent,
+            If-None-Match, etc. If None, pool headers are used. If provided,
+            these headers completely replace any pool-specific headers.
+
+        :param retries:
+            Configure the number of retries to allow before raising a
+            :class:`~urllib3.exceptions.MaxRetryError` exception.
+
+            Pass ``None`` to retry until you receive a response. Pass a
+            :class:`~urllib3.util.retry.Retry` object for fine-grained control
+            over different types of retries.
+            Pass an integer number to retry connection errors that many times,
+            but no other types of errors. Pass zero to never retry.
+
+            If ``False``, then retries are disabled and any exception is raised
+            immediately. Also, instead of raising a MaxRetryError on redirects,
+            the redirect response will be returned.
+
+        :type retries: :class:`~urllib3.util.retry.Retry`, False, or an int.
+
+        :param timeout:
+            If specified, overrides the default timeout for this one
+            request. It may be a float (in seconds) or an instance of
+            :class:`urllib3.util.Timeout`.
+
+        :param chunked:
+            If True, urllib3 will send the body using chunked transfer
+            encoding. Otherwise, urllib3 will send the body using the standard
+            content-length form. Defaults to False.
+
+        :param response_conn:
+            Set this to ``None`` if you will handle releasing the connection or
+            set the connection to have the response release it.
+
+        :param preload_content:
+          If True, the response's body will be preloaded during construction.
+
+        :param decode_content:
+            If True, will attempt to decode the body based on the
+            'content-encoding' header.
+
+        :param enforce_content_length:
+            Enforce content length checking. Body returned by server must match
+            value of Content-Length header, if present. Otherwise, raise error.
+        """"""
+        self.num_requests += 1
+
+        timeout_obj = self._get_timeout(timeout)
+        timeout_obj.start_connect()
+        conn.timeout = Timeout.resolve_default_timeout(timeout_obj.connect_timeout)
+
+        try:
+            # Trigger any extra validation we need to do.
+            try:
+>               self._validate_conn(conn)
+
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connectionpool.py:464:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connectionpool.py:1093: in _validate_conn
+    conn.connect()
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connection.py:741: in connect
+    sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connection.py:920: in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+.tox/py313-default/lib/python3.13/site-packages/urllib3/util/ssl_.py:460: in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+.tox/py313-default/lib/python3.13/site-packages/urllib3/util/ssl_.py:504: in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+/usr/lib/python3.13/ssl.py:455: in wrap_socket
+    return self.sslsocket_class._create(
+/usr/lib/python3.13/ssl.py:1076: in _create
+    self.do_handshake()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <ssl.SSLSocket [closed] fd=-1, family=2, type=1, proto=6>, block = False
+
+    @_sslcopydoc
+    def do_handshake(self, block=False):
+        self._check_connected()
+        timeout = self.gettimeout()
+        try:
+            if timeout == 0.0 and block:
+                self.settimeout(None)
+>           self._sslobj.do_handshake()
+E           ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: invalid CA certificate (_ssl.c:1029)
+
+/usr/lib/python3.13/ssl.py:1372: SSLCertVerificationError
+
+During handling of the above exception, another exception occurred:
+
+self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f15fd876350>, method = 'GET', url = '/', body = None
+headers = {'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate, br', 'Accept': '*/*', 'Connection': 'keep-alive'}
+retries = Retry(total=0, connect=None, read=False, redirect=None, status=None), redirect = False, assert_same_host = False
+timeout = Timeout(connect=None, read=None, total=None), pool_timeout = None, release_conn = False, chunked = False, body_pos = None, preload_content = False
+decode_content = False, response_kw = {}, parsed_url = Url(scheme=None, auth=None, host=None, port=None, path='/', query=None, fragment=None), destination_scheme = None
+conn = None, release_this_conn = True, http_tunnel_required = False, err = None, clean_exit = False
+
+    def urlopen(  # type: ignore[override]
+        self,
+        method: str,
+        url: str,
+        body: _TYPE_BODY | None = None,
+        headers: typing.Mapping[str, str] | None = None,
+        retries: Retry | bool | int | None = None,
+        redirect: bool = True,
+        assert_same_host: bool = True,
+        timeout: _TYPE_TIMEOUT = _DEFAULT_TIMEOUT,
+        pool_timeout: int | None = None,
+        release_conn: bool | None = None,
+        chunked: bool = False,
+        body_pos: _TYPE_BODY_POSITION | None = None,
+        preload_content: bool = True,
+        decode_content: bool = True,
+        **response_kw: typing.Any,
+    ) -> BaseHTTPResponse:
+        """"""
+        Get a connection from the pool and perform an HTTP request. This is the
+        lowest level call for making a request, so you'll need to specify all
+        the raw details.
+
+        .. note::
+
+           More commonly, it's appropriate to use a convenience method
+           such as :meth:`request`.
+
+        .. note::
+
+           `release_conn` will only behave as expected if
+           `preload_content=False` because we want to make
+           `preload_content=False` the default behaviour someday soon without
+           breaking backwards compatibility.
+
+        :param method:
+            HTTP request method (such as GET, POST, PUT, etc.)
+
+        :param url:
+            The URL to perform the request on.
+
+        :param body:
+            Data to send in the request body, either :class:`str`, :class:`bytes`,
+            an iterable of :class:`str`/:class:`bytes`, or a file-like object.
+
+        :param headers:
+            Dictionary of custom headers to send, such as User-Agent,
+            If-None-Match, etc. If None, pool headers are used. If provided,
+            these headers completely replace any pool-specific headers.
+
+        :param retries:
+            Configure the number of retries to allow before raising a
+            :class:`~urllib3.exceptions.MaxRetryError` exception.
+
+            If ``None`` (default) will retry 3 times, see ``Retry.DEFAULT``. Pass a
+            :class:`~urllib3.util.retry.Retry` object for fine-grained control
+            over different types of retries.
+            Pass an integer number to retry connection errors that many times,
+            but no other types of errors. Pass zero to never retry.
+
+            If ``False``, then retries are disabled and any exception is raised
+            immediately. Also, instead of raising a MaxRetryError on redirects,
+            the redirect response will be returned.
+
+        :type retries: :class:`~urllib3.util.retry.Retry`, False, or an int.
+
+        :param redirect:
+            If True, automatically handle redirects (status codes 301, 302,
+            303, 307, 308). Each redirect counts as a retry. Disabling retries
+            will disable redirect, too.
+
+        :param assert_same_host:
+            If ``True``, will make sure that the host of the pool requests is
+            consistent else will raise HostChangedError. When ``False``, you can
+            use the pool on an HTTP proxy and request foreign hosts.
+
+        :param timeout:
+            If specified, overrides the default timeout for this one
+            request. It may be a float (in seconds) or an instance of
+            :class:`urllib3.util.Timeout`.
+
+        :param pool_timeout:
+            If set and the pool is set to block=True, then this method will
+            block for ``pool_timeout`` seconds and raise EmptyPoolError if no
+            connection is available within the time period.
+
+        :param bool preload_content:
+            If True, the response's body will be preloaded into memory.
+
+        :param bool decode_content:
+            If True, will attempt to decode the body based on the
+            'content-encoding' header.
+
+        :param release_conn:
+            If False, then the urlopen call will not release the connection
+            back into the pool once a response is received (but will release if
+            you read the entire contents of the response such as when
+            `preload_content=True`). This is useful if you're not preloading
+            the response's content immediately. You will need to call
+            ``r.release_conn()`` on the response ``r`` to return the connection
+            back into the pool. If None, it takes the value of ``preload_content``
+            which defaults to ``True``.
+
+        :param bool chunked:
+            If True, urllib3 will send the body using chunked transfer
+            encoding. Otherwise, urllib3 will send the body using the standard
+            content-length form. Defaults to False.
+
+        :param int body_pos:
+            Position to seek to in file-like body in the event of a retry or
+            redirect. Typically this won't need to be set because urllib3 will
+            auto-populate the value when needed.
+        """"""
+        parsed_url = parse_url(url)
+        destination_scheme = parsed_url.scheme
+
+        if headers is None:
+            headers = self.headers
+
+        if not isinstance(retries, Retry):
+            retries = Retry.from_int(retries, redirect=redirect, default=self.retries)
+
+        if release_conn is None:
+            release_conn = preload_content
+
+        # Check host
+        if assert_same_host and not self.is_same_host(url):
+            raise HostChangedError(self, url, retries)
+
+        # Ensure that the URL we're connecting to is properly encoded
+        if url.startswith(""/""):
+            url = to_str(_encode_target(url))
+        else:
+            url = to_str(parsed_url.url)
+
+        conn = None
+
+        # Track whether `conn` needs to be released before
+        # returning/raising/recursing. Update this variable if necessary, and
+        # leave `release_conn` constant throughout the function. That way, if
+        # the function recurses, the original value of `release_conn` will be
+        # passed down into the recursive call, and its value will be respected.
+        #
+        # See issue #651 [1] for details.
+        #
+        # [1] <https://github.com/urllib3/urllib3/issues/651>
+        release_this_conn = release_conn
+
+        http_tunnel_required = connection_requires_http_tunnel(
+            self.proxy, self.proxy_config, destination_scheme
+        )
+
+        # Merge the proxy headers. Only done when not using HTTP CONNECT. We
+        # have to copy the headers dict so we can safely change it without those
+        # changes being reflected in anyone else's copy.
+        if not http_tunnel_required:
+            headers = headers.copy()  # type: ignore[attr-defined]
+            headers.update(self.proxy_headers)  # type: ignore[union-attr]
+
+        # Must keep the exception bound to a separate variable or else Python 3
+        # complains about UnboundLocalError.
+        err = None
+
+        # Keep track of whether we cleanly exited the except block. This
+        # ensures we do proper cleanup in finally.
+        clean_exit = False
+
+        # Rewind body position, if needed. Record current position
+        # for future rewinds in the event of a redirect/retry.
+        body_pos = set_file_position(body, body_pos)
+
+        try:
+            # Request a connection from the queue.
+            timeout_obj = self._get_timeout(timeout)
+            conn = self._get_conn(timeout=pool_timeout)
+
+            conn.timeout = timeout_obj.connect_timeout  # type: ignore[assignment]
+
+            # Is this a closed/new connection that requires CONNECT tunnelling?
+            if self.proxy is not None and http_tunnel_required and conn.is_closed:
+                try:
+                    self._prepare_proxy(conn)
+                except (BaseSSLError, OSError, SocketTimeout) as e:
+                    self._raise_timeout(
+                        err=e, url=self.proxy.url, timeout_value=conn.timeout
+                    )
+                    raise
+
+            # If we're going to release the connection in ``finally:``, then
+            # the response doesn't need to know about the connection. Otherwise
+            # it will also try to release it and we'll have a double-release
+            # mess.
+            response_conn = conn if not release_conn else None
+
+            # Make the request on the HTTPConnection object
+>           response = self._make_request(
+                conn,
+                method,
+                url,
+                timeout=timeout_obj,
+                body=body,
+                headers=headers,
+                chunked=chunked,
+                retries=retries,
+                response_conn=response_conn,
+                preload_content=preload_content,
+                decode_content=decode_content,
+                **response_kw,
+            )
+
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connectionpool.py:787:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f15fd876350>, conn = <urllib3.connection.HTTPSConnection object at 0x7f15fd8765d0>, method = 'GET', url = '/'
+body = None, headers = {'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate, br', 'Accept': '*/*', 'Connection': 'keep-alive'}
+retries = Retry(total=0, connect=None, read=False, redirect=None, status=None), timeout = Timeout(connect=None, read=None, total=None), chunked = False
+response_conn = <urllib3.connection.HTTPSConnection object at 0x7f15fd8765d0>, preload_content = False, decode_content = False, enforce_content_length = True
+
+    def _make_request(
+        self,
+        conn: BaseHTTPConnection,
+        method: str,
+        url: str,
+        body: _TYPE_BODY | None = None,
+        headers: typing.Mapping[str, str] | None = None,
+        retries: Retry | None = None,
+        timeout: _TYPE_TIMEOUT = _DEFAULT_TIMEOUT,
+        chunked: bool = False,
+        response_conn: BaseHTTPConnection | None = None,
+        preload_content: bool = True,
+        decode_content: bool = True,
+        enforce_content_length: bool = True,
+    ) -> BaseHTTPResponse:
+        """"""
+        Perform a request on a given urllib connection object taken from our
+        pool.
+
+        :param conn:
+            a connection from one of our connection pools
+
+        :param method:
+            HTTP request method (such as GET, POST, PUT, etc.)
+
+        :param url:
+            The URL to perform the request on.
+
+        :param body:
+            Data to send in the request body, either :class:`str`, :class:`bytes`,
+            an iterable of :class:`str`/:class:`bytes`, or a file-like object.
+
+        :param headers:
+            Dictionary of custom headers to send, such as User-Agent,
+            If-None-Match, etc. If None, pool headers are used. If provided,
+            these headers completely replace any pool-specific headers.
+
+        :param retries:
+            Configure the number of retries to allow before raising a
+            :class:`~urllib3.exceptions.MaxRetryError` exception.
+
+            Pass ``None`` to retry until you receive a response. Pass a
+            :class:`~urllib3.util.retry.Retry` object for fine-grained control
+            over different types of retries.
+            Pass an integer number to retry connection errors that many times,
+            but no other types of errors. Pass zero to never retry.
+
+            If ``False``, then retries are disabled and any exception is raised
+            immediately. Also, instead of raising a MaxRetryError on redirects,
+            the redirect response will be returned.
+
+        :type retries: :class:`~urllib3.util.retry.Retry`, False, or an int.
+
+        :param timeout:
+            If specified, overrides the default timeout for this one
+            request. It may be a float (in seconds) or an instance of
+            :class:`urllib3.util.Timeout`.
+
+        :param chunked:
+            If True, urllib3 will send the body using chunked transfer
+            encoding. Otherwise, urllib3 will send the body using the standard
+            content-length form. Defaults to False.
+
+        :param response_conn:
+            Set this to ``None`` if you will handle releasing the connection or
+            set the connection to have the response release it.
+
+        :param preload_content:
+          If True, the response's body will be preloaded during construction.
+
+        :param decode_content:
+            If True, will attempt to decode the body based on the
+            'content-encoding' header.
+
+        :param enforce_content_length:
+            Enforce content length checking. Body returned by server must match
+            value of Content-Length header, if present. Otherwise, raise error.
+        """"""
+        self.num_requests += 1
+
+        timeout_obj = self._get_timeout(timeout)
+        timeout_obj.start_connect()
+        conn.timeout = Timeout.resolve_default_timeout(timeout_obj.connect_timeout)
+
+        try:
+            # Trigger any extra validation we need to do.
+            try:
+                self._validate_conn(conn)
+            except (SocketTimeout, BaseSSLError) as e:
+                self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)
+                raise
+
+        # _validate_conn() starts the connection to an HTTPS proxy
+        # so we need to wrap errors with 'ProxyError' here too.
+        except (
+            OSError,
+            NewConnectionError,
+            TimeoutError,
+            BaseSSLError,
+            CertificateError,
+            SSLError,
+        ) as e:
+            new_e: Exception = e
+            if isinstance(e, (BaseSSLError, CertificateError)):
+                new_e = SSLError(e)
+            # If the connection didn't successfully connect to it's proxy
+            # then there
+            if isinstance(
+                new_e, (OSError, NewConnectionError, TimeoutError, SSLError)
+            ) and (conn and conn.proxy and not conn.has_connected_to_proxy):
+                new_e = _wrap_proxy_error(new_e, conn.proxy.scheme)
+>           raise new_e
+E           urllib3.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: invalid CA certificate (_ssl.c:1029)
+
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connectionpool.py:488: SSLError
+
+The above exception was the direct cause of the following exception:
+
+self = <requests.adapters.HTTPAdapter object at 0x7f15fd854ad0>, request = <PreparedRequest [GET]>, stream = False, timeout = Timeout(connect=None, read=None, total=None)
+verify = 'tests/certs/valid/ca/ca.crt', cert = None, proxies = OrderedDict()
+
+    def send(
+        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+    ):
+        """"""Sends PreparedRequest object. Returns Response object.
+
+        :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
+        :param stream: (optional) Whether to stream the request content.
+        :param timeout: (optional) How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout,
+            read timeout) <timeouts>` tuple.
+        :type timeout: float or tuple or urllib3 Timeout object
+        :param verify: (optional) Either a boolean, in which case it controls whether
+            we verify the server's TLS certificate, or a string, in which case it
+            must be a path to a CA bundle to use
+        :param cert: (optional) Any user-provided SSL certificate to be trusted.
+        :param proxies: (optional) The proxies dictionary to apply to the request.
+        :rtype: requests.Response
+        """"""
+
+        try:
+            conn = self.get_connection_with_tls_context(
+                request, verify, proxies=proxies, cert=cert
+            )
+        except LocationValueError as e:
+            raise InvalidURL(e, request=request)
+
+        self.cert_verify(conn, request.url, verify, cert)
+        url = self.request_url(request, proxies)
+        self.add_headers(
+            request,
+            stream=stream,
+            timeout=timeout,
+            verify=verify,
+            cert=cert,
+            proxies=proxies,
+        )
+
+        chunked = not (request.body is None or ""Content-Length"" in request.headers)
+
+        if isinstance(timeout, tuple):
+            try:
+                connect, read = timeout
+                timeout = TimeoutSauce(connect=connect, read=read)
+            except ValueError:
+                raise ValueError(
+                    f""Invalid timeout {timeout}. Pass a (connect, read) timeout tuple, ""
+                    f""or a single float to set both timeouts to the same value.""
+                )
+        elif isinstance(timeout, TimeoutSauce):
+            pass
+        else:
+            timeout = TimeoutSauce(connect=timeout, read=timeout)
+
+        try:
+>           resp = conn.urlopen(
+                method=request.method,
+                url=url,
+                body=request.body,
+                headers=request.headers,
+                redirect=False,
+                assert_same_host=False,
+                preload_content=False,
+                decode_content=False,
+                retries=self.max_retries,
+                timeout=timeout,
+                chunked=chunked,
+            )
+
+.tox/py313-default/lib/python3.13/site-packages/requests/adapters.py:667:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connectionpool.py:841: in urlopen
+    retries = retries.increment(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Retry(total=0, connect=None, read=False, redirect=None, status=None), method = 'GET', url = '/', response = None
+error = SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: invalid CA certificate (_ssl.c:1029)'))
+_pool = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f15fd876350>, _stacktrace = <traceback object at 0x7f15fd886440>
+
+    def increment(
+        self,
+        method: str | None = None,
+        url: str | None = None,
+        response: BaseHTTPResponse | None = None,
+        error: Exception | None = None,
+        _pool: ConnectionPool | None = None,
+        _stacktrace: TracebackType | None = None,
+    ) -> Self:
+        """"""Return a new Retry object with incremented retry counters.
+
+        :param response: A response object, or None, if the server did not
+            return a response.
+        :type response: :class:`~urllib3.response.BaseHTTPResponse`
+        :param Exception error: An error encountered during the request, or
+            None if the response was received successfully.
+
+        :return: A new ``Retry`` object.
+        """"""
+        if self.total is False and error:
+            # Disabled, indicate to re-raise the error.
+            raise reraise(type(error), error, _stacktrace)
+
+        total = self.total
+        if total is not None:
+            total -= 1
+
+        connect = self.connect
+        read = self.read
+        redirect = self.redirect
+        status_count = self.status
+        other = self.other
+        cause = ""unknown""
+        status = None
+        redirect_location = None
+
+        if error and self._is_connection_error(error):
+            # Connect retry?
+            if connect is False:
+                raise reraise(type(error), error, _stacktrace)
+            elif connect is not None:
+                connect -= 1
+
+        elif error and self._is_read_error(error):
+            # Read retry?
+            if read is False or method is None or not self._is_method_retryable(method):
+                raise reraise(type(error), error, _stacktrace)
+            elif read is not None:
+                read -= 1
+
+        elif error:
+            # Other retry?
+            if other is not None:
+                other -= 1
+
+        elif response and response.get_redirect_location():
+            # Redirect retry?
+            if redirect is not None:
+                redirect -= 1
+            cause = ""too many redirects""
+            response_redirect_location = response.get_redirect_location()
+            if response_redirect_location:
+                redirect_location = response_redirect_location
+            status = response.status
+
+        else:
+            # Incrementing because of a server error like a 500 in
+            # status_forcelist and the given method is in the allowed_methods
+            cause = ResponseError.GENERIC_ERROR
+            if response and response.status:
+                if status_count is not None:
+                    status_count -= 1
+                cause = ResponseError.SPECIFIC_ERROR.format(status_code=response.status)
+                status = response.status
+
+        history = self.history + (
+            RequestHistory(method, url, error, status, redirect_location),
+        )
+
+        new_retry = self.new(
+            total=total,
+            connect=connect,
+            read=read,
+            redirect=redirect,
+            status=status_count,
+            other=other,
+            history=history,
+        )
+
+        if new_retry.is_exhausted():
+            reason = error or ResponseError(cause)
+>           raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E           urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='localhost', port=44229): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: invalid CA certificate (_ssl.c:1029)')))
+
+.tox/py313-default/lib/python3.13/site-packages/urllib3/util/retry.py:519: MaxRetryError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_requests.TestPreparingURLs object at 0x7f15fd9090e0>
+
+    def test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert(
+        self,
+    ):
+        def response_handler(sock):
+            consume_socket_content(sock, timeout=0.5)
+            sock.send(
+                b""HTTP/1.1 200 OK\r\n""
+                b""Content-Length: 18\r\n\r\n""
+                b'\xff\xfe{\x00""\x00K0""\x00=\x00""\x00\xab0""\x00\r\n'
+            )
+
+        s = requests.Session()
+        close_server = threading.Event()
+        server = TLSServer(
+            handler=response_handler,
+            wait_to_close_event=close_server,
+            requests_to_handle=3,
+            cert_chain=""tests/certs/valid/server/server.pem"",
+            keyfile=""tests/certs/valid/server/server.key"",
+        )
+
+        with server as (host, port):
+            url = f""https://{host}:{port}""
+            r1 = s.get(url, verify=False)
+            assert r1.status_code == 200
+
+>           r2 = s.get(url, verify=""tests/certs/valid/ca/ca.crt"")
+
+tests/test_requests.py:2907:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.tox/py313-default/lib/python3.13/site-packages/requests/sessions.py:602: in get
+    return self.request(""GET"", url, **kwargs)
+.tox/py313-default/lib/python3.13/site-packages/requests/sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+.tox/py313-default/lib/python3.13/site-packages/requests/sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <requests.adapters.HTTPAdapter object at 0x7f15fd854ad0>, request = <PreparedRequest [GET]>, stream = False, timeout = Timeout(connect=None, read=None, total=None)
+verify = 'tests/certs/valid/ca/ca.crt', cert = None, proxies = OrderedDict()
+
+    def send(
+        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+    ):
+        """"""Sends PreparedRequest object. Returns Response object.
+
+        :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
+        :param stream: (optional) Whether to stream the request content.
+        :param timeout: (optional) How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout,
+            read timeout) <timeouts>` tuple.
+        :type timeout: float or tuple or urllib3 Timeout object
+        :param verify: (optional) Either a boolean, in which case it controls whether
+            we verify the server's TLS certificate, or a string, in which case it
+            must be a path to a CA bundle to use
+        :param cert: (optional) Any user-provided SSL certificate to be trusted.
+        :param proxies: (optional) The proxies dictionary to apply to the request.
+        :rtype: requests.Response
+        """"""
+
+        try:
+            conn = self.get_connection_with_tls_context(
+                request, verify, proxies=proxies, cert=cert
+            )
+        except LocationValueError as e:
+            raise InvalidURL(e, request=request)
+
+        self.cert_verify(conn, request.url, verify, cert)
+        url = self.request_url(request, proxies)
+        self.add_headers(
+            request,
+            stream=stream,
+            timeout=timeout,
+            verify=verify,
+            cert=cert,
+            proxies=proxies,
+        )
+
+        chunked = not (request.body is None or ""Content-Length"" in request.headers)
+
+        if isinstance(timeout, tuple):
+            try:
+                connect, read = timeout
+                timeout = TimeoutSauce(connect=connect, read=read)
+            except ValueError:
+                raise ValueError(
+                    f""Invalid timeout {timeout}. Pass a (connect, read) timeout tuple, ""
+                    f""or a single float to set both timeouts to the same value.""
+                )
+        elif isinstance(timeout, TimeoutSauce):
+            pass
+        else:
+            timeout = TimeoutSauce(connect=timeout, read=timeout)
+
+        try:
+            resp = conn.urlopen(
+                method=request.method,
+                url=url,
+                body=request.body,
+                headers=request.headers,
+                redirect=False,
+                assert_same_host=False,
+                preload_content=False,
+                decode_content=False,
+                retries=self.max_retries,
+                timeout=timeout,
+                chunked=chunked,
+            )
+
+        except (ProtocolError, OSError) as err:
+            raise ConnectionError(err, request=request)
+
+        except MaxRetryError as e:
+            if isinstance(e.reason, ConnectTimeoutError):
+                # TODO: Remove this in 3.0.0: see #2811
+                if not isinstance(e.reason, NewConnectionError):
+                    raise ConnectTimeout(e, request=request)
+
+            if isinstance(e.reason, ResponseError):
+                raise RetryError(e, request=request)
+
+            if isinstance(e.reason, _ProxyError):
+                raise ProxyError(e, request=request)
+
+            if isinstance(e.reason, _SSLError):
+                # This branch is for urllib3 v1.22 and later.
+>               raise SSLError(e, request=request)
+E               requests.exceptions.SSLError: HTTPSConnectionPool(host='localhost', port=44229): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: invalid CA certificate (_ssl.c:1029)')))
+
+.tox/py313-default/lib/python3.13/site-packages/requests/adapters.py:698: SSLError
+______________________________________________________ TestPreparingURLs.test_different_connection_pool_for_mtls_settings ______________________________________________________
+urllib3.exceptions.SSLError: [SSL: TLSV1_ALERT_UNKNOWN_CA] tlsv1 alert unknown ca (_ssl.c:2649)
+
+The above exception was the direct cause of the following exception:
+
+self = <requests.adapters.HTTPAdapter object at 0x7f15fd877b10>, request = <PreparedRequest [GET]>, stream = False, timeout = Timeout(connect=None, read=None, total=None)
+verify = False, cert = ('tests/certs/mtls/client/client.pem', 'tests/certs/mtls/client/client.key'), proxies = OrderedDict()
+
+    def send(
+        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+    ):
+        """"""Sends PreparedRequest object. Returns Response object.
+
+        :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
+        :param stream: (optional) Whether to stream the request content.
+        :param timeout: (optional) How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout,
+            read timeout) <timeouts>` tuple.
+        :type timeout: float or tuple or urllib3 Timeout object
+        :param verify: (optional) Either a boolean, in which case it controls whether
+            we verify the server's TLS certificate, or a string, in which case it
+            must be a path to a CA bundle to use
+        :param cert: (optional) Any user-provided SSL certificate to be trusted.
+        :param proxies: (optional) The proxies dictionary to apply to the request.
+        :rtype: requests.Response
+        """"""
+
+        try:
+            conn = self.get_connection_with_tls_context(
+                request, verify, proxies=proxies, cert=cert
+            )
+        except LocationValueError as e:
+            raise InvalidURL(e, request=request)
+
+        self.cert_verify(conn, request.url, verify, cert)
+        url = self.request_url(request, proxies)
+        self.add_headers(
+            request,
+            stream=stream,
+            timeout=timeout,
+            verify=verify,
+            cert=cert,
+            proxies=proxies,
+        )
+
+        chunked = not (request.body is None or ""Content-Length"" in request.headers)
+
+        if isinstance(timeout, tuple):
+            try:
+                connect, read = timeout
+                timeout = TimeoutSauce(connect=connect, read=read)
+            except ValueError:
+                raise ValueError(
+                    f""Invalid timeout {timeout}. Pass a (connect, read) timeout tuple, ""
+                    f""or a single float to set both timeouts to the same value.""
+                )
+        elif isinstance(timeout, TimeoutSauce):
+            pass
+        else:
+            timeout = TimeoutSauce(connect=timeout, read=timeout)
+
+        try:
+>           resp = conn.urlopen(
+                method=request.method,
+                url=url,
+                body=request.body,
+                headers=request.headers,
+                redirect=False,
+                assert_same_host=False,
+                preload_content=False,
+                decode_content=False,
+                retries=self.max_retries,
+                timeout=timeout,
+                chunked=chunked,
+            )
+
+.tox/py313-default/lib/python3.13/site-packages/requests/adapters.py:667:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.tox/py313-default/lib/python3.13/site-packages/urllib3/connectionpool.py:841: in urlopen
+    retries = retries.increment(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Retry(total=0, connect=None, read=False, redirect=None, status=None), method = 'GET', url = '/', response = None
+error = SSLError(SSLError(1, '[SSL: TLSV1_ALERT_UNKNOWN_CA] tlsv1 alert unknown ca (_ssl.c:2649)'))
+_pool = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f15fc8e4050>, _stacktrace = <traceback object at 0x7f15fc7a0fc0>
+
+    def increment(
+        self,
+        method: str | None = None,
+        url: str | None = None,
+        response: BaseHTTPResponse | None = None,
+        error: Exception | None = None,
+        _pool: ConnectionPool | None = None,
+        _stacktrace: TracebackType | None = None,
+    ) -> Self:
+        """"""Return a new Retry object with incremented retry counters.
+
+        :param response: A response object, or None, if the server did not
+            return a response.
+        :type response: :class:`~urllib3.response.BaseHTTPResponse`
+        :param Exception error: An error encountered during the request, or
+            None if the response was received successfully.
+
+        :return: A new ``Retry`` object.
+        """"""
+        if self.total is False and error:
+            # Disabled, indicate to re-raise the error.
+            raise reraise(type(error), error, _stacktrace)
+
+        total = self.total
+        if total is not None:
+            total -= 1
+
+        connect = self.connect
+        read = self.read
+        redirect = self.redirect
+        status_count = self.status
+        other = self.other
+        cause = ""unknown""
+        status = None
+        redirect_location = None
+
+        if error and self._is_connection_error(error):
+            # Connect retry?
+            if connect is False:
+                raise reraise(type(error), error, _stacktrace)
+            elif connect is not None:
+                connect -= 1
+
+        elif error and self._is_read_error(error):
+            # Read retry?
+            if read is False or method is None or not self._is_method_retryable(method):
+                raise reraise(type(error), error, _stacktrace)
+            elif read is not None:
+                read -= 1
+
+        elif error:
+            # Other retry?
+            if other is not None:
+                other -= 1
+
+        elif response and response.get_redirect_location():
+            # Redirect retry?
+            if redirect is not None:
+                redirect -= 1
+            cause = ""too many redirects""
+            response_redirect_location = response.get_redirect_location()
+            if response_redirect_location:
+                redirect_location = response_redirect_location
+            status = response.status
+
+        else:
+            # Incrementing because of a server error like a 500 in
+            # status_forcelist and the given method is in the allowed_methods
+            cause = ResponseError.GENERIC_ERROR
+            if response and response.status:
+                if status_count is not None:
+                    status_count -= 1
+                cause = ResponseError.SPECIFIC_ERROR.format(status_code=response.status)
+                status = response.status
+
+        history = self.history + (
+            RequestHistory(method, url, error, status, redirect_location),
+        )
+
+        new_retry = self.new(
+            total=total,
+            connect=connect,
+            read=read,
+            redirect=redirect,
+            status=status_count,
+            other=other,
+            history=history,
+        )
+
+        if new_retry.is_exhausted():
+            reason = error or ResponseError(cause)
+>           raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E           urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='localhost', port=38677): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_UNKNOWN_CA] tlsv1 alert unknown ca (_ssl.c:2649)')))
+
+.tox/py313-default/lib/python3.13/site-packages/urllib3/util/retry.py:519: MaxRetryError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_requests.TestPreparingURLs object at 0x7f15fd908e10>
+
+    def test_different_connection_pool_for_mtls_settings(self):
+        client_cert = None
+
+        def response_handler(sock):
+            nonlocal client_cert
+            client_cert = sock.getpeercert()
+            consume_socket_content(sock, timeout=0.5)
+            sock.send(
+                b""HTTP/1.1 200 OK\r\n""
+                b""Content-Length: 18\r\n\r\n""
+                b'\xff\xfe{\x00""\x00K0""\x00=\x00""\x00\xab0""\x00\r\n'
+            )
+
+        s = requests.Session()
+        close_server = threading.Event()
+        server = TLSServer(
+            handler=response_handler,
+            wait_to_close_event=close_server,
+            requests_to_handle=2,
+            cert_chain=""tests/certs/expired/server/server.pem"",
+            keyfile=""tests/certs/expired/server/server.key"",
+            mutual_tls=True,
+            cacert=""tests/certs/expired/ca/ca.crt"",
+        )
+
+        cert = (
+            ""tests/certs/mtls/client/client.pem"",
+            ""tests/certs/mtls/client/client.key"",
+        )
+        with server as (host, port):
+            url = f""https://{host}:{port}""
+>           r1 = s.get(url, verify=False, cert=cert)
+
+tests/test_requests.py:2944:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.tox/py313-default/lib/python3.13/site-packages/requests/sessions.py:602: in get
+    return self.request(""GET"", url, **kwargs)
+.tox/py313-default/lib/python3.13/site-packages/requests/sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+.tox/py313-default/lib/python3.13/site-packages/requests/sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <requests.adapters.HTTPAdapter object at 0x7f15fd877b10>, request = <PreparedRequest [GET]>, stream = False, timeout = Timeout(connect=None, read=None, total=None)
+verify = False, cert = ('tests/certs/mtls/client/client.pem', 'tests/certs/mtls/client/client.key'), proxies = OrderedDict()
+
+    def send(
+        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+    ):
+        """"""Sends PreparedRequest object. Returns Response object.
+
+        :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
+        :param stream: (optional) Whether to stream the request content.
+        :param timeout: (optional) How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout,
+            read timeout) <timeouts>` tuple.
+        :type timeout: float or tuple or urllib3 Timeout object
+        :param verify: (optional) Either a boolean, in which case it controls whether
+            we verify the server's TLS certificate, or a string, in which case it
+            must be a path to a CA bundle to use
+        :param cert: (optional) Any user-provided SSL certificate to be trusted.
+        :param proxies: (optional) The proxies dictionary to apply to the request.
+        :rtype: requests.Response
+        """"""
+
+        try:
+            conn = self.get_connection_with_tls_context(
+                request, verify, proxies=proxies, cert=cert
+            )
+        except LocationValueError as e:
+            raise InvalidURL(e, request=request)
+
+        self.cert_verify(conn, request.url, verify, cert)
+        url = self.request_url(request, proxies)
+        self.add_headers(
+            request,
+            stream=stream,
+            timeout=timeout,
+            verify=verify,
+            cert=cert,
+            proxies=proxies,
+        )
+
+        chunked = not (request.body is None or ""Content-Length"" in request.headers)
+
+        if isinstance(timeout, tuple):
+            try:
+                connect, read = timeout
+                timeout = TimeoutSauce(connect=connect, read=read)
+            except ValueError:
+                raise ValueError(
+                    f""Invalid timeout {timeout}. Pass a (connect, read) timeout tuple, ""
+                    f""or a single float to set both timeouts to the same value.""
+                )
+        elif isinstance(timeout, TimeoutSauce):
+            pass
+        else:
+            timeout = TimeoutSauce(connect=timeout, read=timeout)
+
+        try:
+            resp = conn.urlopen(
+                method=request.method,
+                url=url,
+                body=request.body,
+                headers=request.headers,
+                redirect=False,
+                assert_same_host=False,
+                preload_content=False,
+                decode_content=False,
+                retries=self.max_retries,
+                timeout=timeout,
+                chunked=chunked,
+            )
+
+        except (ProtocolError, OSError) as err:
+            raise ConnectionError(err, request=request)
+
+        except MaxRetryError as e:
+            if isinstance(e.reason, ConnectTimeoutError):
+                # TODO: Remove this in 3.0.0: see #2811
+                if not isinstance(e.reason, NewConnectionError):
+                    raise ConnectTimeout(e, request=request)
+
+            if isinstance(e.reason, ResponseError):
+                raise RetryError(e, request=request)
+
+            if isinstance(e.reason, _ProxyError):
+                raise ProxyError(e, request=request)
+
+            if isinstance(e.reason, _SSLError):
+                # This branch is for urllib3 v1.22 and later.
+>               raise SSLError(e, request=request)
+E               requests.exceptions.SSLError: HTTPSConnectionPool(host='localhost', port=38677): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_UNKNOWN_CA] tlsv1 alert unknown ca (_ssl.c:2649)')))
+
+.tox/py313-default/lib/python3.13/site-packages/requests/adapters.py:698: SSLError
+=============================================================================== warnings summary ===============================================================================
+tests/test_requests.py::TestPreparingURLs::test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert
+tests/test_requests.py::TestPreparingURLs::test_different_connection_pool_for_mtls_settings
+  /home/cjwatson/src/python/requests/.tox/py313-default/lib/python3.13/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'localhost'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================================================================== short test summary info ============================================================================
+FAILED tests/test_requests.py::TestPreparingURLs::test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert - requests.exceptions.SSLError: HTTPSConnectionPool(host='localhost', port=44229): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CE...
+FAILED tests/test_requests.py::TestPreparingURLs::test_different_connection_pool_for_mtls_settings - requests.exceptions.SSLError: HTTPSConnectionPool(host='localhost', port=38677): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_UNKNOW...
+================================================================ 2 failed, 604 deselected, 2 warnings in 0.72s =================================================================
+py313-default: exit 1 (1.00 seconds) /home/cjwatson/src/python/requests> pytest -k 'test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert or test_different_connection_pool_for_mtls_settings' pid=1712601
+  py313-default: FAIL code 1 (2.97=setup[1.97]+cmd[1.00] seconds)
+  evaluation failed :( (3.01 seconds)
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.13.2""
+  },
+  ""platform"": {
+    ""release"": ""6.12.12-amd64"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30400000""
+  },
+  ""urllib3"": {
+    ""version"": ""2.3.0""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+```
+
+I have openssl 3.4.0-2, which is the current version in Debian testing.",closed,2025-02-16T15:51:42+00:00,2025-02-17T12:40:21+00:00,2025-02-17T12:40:21+00:00,cjwatson,[],5,[],,https://github.com/psf/requests/issues/6896
+psf/requests,6894,timeout on requests.get is not working,"requests.get is not timing out after the set timeout period is elapsed.
+
+Using sample code like below - 
+
+import requests
+data_uri = f""https://api.xxxxx.com/xxx/xxxx/xxxx/xxxx/xxx/xxx.json""
+print(f""datauri : {data_uri}"")
+headers = {
+   ""Authorization"": ""Bearer "" + ""access_token"",
+   ""Accept"": ""application/json""
+}
+response = requests.get(data_uri, headers=headers,timeout=10)
+
+
+Above command will keep running till it is cancelled and no messages after 10 seconds.
+
+
+requests library version - 2.28.1
+
+As on the screenshot, destination is not reachable and NO response for SYN packet aswell..
+
+![Image](https://github.com/user-attachments/assets/00a7dbfd-086c-41e9-b1c2-d540f7fb5583)",closed,2025-02-14T15:28:16+00:00,2025-02-14T15:38:53+00:00,2025-02-14T15:38:51+00:00,chpurna,[],1,[],,https://github.com/psf/requests/issues/6894
+psf/requests,6893,Issue with SSL verification using self-signed certificate in version 2.32.3,"I am experiencing an issue with version 2.32.3 of the library when using build_connection_pool_key_attributes with a self-signed certificate. I need a custom SSL context because the connection fails due to weak certificate strength.
+
+See also https://github.com/psf/requests/issues/6715
+
+
+## Expected Result
+
+The connection should be established.
+
+## Actual Result
+
+When I run this code, I encounter the following error:
+
+`An error occurred: HTTPSConnectionPool(host='<host>', port=443): Max retries exceeded with url: /<action>/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1000)')))`
+
+## Reproduction Steps
+
+```python
+import ssl
+import requests
+from requests.adapters import HTTPAdapter
+
+class SSLAdapter(HTTPAdapter):
+    """"""An HTTPAdapter that uses an arbitrary SSL context.""""""
+
+    def __init__(self, ssl_context: ssl.SSLContext = None, **kwargs):
+        """"""Initialize the SSLAdapter.""""""
+        super().__init__(**kwargs)
+        self.ssl_context = ssl_context
+
+    def build_connection_pool_key_attributes(
+        self,
+        request: requests.PreparedRequest,
+        verify: bool | str,
+        cert: str | tuple[str, str] | None = None,
+    ) -> tuple[dict, dict]:
+        host_params, ssl_params = super().build_connection_pool_key_attributes(
+            request, verify, cert
+        )
+        if verify is True and self.ssl_context:
+            ssl_params[""ssl_context""] = self.ssl_context
+
+        return host_params, ssl_params
+
+if __name__ == ""__main__"":
+    # Create a custom SSL context
+    ssl_context = ssl._create_unverified_context()
+    ssl_context.set_ciphers(""DEFAULT@SECLEVEL=2"")  # Adjusting the security level to support 2048 bit keys
+
+    # Example API call setup
+    username = ""<admin>""
+    password = ""<password>""
+    protocol = ""https""
+    api_url = f""{protocol}://<host>/""
+    action = ""<action>""
+    headers = {""Content-Type"": ""application/json""}
+
+    # Create a session with the SSLAdapter
+    session = requests.Session()
+    session.auth = (username, password)
+    session.mount(f""{protocol}://"", SSLAdapter(ssl_context=ssl_context))
+
+    try:
+        response = session.get(api_url + action, timeout=15, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        print(""Response:"", response.json())
+    except requests.exceptions.RequestException as e:
+        print(f""An error occurred: {e}"")
+
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.0""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.13.0""
+  },
+  ""platform"": {
+    ""release"": ""24.3.0"",
+    ""system"": ""Darwin""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30400000""
+  },
+  ""urllib3"": {
+    ""version"": ""2.2.3""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+```
+
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+",closed,2025-02-12T12:38:39+00:00,2025-02-12T19:54:10+00:00,2025-02-12T19:54:09+00:00,suaveolent,[],2,"[""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6893
+psf/requests,6892,Issue with SSL verification using self-signed certificate in version 2.32.3,"I am experiencing an issue with version 2.32.3 of the library when using build_connection_pool_key_attributes with a self-signed certificate. I need a custom SSL context because the connection fails due to weak certificate strength.
+
+See also https://github.com/psf/requests/issues/6715 
+
+Here is the code I am using:
+
+
+```python
+Code kopieren
+import ssl
+import requests
+from requests.adapters import HTTPAdapter
+
+class SSLAdapter(HTTPAdapter):
+    """"""An HTTPAdapter that uses an arbitrary SSL context.""""""
+
+    def __init__(self, ssl_context: ssl.SSLContext = None, **kwargs):
+        """"""Initialize the SSLAdapter.""""""
+        super().__init__(**kwargs)
+        self.ssl_context = ssl_context
+
+    def build_connection_pool_key_attributes(
+        self,
+        request: requests.PreparedRequest,
+        verify: bool | str,
+        cert: str | tuple[str, str] | None = None,
+    ) -> tuple[dict, dict]:
+        host_params, ssl_params = super().build_connection_pool_key_attributes(
+            request, verify, cert
+        )
+        if verify is True and self.ssl_context:
+            ssl_params[""ssl_context""] = self.ssl_context
+
+        return host_params, ssl_params
+
+if __name__ == ""__main__"":
+    # Create a custom SSL context
+    ssl_context = ssl._create_unverified_context()
+    ssl_context.set_ciphers(""DEFAULT@SECLEVEL=2"")  # Adjusting the security level to support 2048 bit keys
+
+    # Example API call setup
+    username = ""<admin>""
+    password = ""<password>""
+    protocol = ""https""
+    api_url = f""{protocol}://<host>/""
+    action = ""<action>""
+    headers = {""Content-Type"": ""application/json""}
+
+    # Create a session with the SSLAdapter
+    session = requests.Session()
+    session.auth = (username, password)
+    session.mount(f""{protocol}://"", SSLAdapter(ssl_context=ssl_context))
+
+    try:
+        response = session.get(api_url + action, timeout=15, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        print(""Response:"", response.json())
+    except requests.exceptions.RequestException as e:
+        print(f""An error occurred: {e}"")
+
+```
+
+When I run this code, I encounter the following error:
+
+`An error occurred: HTTPSConnectionPool(host='<host>', port=443): Max retries exceeded with url: /<action>/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1000)')))`
+
+I expected that using _create_unverified_context would allow for self-signed certificates, but it seems that is not the case. What am I doing wrong?
+
+Any guidance on how to resolve this issue would be greatly appreciated!",closed,2025-02-12T12:35:34+00:00,2025-02-12T12:35:45+00:00,2025-02-12T12:35:43+00:00,suaveolent,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6892
+psf/requests,6890,Incorrect Handling of Escaped Quotes in Cookie Values,"## Expected Result
+
+Legitimate escaped quotes (e.g., `\""`) in cookie values should be preserved. For example:  
+Input value `""159\\""687""` (actual string: `159\""687`) should remain unchanged.
+
+## Actual Result
+
+Requests incorrectly replaces escaped quotes with an empty string, causing `""159\\""687""` to become `""159687""` (string becomes `159687`), which corrupts valid values.
+
+## Reproduction Steps
+
+```python
+import requests
+from requests.cookies import create_cookie
+
+# Create a cookie with escaped quotes
+cookie = create_cookie(
+    name=""test_cookie"",
+    value='""159\\""687""',  # Actual stored value should be 159\""687
+    domain=""example.com""
+)
+
+# Test using a session
+with requests.Session() as s:
+    s.cookies.set_cookie(cookie)
+    retrieved = s.cookies.get(""test_cookie"")
+    print(f""Expected: 159\\\""687 | Actual: {retrieved.value}"")  # Actual output: 159687
+```
+
+## Issue Analysis
+
+The code at [src/requests/cookies.py#L349-L356](https://github.com/psf/requests/blob/f761e74a4d50d2e88d9e30e660494b36c9d630f8/src/requests/cookies.py#L349-L356) has the following problem:
+
+```python
+# Problematic code snippet
+if (
+    hasattr(cookie.value, ""startswith"")
+    and cookie.value.startswith('""')
+    and cookie.value.endswith('""')
+):
+    cookie.value = cookie.value.replace('\\""', """")  # Incorrectly removes all escaped quotes
+```
+
+This logic makes incorrect assumptions about cookie value sanitization. While RFC 6265 specifies that cookie values shouldn't _contain_ escaped characters (through its `cookie-value` definition), many real-world implementations:
+1. Allow backslash-escaped quotes in cookie values for historical compatibility
+2. Expect clients to preserve such values verbatim for proper server-side parsing
+3. Use these patterns in legitimate scenarios (e.g., JSON fragments in cookies)
+
+By forcibly stripping escaped quotes, Requests breaks values that:
+- Were explicitly escaped by servers
+- Contain valid escaped sequences from non-standard implementations
+- Include quote characters in structured data formats
+
+## Suggested Fix
+Remove this non-standard cleanup logic entirely.",open,2025-02-11T17:30:11+00:00,2025-02-12T05:55:20+00:00,,Konano,[],2,[],,https://github.com/psf/requests/issues/6890
+psf/requests,6888,"Importing requests will very rarely, throw a regex error.","<!-- Summary. -->
+
+`import requests`
+requests==2.32.3
+throws an intermittent regular expression error for IPV6 in `<my_venv>/lib/python3.10/site-packages/urllib3/util/url.py`
+The error is extremely rare and intermittently shows up, with seemingly nothing different.
+
+It's likely worth mentioning that I'm using Ubuntu LTS and have disabled IPV6 support via `grub`
+So my OS will never do anything using IPV6
+
+How I disabled IPV6 via grub:
+I edited my `/etc/default/grub`
+with the following changes:
+```
+GRUB_CMDLINE_LINUX_DEFAULT=""ipv6.disable=1""
+```
+
+<!-- What you expected. -->
+I would expect that  `import requests` never throws a regex related error.
+
+## Actual Result
+```
+Traceback (most recent call last):
+  ... # REDACTED
+  File ""/home/MYUSER/.pyenv/versions/MY_VENV/lib/python3.10/site-packages/MY_PROJECT/MY_SCRIPT.py"", line 3, in <module>
+   import requests
+  File ""/home/MYUSER/.pyenv/versions/MY_VENV/lib/python3.10/site-packages/requests/__init__.py"", line 43, in <module>
+   import urllib3
+  File ""/home/MYUSER/.pyenv/versions/MY_VENV/lib/python3.10/site-packages/urllib3/__init__.py"", line 15, in <module>
+   from ._base_connection import _TYPE_BODY
+  File ""/home/MYUSER/.pyenv/versions/MY_VENV/lib/python3.10/site-packages/urllib3/_base_connection.py"", line 5, in <module>
+   from .util.connection import _TYPE_SOCKET_OPTIONS
+  File ""/home/MYUSER/.pyenv/versions/MY_VENV/lib/python3.10/site-packages/urllib3/util/__init__.py"", line 8, in <module>
+   from .ssl_ import (
+  File ""/home/MYUSER/.pyenv/versions/MY_VENV/lib/python3.10/site-packages/urllib3/util/ssl_.py"", line 13, in <module>
+   from .url import _BRACELESS_IPV6_ADDRZ_RE, _IPV4_RE
+  File ""/home/MYUSER/.pyenv/versions/MY_VENV/lib/python3.10/site-packages/urllib3/util/url.py"", line 60, in <module>
+   _IPV6_ADDRZ_RE = re.compile(""^"" + _IPV6_ADDRZ_PAT + ""$"")
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/re.py"", line 251, in compile
+   return _compile(pattern, flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/re.py"", line 303, in _compile
+   p = sre_compile.compile(pattern, flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_compile.py"", line 792, in compile
+   code = _code(p, flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_compile.py"", line 631, in _code
+   _compile(code, p.data, flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_compile.py"", line 225, in _compile
+   _compile(code, av, flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_compile.py"", line 172, in _compile
+   _compile(code, av[2], flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_compile.py"", line 172, in _compile
+   _compile(code, av[2], flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_compile.py"", line 164, in _compile
+   _compile(code, av[2], flags)
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_compile.py"", line 106, in _compile
+   for op, av in pattern:
+  File ""/home/MYUSER/.pyenv/versions/3.10.13/lib/python3.10/sre_parse.py"", line 166, in __getitem__
+   if isinstance(index, slice):
+TypeError: slice expected at least 1 argument, got 0
+```
+
+<!-- What happened instead. -->
+
+## Reproduction Steps
+
+```python
+import requests # That's it.
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+(?:(?:[0-9A-Fa-f]{1,4}:){6}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3})|::(?:[0-9A-Fa-f]{1,4}:){5}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){4}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){3}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){2}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}:(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}|(?:(?:[0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})?::)
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.10.13""
+  },
+  ""platform"": {
+    ""release"": ""6.8.0-52-generic"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""300000d0""
+  },
+  ""urllib3"": {
+    ""version"": ""2.3.0""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+
+```
+
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+",closed,2025-02-07T22:20:50+00:00,2025-02-11T20:30:04+00:00,2025-02-08T13:54:11+00:00,innateessence,[],12,[],,https://github.com/psf/requests/issues/6888
+psf/requests,6887,Automatically retry idempotent requests,"[`urllib3`](https://urllib3.readthedocs.io/en/stable/user-guide.html#retrying-requests), `OkHttp` (Java) and Apache HttpClient HTTP client libraries retry failed idempotent requests by default. I think retrying such requests is something that user would naturally want. Would a pull request adding such a functionality be accepted?",closed,2025-02-05T12:49:30+00:00,2025-02-05T12:49:41+00:00,2025-02-05T12:49:40+00:00,m-aciek,[],1,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6887
+psf/requests,6886,requests.Session is not properly applying SSL Verification default,"The [requests documentation](https://requests.readthedocs.io/en/latest/api/#requests.Session.verify) states that the `value` property of `request.Session` is ""SSL verification default"". I believe that this default, when set in code, should have a higher precedence than the value set through the `REQUESTS_CA_BUNDLE` environment variable.
+
+## Expected Result
+
+`Session.requests` should use any non-None value of **verify** and ignore the value of `REQUESTS_CA_BUNDLE` (default set in code should have higher precedence than the environment). `REQUESTS_CA_BUNDLE` should only be used if `Session.verify=None` in code.
+
+## Actual Result
+
+`Session.requests` overrides **verify=False** with the value of `REQUESTS_CA_BUNDLE`
+
+## Reproduction Steps
+
+```python
+export REQUESTS_CA_BUNDLE=/opt/homebrew/etc/ca-certificates/cert.pem
+
+python3
+
+import requests
+session = Session()
+session.verify = False
+session.get('https://127.0.0.1') # Website with a self signed certificate
+
+requests.exceptions.SSLError: HTTPSConnectionPool(host='127.0.0.1', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1147)')))
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.9.21""
+  },
+  ""platform"": {
+    ""release"": ""23.6.0"",
+    ""system"": ""Darwin""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30400000""
+  },
+  ""urllib3"": {
+    ""version"": ""2.3.0""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+
+```",closed,2025-02-04T22:06:47+00:00,2025-02-05T00:47:46+00:00,2025-02-05T00:47:46+00:00,rbsamoht,[],1,[],,https://github.com/psf/requests/issues/6886
+psf/requests,6885,Unexpected `SSLEOFError` when Receiving Redirect (307) Response with Large Data Payload,"<!-- Summary. -->
+
+This issue occurs only when TLS is enabled on both the client and server sides.
+
+When a `requests` client sends a large `PUT` request and receives an **HTTP 307 redirect**, the server may close the connection early before the payload is fully transmitted. This happens because the server issuing the redirect does not need to process the request body, so it terminates the connection as soon as it sends the redirect response. However, `requests` does not handle this scenario gracefully and raises the following SSL error:
+```
+urllib3.exceptions.SSLError: EOF occurred in violation of protocol (_ssl.c:2426)
+```
+## Expected Result
+
+If an HTTP 307 redirect is received before the payload is fully transmitted, `requests` should handle the redirect properly **without complaining on the previous early-closed connection**. The client should not fail simply because the server closed the connection early.
+
+## Actual Result
+
+`requests` fails with `SSLEOFError` instead of retrying the request to the redirected location.
+This issue does not occur with small payloads (maybe because they are typically sent in a single transmission chunk and completes before the server closes it?)
+
+## Reproduction Steps
+
+### Client-Side Code
+```python
+import requests
+requests.put(""https://localhost:5000/"", data=""A"" * 10_000_000, verify=""/path/to/openssl/certs/ca.crt"")
+...
+>> urllib3.exceptions.SSLError: EOF occurred in violation of protocol (_ssl.c:2426)
+```
+
+### Server-Side Code (Minimal Proxy)
+```python
+import http.server
+import socketserver
+import ssl
+import urllib.parse
+
+CERT_FILE = ""/path/to/openssl/certs/server.crt""
+KEY_FILE = ""/path/to/openssl/certs/server.key""
+REDIRECT_BASE_URL = ""https://google.com""
+
+class ProxyHandler(http.server.BaseHTTPRequestHandler):
+    def do_PUT(self):
+        # Uncomment below to drain the request payload and prevent this issue
+        # content_length = int(self.headers.get(""Content-Length"", 0))
+        # if content_length:
+        #     self.rfile.read(content_length)  # Uncomment to prevent connection reset
+
+        target_url = urllib.parse.urljoin(REDIRECT_BASE_URL, self.path)
+
+        self.send_response(307)
+        self.send_header(""Location"", target_url)
+        self.send_header(""Content-Length"", ""0"")
+        self.end_headers()
+
+if __name__ == ""__main__"":
+    PORT = 5000
+    with socketserver.TCPServer(("""", PORT), ProxyHandler) as httpd:
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(certfile=CERT_FILE, keyfile=KEY_FILE)
+        httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+        httpd.serve_forever()
+```
+
+### SSL Certificate Generation
+If needed, generate self-signed TLS certificates using the following OpenSSL commands:
+```sh
+openssl req -x509 -newkey rsa:2048 -keyout ca.key -out ca.crt -days 1024 -nodes -subj ""/CN=localhost"" \
+  -extensions v3_ca -config <(printf ""[req]\ndistinguished_name=req\nx509_extensions=v3_ca\n[ v3_ca ]\nsubjectAltName=DNS:localhost,DNS:127.0.0.1,IP:127.0.0.1\nbasicConstraints=CA:TRUE\n"")
+
+openssl req -new -newkey rsa:2048 -nodes -keyout server.key -out server.csr -subj ""/C=US/ST=California/L=Santa Clara/O=COMPANY/OU=TEAM/CN=localhost"" \
+  -config <(printf ""[req]\ndistinguished_name=req\nreq_extensions = v3_req\n[ v3_req ]\nsubjectAltName=DNS:localhost,DNS:127.0.0.1,IP:127.0.0.1\n"")
+
+openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 365 -sha256 \
+  -extfile <(printf ""[ext]\nsubjectAltName=DNS:localhost,DNS:127.0.0.1,IP:127.0.0.1\nbasicConstraints=CA:FALSE\nkeyUsage=digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment\nextendedKeyUsage=serverAuth,clientAuth\n"") -extensions ext
+
+```
+
+## System Information
+Python 3.10.12 (main, Jan 17 2025, 14:35:34) [GCC 11.4.0] on linux
+$ python3 -m requests.help
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.10.12""
+  },
+  ""platform"": {
+    ""release"": ""5.15.0-118-generic"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30000020""
+  },
+  ""urllib3"": {
+    ""version"": ""2.3.0""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+```
+
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+",open,2025-02-04T18:16:05+00:00,2025-02-05T03:20:27+00:00,,Nahemah1022,[],3,[],,https://github.com/psf/requests/issues/6885
+psf/requests,6878,Question: would a patch deferring the creation of the pre-loaded SSLContext be accepted for faster startup?,"Hi,
+
+So I'm investigating ways to improve pip's startup time. Obviously importing a HTTP library like requests is going to be slow regardless of we do, but the deferring the SSLContext pre-loading until use is something would benefit pip. 
+
+https://github.com/psf/requests/blob/fe0583ba49cf162e1a7fe35ae05de6a62b8372fa/src/requests/adapters.py#L77-L87
+
+[pip manages its own SSLContext](https://github.com/pypa/pip/blob/028c087c1826fdf59d3b48266f9d647b1a08d07f/src/pip/_internal/cli/index_command.py#L28) so it can use truststore for automatic system CA support, thus we never use `_preloaded_ssl_context` on Python 3.10 or higher[^1]. Unfortunately, OpenSSL 3.x has terrible verify path/location performance: https://github.com/python/cpython/issues/95031 so the unnecessary `load_verify_locations()` call ends up eating ~15 ms on my system.
+
+So, would a patch deferring the context creation until use be accepted? I realize this is of limited benefit for most users since they probably aren't passing their own SSLContext, so if this is too niche, I understand!
+
+[^1]: Truststore requires Python 3.10 or higher. Also, pip's truststore integration can be disabled via `--use-deprecated=legacy-certs` but as the flag name implies, we don't really want people to be using this until necessary.",closed,2025-02-01T18:18:28+00:00,2025-02-01T18:26:05+00:00,2025-02-01T18:26:04+00:00,ichard26,[],1,[],,https://github.com/psf/requests/issues/6878
+psf/requests,6877,List of documented exceptions doesn't match reality / unused `URLRequired` exception,"The documentation lists a [relatively small list](https://requests.readthedocs.io/en/latest/api/#exceptions) of exceptions, among them:
+
+> exception `requests.URLRequired(*args, **kwargs)`
+> A valid URL is required to make a request.
+
+which would imply that passing an invalid URL raises `URLRequired`. However, that exception is actually dead code and not raised anywhere ever since ab27027aa8916e6e199bbb35083beb5d6339f6aa in 2012. Instead, with requests 2.32.3, invalid URLs raise something like `MissingSchema`, `InvalidSchema` or `InvalidURL`, none of which are documented.
+
+Looking at [exceptions.py](https://github.com/psf/requests/blob/main/src/requests/exceptions.py), there seem to be various other undocumented exceptions in there:
+
+- `class InvalidJSONError(RequestException):` (only `JSONDecodeError` which inherits from it)
+- `class ProxyError(ConnectionError):`
+- `class SSLError(ConnectionError):`
+- `class ConnectTimeout(ConnectionError, Timeout):` (`Timeout` is documented)
+- `class ReadTimeout(Timeout):` (`Timeout` is documented)
+- `class MissingSchema(RequestException, ValueError):`
+- `class InvalidSchema(RequestException, ValueError):`
+- `class InvalidURL(RequestException, ValueError):`
+- `class InvalidHeader(RequestException, ValueError):`
+- `class InvalidProxyURL(InvalidURL):`
+- `class ChunkedEncodingError(RequestException):`
+- `class ContentDecodingError(RequestException, BaseHTTPError):`
+- `class StreamConsumedError(RequestException, TypeError):`
+- `class RetryError(RequestException):`
+- `class UnrewindableBodyError(RequestException):`
+
+(Some of those might be internal, or considered not worth documenting since they can be caught by `except ValueError:`. However, even e.g. [Errors and Exceptions](https://docs.python-requests.org/en/latest/user/quickstart/#errors-and-exceptions) or the reference docs don't seem to point out that either.",open,2025-01-31T16:15:01+00:00,2025-02-01T19:57:14+00:00,,The-Compiler,[],4,[],,https://github.com/psf/requests/issues/6877
+psf/requests,6874,Async requests through aget/apost/… methods,"Hello, I do know that ‘Requests is not accepting feature requests at this time.´ but I’d still like to propose something, and be willing to implement it myself if it actually sounds like a decent feature.
+
+It is true that Requests is usually the way to go, and it’s KISS api make it imo the best choice for either small scripts or complex projects, so I totally understand the will to keep it as-is. However, there is one thing that is still not available, and it is async support.
+
+I’ve seen this has been quite discussed in #1390, and it’s currently recommend to use grequests for async operations. But I think this library could actually provide async support in a more straightforward way:
+- `aget`, `apost`, `apatch` etc methods could be provided, so the existing method wouldn’t change, but calling those would return a coroutine instead. Most of the logic would stay the same, only the http calls would be asynchronous. This is similar to [how async db operations have been added to Django](https://docs.djangoproject.com/en/5.1/topics/async/#queries-the-orm): `All QuerySet methods that cause an SQL query to occur have an a-prefixed asynchronous variant.`
+- Those would use [urllib3.future](https://urllib3future.readthedocs.io/en/latest/index.html), if not available an exception would get raised. As such, we are still fully compatible with existing dependencies for synchronous operations, [urllib3.future](https://urllib3future.readthedocs.io/en/latest/index.html) is only needed if the new async methods are used.
+
+I do know the chances of this feature getting accepted are pretty low, even so considering that it would rely on [urllib3.future](https://urllib3future.readthedocs.io/en/latest/index.html), so:
+- If this sounds actually decent, I can provide a basic PoC and iterate on it
+- Otherwise I’ll just fork Requests with that feature as I still think that would be helpful to enough people
+
+Thanks
+",closed,2025-01-26T22:54:29+00:00,2025-01-26T22:54:42+00:00,2025-01-26T22:54:41+00:00,c4ffein,[],1,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6874
+psf/requests,6872,Requests v2.32.0-v2.32.3 caused a segmentation fault with multiple simultaneous requests with a certificate.,"We are having intermittent segmentation faults on requests (using requests v2.32.0-v2.32.3, urllib3 v1.26.19).  On investigation with faulthandler, they occur when a certificate is passed in, and two separate threads are trying to access the same ssl_context at the same time - one updating it with the given cert, one reading:
+
+```
+Current thread 0x00007f46c114d700 (most recent call first):
+  File ""<library path>/site-packages/urllib3/util/ssl_.py"", line 418 in ssl_wrap_socket
+  File ""<library path>/site-packages/urllib3/connection.py"", line 419 in connect
+  File ""<library path>/site-packages/urllib3/connectionpool.py"", line 1060 in _validate_conn
+  File ""<library path>/site-packages/urllib3/connectionpool.py"", line 404 in _make_request
+  File ""<library path>/site-packages/urllib3/connectionpool.py"", line 715 in urlopen
+  File ""<library path>/site-packages/requests/adapters.py"", line 667 in send
+  File ""<library path>/site-packages/requests/sessions.py"", line 703 in send
+  File ""<library path>/site-packages/requests/sessions.py"", line 589 in request
+  File ""<library path>/site-packages/requests/sessions.py"", line 602 in get
+  ...
+
+Thread 0x00007f469e7fc700 (most recent call first):
+  File ""/usr/ssl.py"", line 1382 in do_handshake
+  File ""/usr/ssl.py"", line 1104 in _create
+  File ""/usr/ssl.py"", line 517 in wrap_socket
+  File ""<library path>/site-packages/urllib3/util/ssl_.py"", line 493 in _ssl_wrap_socket_impl
+  File ""<library path>/site-packages/urllib3/util/ssl_.py"", line 449 in ssl_wrap_socket
+  File ""<library path>/site-packages/urllib3/connection.py"", line 419 in connect
+  File ""<library path>/site-packages/urllib3/connectionpool.py"", line 1060 in _validate_conn
+  File ""<library path>/site-packages/urllib3/connectionpool.py"", line 404 in _make_request
+  File ""<library path>/site-packages/urllib3/connectionpool.py"", line 715 in urlopen
+  File ""<library path>/site-packages/requests/adapters.py"", line 667 in send
+  File ""<library path>/site-packages/requests/sessions.py"", line 703 in send
+  File ""<library path>/site-packages/requests/sessions.py"", line 589 in request
+  File ""<library path>/site-packages/requests/sessions.py"", line 602 in get
+  ...
+```
+
+This seems to happen because requests v2.32 switched from having a request without an SSL context create a new one to using the same preloaded SSL context across multiple requests.  (This is https://github.com/psf/requests/issues/6745 with more information as to what exactly is going on - opening a new issue as the original issue creator has left the company.) 
+
+## Expected Result
+
+No segmentation faults.
+
+## Actual Result
+
+Got intermittent segmentation faults.
+
+## Reproduction Steps
+
+As per the original issue - and note that it _only_ crashes if a generated certificate is passed in -  `openssl req -x509 -newkey rsa:4096 -keyout client.key -out client.crt -days 365 -nodes`:
+
+```
+import concurrent.futures
+import random
+import uuid
+from threading import Thread
+from time import time
+
+import requests
+
+
+def do_request():
+    start = time()
+    random_id = uuid.uuid4()
+    delay = random.randint(1, 5)
+    print(""start {} delay {} seconds"".format(random_id, delay))
+    endpoints = []
+    endpoints.append('https://httpbin.org/delay/' + str(delay))
+    delay = str(random.randint(1, 5)) + 's'
+    endpoints.append('https://run.mocky.io/v3/0432e9f0-674f-45bd-9c18-628b861c2258?mocky-delay=' + str(delay))
+    random.shuffle(endpoints)
+    response = None
+    for endpoint in endpoints:
+        try:
+            print(""start {} delay {} seconds"".format(random_id, endpoint))
+            if 'run' in endpoint:
+                cert = './client.crt', './client.key'
+                response = requests.get(endpoint, timeout=random.randint(1, 5), cert=cert)
+            else:
+                response = requests.get(endpoint, timeout=random.randint(1, 5))
+        except Exception as e:
+            print(e)
+    end = time()
+
+
+    print(""finished {} in {} seconds"".format(random_id, end - start))
+    return response
+
+
+def measure():
+    cnt = 20
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        futures = []
+        for server in range(1, cnt):
+            futures.append(executor.submit(do_request))
+        for future in concurrent.futures.as_completed(futures):
+            pass
+
+
+for i in range(1, 500):
+    threads = [Thread(target=measure, args=()) for _ in range(5)]
+
+    for t in threads: t.start()
+    for t in threads: t.join()
+```
+
+## System Information
+
+```
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.1""
+  },
+  ""cryptography"": {
+    ""version"": ""43.0.1""
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.11.11""
+  },
+  ""platform"": {
+    ""release"": ""4.18.0-553.34.1.el8_10.x86_64"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": ""30300020"",
+    ""version"": ""24.2.1""
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""101010bf""
+  },
+  ""urllib3"": {
+    ""version"": ""1.26.19""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": true
+}
+```
+
+(Attempted with requests v2.32.0, v2.32.2, v2.32.3, urllib3 v1.26.18, v1.26.19.)
+ ",closed,2025-01-16T18:54:19+00:00,2025-02-03T12:14:29+00:00,2025-01-28T18:47:37+00:00,alloni,[],5,[],,https://github.com/psf/requests/issues/6872
+psf/requests,6871,"""I use the same proxy for requests to 300 websites from china, and httpx and requests behave completely differently.""","same code ,same proxies!
+success rate verry diffrrence
+
+this is requests success rate!
+
+<img width=""988"" alt=""image"" src=""https://github.com/user-attachments/assets/8e3c3338-c71b-4818-8d59-1e2a339f1738"" />
+<img width=""1209"" alt=""image"" src=""https://github.com/user-attachments/assets/6f791157-e544-4d4c-a213-7d1839c69194"" />
+
+this is httpx success rate!
+<img width=""1073"" alt=""image"" src=""https://github.com/user-attachments/assets/533fd631-a090-4851-9fbe-974629d66b2e"" />
+
+
+I am a user from China. I suspect that when using a proxy with requests, the process of obtaining the DNS IP does not go through the proxy, or it directly uses the system's DNS to obtain the IP. At this point, it has already been intercepted by the Great Firewall of China, leading to the retrieval of an incorrect IP and ultimately causing a SOCKSHTTP timeout. However, httpx does not have this issue. I think it might be a bug in requests, but I can't find the cause. I also don't know how to fix it.
+
+Since our project extensively uses the requests library, we cannot quickly switch to httpx. I hope you can help me solve this bug. We have debugged up to the point of establishing the SOCKS connection and found that both are the same, but the final success rates are completely different. httpx can achieve a 90% success rate, while requests only reaches a 20% success rate.
+
+I would prefer to know and fix this bug.
+",closed,2025-01-15T05:46:49+00:00,2025-01-20T13:15:32+00:00,2025-01-20T13:15:31+00:00,wjsw1781,[],2,[],,https://github.com/psf/requests/issues/6871
+psf/requests,6869,Please add support for the `QUERY` HTTP method,"On 2025-01-07 the [`QUERY` HTTP method, ""a safe, idempotent request method that can carry request content."" has reached the level of a Proposed Standard](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/).
+
+It solves the problem of making complex queries where the GET method is sometimes sufficient as it (according to the standard) lacks support for sending the query in the body, leaving only the query part of the URL which is limited. An often used workaround of using the POST method has a downside in that it's just the wrong method for this purpose as queries do not cause side-effects and this limits the retryabilty and cacheability of such queries.
+
+Therefore It would be great to implement support for QUERY in Requests.
+
+If you are open to it, I am interested in providing a PR.",closed,2025-01-11T10:01:05+00:00,2025-01-11T14:29:30+00:00,2025-01-11T10:01:19+00:00,gdubicki,[],2,"[""Feature Request"", ""actions/autoclose-feat""]",,https://github.com/psf/requests/issues/6869
+psf/requests,6868,`import requests` intermittently fails on windows server 2022,"<!-- Summary. -->
+
+I have an error on a miniconda based python3.11 installation on Windows Server 2022 where `import requests` fails intermittently for one of my apps. It seems to be an SSL verification issue as far as I can tell.
+
+## Expected Result
+
+I expected the `requests` library to successfully load. 
+
+## Actual Result
+
+`import requests` fails with the following stack trace:
+
+```
+Traceback (most recent call last):
+  File ""C:\ProjectName\APPS\py-mysvc\deployed\src\app.py"", line 29, in <module>
+    import mysvc_models
+  File ""C:\ProjectName\APPS\py-mysvc\deployed\src\mysvc_models.py"", line 9, in <module>
+    import mysvc_utils
+  File ""C:\ProjectName\APPS\py-mysvc\deployed\src\mysvc_utils.py"", line 17, in <module>
+    import requests
+  File ""C:\ProjectName\ENV\py-mysvc\Lib\site-packages\requests\__init__.py"", line 164, in <module>
+    from .api import delete, get, head, options, patch, post, put, request
+  File ""C:\ProjectName\ENV\py-mysvc\Lib\site-packages\requests\api.py"", line 11, in <module>
+    from . import sessions
+  File ""C:\ProjectName\ENV\py-mysvc\Lib\site-packages\requests\sessions.py"", line 15, in <module>
+    from .adapters import HTTPAdapter
+  File ""C:\ProjectName\ENV\py-mysvc\Lib\site-packages\requests\adapters.py"", line 81, in <module>
+    _preloaded_ssl_context.load_verify_locations(
+ssl.SSLError: [X509] PEM lib (_ssl.c:4154)
+```
+
+Matching this stack trace to the openssl version I have available leads me to `SSL_CTX_load_verify_locations` but I'm unable to debug the issue further. 
+
+## Reproduction Steps
+
+I'm unable to consistently reproduce it but it fails at this step. 
+```python
+import requests
+```
+
+## System Information
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.3.2""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.11.6""
+  },
+  ""platform"": {
+    ""release"": ""10"",
+    ""system"": ""Windows""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30300020""
+  },
+  ""urllib3"": {
+    ""version"": ""2.2.3""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+```
+Relevant conda packages:
+```
+# Name                    Version                   Build  Channel
+ca-certificates           2024.9.24            haa95532_0
+certifi                   2024.8.30       py311haa95532_0
+cffi                      1.17.1          py311h827c3e9_0
+h11                       0.14.0          py311haa95532_0
+h2                        4.1.0              pyhd8ed1ab_0    conda-forge
+hpack                     4.0.0                      py_0
+httpcore                  1.0.6              pyhd8ed1ab_0    conda-forge
+httpx                     0.27.2             pyhd8ed1ab_0    conda-forge
+openssl                   3.3.2                h2466b09_0    conda-forge
+python                    3.11.6          h2628c8c_0_cpython    conda-forge
+python-certifi-win32      1.2             py311h1ea47a8_6    conda-forge
+python_abi                3.11                    5_cp311    conda-forge
+pywin32                   306             py311h12c1d0e_2    conda-forge
+wincertstore              0.2             py311haa95532_0
+```
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+",open,2025-01-10T02:55:11+00:00,2025-01-23T15:16:25+00:00,,AY1uZwIcJzKhaGywovQP,[],3,[],,https://github.com/psf/requests/issues/6868
+psf/requests,6867,"Problem Error Download failed : HTTPSConnectionPool(host='swcdn.apple.com',port=443): Read timed out. Opencore legacy patcher 2.2.0","Hello and happy new year !
+
+
+I don't know if it's a bug, or something I'm doing wrong when installing Ventura on my Macbook Pro Mid 2021 9.1 - i7 Quadcore 2.3ghz, 16GB Ram 1866Mhz, SSD Samsung Evo 860 - 512gb. I had managed to install it almost 2 years ago except that in the meantime I wanted to put Sonoma, but it must not be compatible with my applications! Pixelmator, Liquivid, Denon Engine DJ Desktop and Open Office... I didn't have this problem with Ventura. 
+
+So I put my Mac back with the latest compatible OSX and then I tried to install Opencore Legacy Patcher 2.2.0, so far no problem! But then... when I want to download Ventura it crashes at 50% of the download I have an error message:
+Error Download failed : HTTPSConnectionPool(host='swcdn.apple.com',port=443): Read timed out.
+
+![Capture d’écran 2025-01-06 à 01 47 34](https://github.com/user-attachments/assets/9eab0cab-584a-4620-886b-480cce6e890f)
+
+So either I forgot a step, after installing the Opencore software, or you need an OSX older than Catalina to be able to continue the installation steps ??? Thanks in advance for any help!
+
+Greetings, Patrick.",closed,2025-01-06T13:40:01+00:00,2025-01-06T13:40:13+00:00,2025-01-06T13:40:12+00:00,DJPAT26,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6867
+psf/requests,6862,Timeout Issue When Scraping Emails from Multiple URLs Using Python requests,"I am working on a web scraping project using Python's `requests` library. The goal is to scrape emails from numerous URLs. To handle network delays, I set the timeout parameter as `timeout=(10, 10)`.
+
+However, when I run the script for multiple URLs, I encounter an issue where the program gets stuck on a request and does not respect the timeout settings. This results in the script hanging indefinitely, especially when scraping a large number of URLs.
+
+Here’s the code snippet I’m using:
+
+```
+import requests  
+
+urls = [  
+    ""http://example.com"",  
+    ""http://anotherexample.com"",  
+    # ... more URLs  
+]  
+HEADERS={""user-agent"":""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36""}
+for url in urls:  
+    try:  
+        response = requests.get(url, headers=HEADERS, timeout=(10, 10))  
+        if response.status_code == 200:  
+            # Extract emails (simplified for demonstration)  
+            print(f""Emails from {url}: "", response.text)  
+    except requests.exceptions.Timeout:  
+        print(f""Timeout occurred for {url}"")  
+    except requests.exceptions.RequestException as e:  
+        print(f""Error occurred for {url}: {e}"")  
+```
+
+
+Despite using the timeout parameter, the script sometimes gets stuck indefinitely and doesn’t proceed to the next URL.
+
+**Steps Taken**:
+1. Tried reducing the timeout values to (5, 5) but encountered the same issue.
+Ensured that the URLs are valid and accessible.
+
+**My Questions**:
+1. Why might the timeout not work as expected in this case?
+
+2. How can I ensure that the script doesn't hang indefinitely when scraping a large number of URLs?
+
+Any help or suggestions to resolve this issue would be greatly appreciated.
+
+**Environment**:
+
+Python version: 3.10.10
+
+requests version: 2.32.3",closed,2024-12-24T14:57:57+00:00,2024-12-24T15:36:55+00:00,2024-12-24T15:36:29+00:00,mominurr,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6862
+psf/requests,6860,"""No address associated with hostname"" when querying IPv6 hosts","## Expected Result
+
+```
+$ python                       
+Python 3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0] on linux
+Type ""help"", ""copyright"", ""credits"" or ""license"" for more information.
+>>> import requests
+>>> requests.get(""https://ipv6.icanhazip.com/"").text
+'2001:920:[REDACTED]'
+```
+
+## Actual Result
+
+```shell
+$ python                       
+Python 3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0] on linux
+Type ""help"", ""copyright"", ""credits"" or ""license"" for more information.
+>>> import requests
+>>> requests.get(""https://ipv6.icanhazip.com/"").text
+Traceback (most recent call last):
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connection.py"", line 199, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/util/connection.py"", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/usr/lib/python3.12/socket.py"", line 963, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno -5] No address associated with hostname
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connectionpool.py"", line 789, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connectionpool.py"", line 490, in _make_request
+    raise new_e
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connectionpool.py"", line 466, in _make_request
+    self._validate_conn(conn)
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connectionpool.py"", line 1095, in _validate_conn
+    conn.connect()
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connection.py"", line 693, in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connection.py"", line 206, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x7c2522dfe180>: Failed to resolve 'ipv6.icanhazip.com' ([Errno -5] No address associated with hostname)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/requests/adapters.py"", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/connectionpool.py"", line 843, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/urllib3/util/retry.py"", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='ipv6.icanhazip.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7c2522dfe180>: Failed to resolve 'ipv6.icanhazip.com' ([Errno -5] No address associated with hostname)""))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""<stdin>"", line 1, in <module>
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/requests/api.py"", line 73, in get
+    return request(""get"", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/requests/api.py"", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/requests/sessions.py"", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/requests/sessions.py"", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/home/user/tool/venv/lib/python3.12/site-packages/requests/adapters.py"", line 700, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='ipv6.icanhazip.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7c2522dfe180>: Failed to resolve 'ipv6.icanhazip.com' ([Errno -5] No address associated with hostname)""))
+```
+
+## Reproduction Steps
+
+```python
+import requests
+requests.get(""https://ipv6.icanhazip.com/"").text
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": null
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.3.2""
+  },
+  ""cryptography"": {
+    ""version"": """"
+  },
+  ""idna"": {
+    ""version"": ""3.7""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.12.3""
+  },
+  ""platform"": {
+    ""release"": ""6.8.0-50-generic"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": """",
+    ""version"": null
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""300000d0""
+  },
+  ""urllib3"": {
+    ""version"": ""2.2.3""
+  },
+  ""using_charset_normalizer"": true,
+  ""using_pyopenssl"": false
+}
+```
+
+installed versions (OS is Ubuntu 24)
+
+```shell
+$ pip list | grep urllib       
+urllib3            2.2.3
+$ pip list | grep requests
+requests           2.32.3
+```
+
+
+Network (I have a fully functional IPv6 setup)
+
+```shell
+$ ping -6 google.com
+PING google.com (2a00:1450:4007:810::200e) 56 data bytes
+64 bytes from par10s50-in-x0e.1e100.net (2a00:1450:4007:810::200e): icmp_seq=1 ttl=120 time=1.49 ms
+64 bytes from par10s50-in-x0e.1e100.net (2a00:1450:4007:810::200e): icmp_seq=2 ttl=120 time=1.81 ms
+64 bytes from par10s50-in-x0e.1e100.net (2a00:1450:4007:810::200e): icmp_seq=3 ttl=120 time=1.54 ms
+64 bytes from par10s50-in-x0e.1e100.net (2a00:1450:4007:810::200e): icmp_seq=4 ttl=120 time=2.08 ms
+64 bytes from par10s50-in-x0e.1e100.net (2a00:1450:4007:810::200e): icmp_seq=5 ttl=120 time=1.81 ms
+^C
+--- google.com ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4006ms
+rtt min/avg/max/mdev = 1.491/1.745/2.082/0.213 ms
+$ curl -6 ipv6.icanhazip.com  
+2001:920:[REDACTED]
+```
+",closed,2024-12-18T17:36:53+00:00,2025-01-05T22:36:48+00:00,2024-12-22T22:41:18+00:00,ThePirateWhoSmellsOfSunflowers,[],4,[],,https://github.com/psf/requests/issues/6860
+psf/requests,6859,Documentation: Session docstring for verify attribute should note that it supports a string value.,"<!-- Summary. -->
+
+`Session` docstring for `verify` attribute should note that it supports a string value.
+
+<!-- What you expected. -->
+
+## Actual Result
+
+Currently, the `Session` docstring notes that its `verify` attribute only supports a bool.
+
+However, `session.request` supports a string for its `verify` arg: https://github.com/psf/requests/blob/main/src/requests/sessions.py#L550
+
+and when a `verify` arg isn't passed to `session.request`, then `session.verify` is used instead: 
+
+https://github.com/psf/requests/blob/main/src/requests/sessions.py#L776
+https://github.com/psf/requests/blob/main/src/requests/sessions.py#L70
+
+## Reproduction Steps
+
+N/A
+
+## System Information
+N/A
+
+",open,2024-12-16T22:20:10+00:00,2025-01-12T13:10:07+00:00,,muscovite,[],2,[],,https://github.com/psf/requests/issues/6859
+psf/requests,6858,Unable to remove default content-length header field,"The server I'm requesting from needs to remove the content-length field in order to properly respond to the data, but after I try to del session.headers['content-length'] , when I re-initiate the request, the request header adds the field again,how do I fix this?",closed,2024-12-16T09:06:34+00:00,2024-12-16T09:06:47+00:00,2024-12-16T09:06:46+00:00,yazigegeda,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6858
+psf/requests,6856,HTTP/2,"I am trying to get HTTP/2 with requests, and I found these:
+
+> It can: http://hyper.readthedocs.org/en/development/quickstart.html#requests-integration
+
+https://github.com/psf/requests/issues/2082#issuecomment-44869333
+
+> There is no roadmap for this. HTTP/2 is a complex protocol and it is not likely that Requests in its current form will achieve good support for it any time soon. In the meantime, you can [use this](//hyper.readthedocs.org/en/development/quickstart.html#requests-integration).
+
+https://github.com/psf/requests/issues/3601#issuecomment-249818864
+
+> hyper is a possible Python alternative. I believe they still support using the Requests interface over the top of their H2 stack.
+
+https://github.com/psf/requests/issues/5506#issuecomment-646712595
+
+the problem is that Hyper is archived now:
+
+https://github.com/python-hyper/hyper
+
+and further, it does not support Python 3.10 (2021) or higher
+",closed,2024-12-15T08:59:44+00:00,2025-01-19T16:07:59+00:00,2025-01-15T15:12:24+00:00,3052,[],4,[],,https://github.com/psf/requests/issues/6856
+psf/requests,6855,Response history is wrong ,"History for requests with multiple redirects is incorrect.
+
+## Expected Result
+
+Correct history in history of each request
+
+## Actual Result
+
+second request has itself in the history
+
+## Reproduction Steps
+
+```python
+
+In [2]: import requests
+# 301 -> https://www.shorturl.at/LvPoU, 302 -> https://www.google.com, 200 https:/www.google.com
+In [3]: r = requests.get(""https://shorturl.at/LvPoU"")
+In [4]: r.history
+Out[4]: [<Response [301]>, <Response [302]>]
+
+In [5]: r.history[0].history
+Out[5]: []
+
+In [6]: r.history[1].history
+Out[6]: [<Response [302]>] # This should be the 301
+
+# Response shouldn't be in it's own history
+# Should be False and return [<Response [301]>]
+In [7]: r.history[1].history[0] is r.history[1] 
+Out[7]: True
+
+```
+
+## System Information
+
+    $ python -m requests.help
+
+```json
+{
+  ""chardet"": {
+    ""version"": ""5.2.0""
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.0""
+  },
+  ""cryptography"": {
+    ""version"": ""43.0.3""
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.11.4""
+  },
+  ""platform"": {
+    ""release"": ""6.8.0-49-generic"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": ""30300020"",
+    ""version"": ""24.0.0""
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30000020""
+  },
+  ""urllib3"": {
+    ""version"": ""2.2.3""
+  },
+  ""using_charset_normalizer"": false,
+  ""using_pyopenssl"": true
+}
+
+```
+
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+",closed,2024-12-13T21:57:00+00:00,2024-12-13T22:24:46+00:00,2024-12-13T22:24:45+00:00,bucknerns,[],1,[],,https://github.com/psf/requests/issues/6855
+psf/requests,6854,"slowness when writing response text to file, working in one environment but not the other","Please refer to our [Stack Overflow tag](https://stackoverflow.com/questions/tagged/python-requests) for guidance.
+Facing a weird issue saving response text for a file. This is working fine in Azure linux but not OCI linux. It took 3 minutes to write to file  on OCI linux and only a second in Azure linux.
+
+OCI Linux version: 
+NAME=""Oracle Linux Server""
+VERSION=""8.10""
+
+Azure Linux version:
+NAME=""Red Hat Enterprise Linux Server""
+VERSION=""7.9 (Maipo)""
+ 
+Slow environment, ( OCI Linux)
+2024-12-12 17:21:45,545 - 41454 - INFO - file receive starts ::
+2024-12-12 17:21:59,420 - 41454 - INFO - file receive success ::
+**2024-12-12 17:21:59,420 - 41454 - INFO - file read starts ::
+2024-12-12 17:25:00,603 - 41454 - INFO - file read completes** ::
+2024-12-12 17:25:00,785 - 41454 - INFO - file write success :: request_test.xml.gz
+
+Working environment (Azure Linux)
+2024-12-12 15:44:11,305 - 21602 - INFO - file receive starts ::
+2024-12-12 15:44:25,811 - 21602 - INFO - file receive success ::
+**2024-12-12 15:44:25,812 - 21602 - INFO - file read starts ::
+2024-12-12 15:44:35,759 - 21602 - INFO - file read completes ::**
+2024-12-12 15:44:41,446 - 21602 - INFO - file write success :: request_test.xml.gz
+
+Sudo code
+
+res = requests.request(""GET"", url, headers = headers, auth=HTTPBasicAuth(by_username,by_password), data=payload)
+
+logging.info(""file receive success :: "")
+
+if str(res.status_code) == ""200"":
+  logging.info(""file read starts :: "" )
+  file_data = res.text.encode('utf8')
+  #file_data = res.text
+  logging.info(""file read completes :: "" )
+
+        #fileName = ftp_path + 'incoming\\' + '_'.join(file) + '.xml.gz'
+  fileName = 'request_test' + '.xml.gz'
+
+  #with gzip.open(fileName, ""wb"") as f:
+  with open(fileName, ""wb"") as f:
+      f.write(file_data)
+      #f.write(res.text.encode('utf8'))
+",closed,2024-12-12T22:43:46+00:00,2024-12-12T22:43:57+00:00,2024-12-12T22:43:57+00:00,hamiltonhall,[],1,"[""Question/Not a bug"", ""actions/autoclose-qa""]",,https://github.com/psf/requests/issues/6854
+psf/requests,6838,v 2.32.3 sends multiple requests,"I am working with quite an old and slow API -- [GDELT](https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/). I am trying to send a single get request. However, in response, I get a message that I send too many requests at the same time. I suspect that it is the issue of the timeout settings but setting it to very liberal values for example 3 and 27 does not really help. I think the issue appeared somewhere between versions 2.31.0 and 2.32.3 because this occurs only in the latter.
+
+## Expected Result
+
+Send a single get request.
+
+## Actual Result
+
+For some reason, API returns a message of multiple requests sent. Therefore, I suspect that the timeout option does not work properly. In other words, requests do not wait long enough for the response before sending a repetitive request.
+
+## Reproduction Steps
+
+```python
+import requests as rq
+
+API_URL = ""https://api.gdeltproject.org/api/v2/doc/doc?""
+query = {""query"" : ""human"", ""format"" : ""JSON""}
+
+response = rq.get(API_URL, query, timeout = (3,27))
+```
+
+## System Information
+
+For the sake of reproducibility, I tested it in Google Colab.
+
+```json
+{
+  ""chardet"": {
+    ""version"": ""5.2.0""
+  },
+  ""charset_normalizer"": {
+    ""version"": ""3.4.0""
+  },
+  ""cryptography"": {
+    ""version"": ""43.0.3""
+  },
+  ""idna"": {
+    ""version"": ""3.10""
+  },
+  ""implementation"": {
+    ""name"": ""CPython"",
+    ""version"": ""3.10.12""
+  },
+  ""platform"": {
+    ""release"": ""6.1.85+"",
+    ""system"": ""Linux""
+  },
+  ""pyOpenSSL"": {
+    ""openssl_version"": ""30300020"",
+    ""version"": ""24.2.1""
+  },
+  ""requests"": {
+    ""version"": ""2.32.3""
+  },
+  ""system_ssl"": {
+    ""version"": ""30000020""
+  },
+  ""urllib3"": {
+    ""version"": ""2.2.3""
+  },
+  ""using_charset_normalizer"": false,
+  ""using_pyopenssl"": true
+}
+```
+
+<!-- This command is only available on Requests v2.16.4 and greater. Otherwise,
+please provide some basic information about your system (Python version,
+operating system, &c). -->
+",closed,2024-12-05T09:59:06+00:00,2024-12-06T16:52:41+00:00,2024-12-06T16:00:54+00:00,MikoBie,[],10,[],,https://github.com/psf/requests/issues/6838
