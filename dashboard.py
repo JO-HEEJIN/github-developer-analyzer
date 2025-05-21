@@ -35,17 +35,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.write("📂 현재 디렉토리:", os.getcwd())
-st.write("📂 DATA_DIR 경로:", DATA_DIR)
-st.write("📂 DATA_DIR 존재 여부:", os.path.exists(DATA_DIR))
-
-if os.path.exists(DATA_DIR):
-    st.write("📂 DATA_DIR 하위 항목:", os.listdir(DATA_DIR))
-    for repo in os.listdir(DATA_DIR):
-        st.write(f"📄 {repo} 안에 있는 파일들:", os.listdir(os.path.join(DATA_DIR, repo)))
-else:
-    st.error("❌ 'data/' 디렉토리가 Streamlit Cloud에서 보이지 않습니다.")
-
 # CSS 추가
 st.markdown("""
 <style>
