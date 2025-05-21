@@ -1,0 +1,469 @@
+{
+  "edges": [
+    {
+      "source": "pamelafox",
+      "target": "pgjones",
+      "weight": 1
+    },
+    {
+      "source": "samuelpondugala",
+      "target": "pgjones",
+      "weight": 1
+    },
+    {
+      "source": "ThiefMaster",
+      "target": "40gilad",
+      "weight": 1
+    },
+    {
+      "source": "RonnyPfannschmidt",
+      "target": "40gilad",
+      "weight": 1
+    },
+    {
+      "source": "davidism",
+      "target": "brendon-codes",
+      "weight": 1
+    },
+    {
+      "source": "ThiefMaster",
+      "target": "markparonyan",
+      "weight": 1
+    },
+    {
+      "source": "nateprewitt",
+      "target": "dependabot[bot]",
+      "weight": 10
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "allrob23",
+      "weight": 2
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "nateprewitt",
+      "weight": 8
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "RichieB2B",
+      "weight": 1
+    },
+    {
+      "source": "nateprewitt",
+      "target": "duzhuoshanwai",
+      "weight": 1
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "cjwatson",
+      "weight": 1
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "tejaschauhan36912",
+      "weight": 1
+    },
+    {
+      "source": "nateprewitt",
+      "target": "jakobheine",
+      "weight": 2
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "pszlazak",
+      "weight": 1
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "saksham-sak",
+      "weight": 1
+    },
+    {
+      "source": "sethmlarson",
+      "target": "nateprewitt",
+      "weight": 7
+    },
+    {
+      "source": "codespearhead",
+      "target": "jonas",
+      "weight": 1
+    },
+    {
+      "source": "Thompson1985",
+      "target": "OmniTroid",
+      "weight": 1
+    },
+    {
+      "source": "codespearhead",
+      "target": "OmniTroid",
+      "weight": 1
+    },
+    {
+      "source": "nateprewitt",
+      "target": "graingert",
+      "weight": 1
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "graingert",
+      "weight": 1
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "moyanj",
+      "weight": 1
+    },
+    {
+      "source": "sethmlarson",
+      "target": "branchvincent",
+      "weight": 1
+    },
+    {
+      "source": "Thompson1985",
+      "target": "eaglegai",
+      "weight": 1
+    },
+    {
+      "source": "Pjrich1313",
+      "target": "nateprewitt",
+      "weight": 3
+    },
+    {
+      "source": "nicnac228",
+      "target": "nateprewitt",
+      "weight": 1
+    },
+    {
+      "source": "nateprewitt",
+      "target": "sigmavirus24",
+      "weight": 1
+    },
+    {
+      "source": "Thompson1985",
+      "target": "sigmavirus24",
+      "weight": 1
+    },
+    {
+      "source": "PeezoSlug",
+      "target": "nateprewitt",
+      "weight": 1
+    },
+    {
+      "source": "nijel",
+      "target": "nateprewitt",
+      "weight": 1
+    },
+    {
+      "source": "sigmavirus24",
+      "target": "franekmagiera",
+      "weight": 1
+    },
+    {
+      "source": "Dr-Irv",
+      "target": "rhshadrach",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "khmyznikov",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "gogowitsch",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "KevsterAmp",
+      "weight": 2
+    },
+    {
+      "source": "mroeschke",
+      "target": "cmp0xff",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "cmp0xff",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "iabhi4",
+      "weight": 2
+    },
+    {
+      "source": "mroeschke",
+      "target": "iabhi4",
+      "weight": 2
+    },
+    {
+      "source": "mroeschke",
+      "target": "Dr-Irv",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "wjandrea",
+      "weight": 2
+    },
+    {
+      "source": "lithomas1",
+      "target": "rgommers",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "rgommers",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "GSAUC3",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "huisman",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "ConnorWallace15",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "ConnorWallace15",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "chilin0525",
+      "weight": 2
+    },
+    {
+      "source": "nikaltipar",
+      "target": "Farsidetfs",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "Farsidetfs",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "arthurlw",
+      "weight": 5
+    },
+    {
+      "source": "rhshadrach",
+      "target": "loicdiridollou",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "arthurlw",
+      "weight": 2
+    },
+    {
+      "source": "lithomas1",
+      "target": "mroeschke",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "myenugula",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "KevsterAmp",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "pre-commit-ci[bot]",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "chilin0525",
+      "weight": 2
+    },
+    {
+      "source": "mroeschke",
+      "target": "eicchen",
+      "weight": 2
+    },
+    {
+      "source": "WillAyd",
+      "target": "lithomas1",
+      "weight": 1
+    },
+    {
+      "source": "rgommers",
+      "target": "lithomas1",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "datapythonista",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "goanpeca",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "danielpintosalazar",
+      "weight": 1
+    },
+    {
+      "source": "Dr-Irv",
+      "target": "Shoestring42",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "theavey",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "dependabot[bot]",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "yanamis",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "kirisakow",
+      "weight": 2
+    },
+    {
+      "source": "tehunter",
+      "target": "rhshadrach",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "rhshadrach",
+      "weight": 2
+    },
+    {
+      "source": "mroeschke",
+      "target": "amoitra1",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "xaris96",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "ericcht",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "Pedro-Santos04",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "star1327p",
+      "weight": 2
+    },
+    {
+      "source": "mroeschke",
+      "target": "WillAyd",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "pbrochart",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "pbrochart",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "star1327p",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "kirisakow",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "chilin0525",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "quangngd",
+      "weight": 1
+    },
+    {
+      "source": "attack68",
+      "target": "quangngd",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "quangngd",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "tomasmacieira",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "it176131",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "it176131",
+      "weight": 1
+    },
+    {
+      "source": "datapythonista",
+      "target": "rhshadrach",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "viable-alternative",
+      "weight": 1
+    },
+    {
+      "source": "rhshadrach",
+      "target": "viable-alternative",
+      "weight": 1
+    },
+    {
+      "source": "mroeschke",
+      "target": "Danferno",
+      "weight": 1
+    }
+  ]
+}

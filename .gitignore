@@ -9,8 +9,8 @@ __pycache__/
 *.env
 
 # Data and results
-data/
-results/
+# data/
+# results/
 
 # Jupyter and editor
 .ipynb_checkpoints/

@@ -1,0 +1,15 @@
+{
+  "repositories": [
+    "pallets/flask",
+    "psf/requests",
+    "pandas-dev/pandas"
+  ],
+  "data_counts": {
+    "commits": 73,
+    "pull_requests": 300,
+    "issues": 139
+  },
+  "dev_count": 40,
+  "clusters": 0,
+  "model_accuracy": 0.6266666666666667
+}
