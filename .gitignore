@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pkl
+*.log
+
+# Environment
+.env
+*.env
+
+# Data and results
+data/
+results/
+
+# Jupyter and editor
+.ipynb_checkpoints/
+.vscode/
+.DS_Store
