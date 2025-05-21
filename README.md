@@ -5,6 +5,21 @@ GitHub API를 활용하여 오픈 소스 프로젝트의 개발자 행동 데이
 ![대시보드 이미지](https://github.com/JO-HEEJIN/github-developer-analyzer/raw/main/image.png)
 
 
+### 🚀 Live Streamlit Dashboard  
+**GitHub Developer Behavior Analyzer**  
+👉 [Launch the Dashboard](https://jo-heejin-github-developer-analyzer-dashboard-ujxmtk.streamlit.app)
+
+This dashboard visualizes and analyzes open-source developer behavior based on data collected via the GitHub API.
+
+- **Analyzed Repositories**: Flask, pandas, requests, and other major OSS projects  
+- **Key Features**:  
+  - Commit, PR, and issue statistics  
+  - Temporal activity patterns (by hour, day, month)  
+  - PR approval prediction model  
+  - Message length and code line change analytics
+
+
+
 ## 주요 기능
 
 - **데이터 수집**:
