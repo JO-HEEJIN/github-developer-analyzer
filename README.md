@@ -2,7 +2,8 @@
 
 GitHub API를 활용하여 오픈 소스 프로젝트의 개발자 행동 데이터를 수집, 분석하고 시각화하는 데이터 분석 프로젝트입니다.
 
-![데이터 분석 대시보드](https://i.ibb.co/N3Qk9Jj/dashboard-demo.png)
+![대시보드 이미지](https://github.com/JO-HEEJIN/github-developer-analyzer/raw/main/image.png)
+
 
 ## 주요 기능
 
