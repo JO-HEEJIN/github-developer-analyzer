@@ -17,7 +17,10 @@ from datetime import datetime, timedelta
 
 # 디렉토리 설정
 RESULTS_DIR = "results"
-DATA_DIR = "data"
+# DATA_DIR = "data"
+
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
 MODELS_DIR = os.path.join(RESULTS_DIR, "models")
 
 # 페이지 기본 설정
