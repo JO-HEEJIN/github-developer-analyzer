@@ -25,6 +25,16 @@ MODELS_DIR = os.path.join(RESULTS_DIR, "models")
 
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+
+# 페이지 기본 설정
+st.set_page_config(
+    page_title="GitHub 개발자 행동 패턴 분석기",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 st.write("📂 현재 디렉토리:", os.getcwd())
 st.write("📂 DATA_DIR 경로:", DATA_DIR)
 st.write("📂 DATA_DIR 존재 여부:", os.path.exists(DATA_DIR))
@@ -35,14 +45,6 @@ if os.path.exists(DATA_DIR):
         st.write(f"📄 {repo} 안에 있는 파일들:", os.listdir(os.path.join(DATA_DIR, repo)))
 else:
     st.error("❌ 'data/' 디렉토리가 Streamlit Cloud에서 보이지 않습니다.")
-
-# 페이지 기본 설정
-st.set_page_config(
-    page_title="GitHub 개발자 행동 패턴 분석기",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 # CSS 추가
 st.markdown("""
