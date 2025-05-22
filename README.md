@@ -2,10 +2,23 @@
 
 GitHub API를 활용하여 오픈 소스 프로젝트의 개발자 행동 데이터를 실시간으로 수집, 분석하고 시각화하는 고도화된 데이터 분석 프로젝트입니다.
 
+## 🚀 라이브 데모
+
+### 🌐 실시간 분석 대시보드 (v2.0)
+**👉 [GitHub 개발자 행동 패턴 분석기 Pro 체험하기](https://jo-heejin-github-developer-analyzer-enhanced-dashboard-v-pphufv.streamlit.app/)**
+
+- ⚡ 실시간 GitHub 저장소 검색 및 분석
+- 📊 향상된 시각화 및 인터랙티브 대시보드  
+- 🎯 다중 저장소 비교 분석
+- 🤖 AI 기반 인사이트 및 권장사항
+
 ![GitHub](https://img.shields.io/badge/GitHub-API-181717?style=for-the-badge&logo=github)
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Live Demo](https://img.shields.io/badge/Live%20Demo-🚀%20Available-brightgreen?style=for-the-badge)
+
+---
 
 ## 🆕 새로운 기능 (v2.0)
 
@@ -35,7 +48,21 @@ GitHub API를 활용하여 오픈 소스 프로젝트의 개발자 행동 데이
 
 ## 🚀 빠른 시작
 
-### 1. 환경 설정
+### 🎯 체험해보기 (가장 빠른 방법)
+**[실시간 대시보드에서 바로 체험하기](https://jo-heejin-github-developer-analyzer-enhanced-dashboard-v-pphufv.streamlit.app/)**
+
+1. 위 링크 클릭
+2. 좌측 메뉴에서 "🔍 실시간 저장소 검색" 선택
+3. 관심 있는 키워드로 GitHub 저장소 검색 (예: "machine learning", "web framework")
+4. "⚡ 빠른 분석" 버튼으로 즉시 분석 결과 확인!
+
+> 💡 **체험 팁**: 
+> - "tensorflow/tensorflow", "facebook/react" 같은 인기 저장소로 테스트해보세요
+> - 여러 저장소를 비교 분석해보세요
+> - 각 탭의 다양한 분석 결과를 확인해보세요
+
+### 🏠 로컬 설치 및 실행
+로컬에서 직접 실행하거나 개발하고 싶다면:
 
 #### 필수 요구사항
 - Python 3.9 이상
@@ -48,6 +75,9 @@ GitHub API를 활용하여 오픈 소스 프로젝트의 개발자 행동 데이
 # 저장소 클론
 git clone https://github.com/yourusername/github-developer-analyzer.git
 cd github-developer-analyzer
+
+# v2.0 브랜치로 전환
+git checkout v2.0/enhanced-dashboard
 
 # 가상환경 생성 (Conda 사용)
 conda create -n github_env python=3.9
@@ -62,9 +92,9 @@ source github_env/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-### 2. GitHub 토큰 설정
+#### GitHub 토큰 설정
 
-#### 토큰 생성
+##### 토큰 생성
 1. [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)
 2. "Generate new token (classic)" 클릭
 3. 필요한 권한 선택:
@@ -72,7 +102,7 @@ pip install -r requirements.txt
    - `user` (사용자 정보)
 4. 토큰 생성 후 복사
 
-#### 환경 변수 설정
+##### 환경 변수 설정
 ```bash
 # .env 파일 생성
 echo "GITHUB_TOKEN=your_github_token_here" > .env
@@ -82,9 +112,9 @@ echo "MAX_ITEMS_PER_REQUEST=100" >> .env
 echo "REQUEST_DELAY=0.5" >> .env
 ```
 
-### 3. 실행 방법
+#### 실행 방법
 
-#### v2.0 실시간 분석 대시보드
+##### v2.0 실시간 분석 대시보드
 ```bash
 # 향상된 대시보드 실행 (포트 8502)
 streamlit run enhanced_dashboard.py --server.port 8502
@@ -94,8 +124,11 @@ chmod +x run_enhanced_dashboard.sh
 ./run_enhanced_dashboard.sh
 ```
 
-#### v1.0 기본 분석 (배치 처리)
+##### v1.0 기본 분석 (배치 처리)
 ```bash
+# main 브랜치로 전환
+git checkout main
+
 # 데이터 수집 및 분석
 python main.py all
 
@@ -147,7 +180,7 @@ github-developer-analyzer/
 ### 브랜치 전략
 ```
 main                           # 안정 버전 (v1.0)
-├── feature/realtime-dashboard # 실시간 기능 (v2.0)
+├── v2.0/enhanced-dashboard    # 실시간 기능 (v2.0) ← 현재 라이브
 ├── feature/ai-insights       # AI 기능 개발 중 (v3.0 예정)
 ├── feature/api-integration   # 외부 API 연동 (v3.1 예정)
 └── hotfix/*                  # 긴급 버그 수정
@@ -160,7 +193,7 @@ main                           # 안정 버전 (v1.0)
   - 개발자 패턴 분석
   - PR 승인 예측 모델
 
-- **v2.0.0**: 실시간 분석 엔진 (현재)
+- **v2.0.0**: 실시간 분석 엔진 (현재 라이브)
   - 실시간 저장소 검색
   - 향상된 UI/UX
   - 저장소 건강도 스코어
@@ -173,15 +206,20 @@ main                           # 안정 버전 (v1.0)
 
 ## 🎯 주요 기능 상세
 
+### 🌐 실시간 체험 가능
+**[라이브 데모에서 직접 체험하기](https://jo-heejin-github-developer-analyzer-enhanced-dashboard-v-pphufv.streamlit.app/)**
+
 ### 실시간 저장소 검색
 - **고급 검색 필터**: 언어, 스타 수, 포크 수, 생성일
 - **인기 검색어**: 미리 정의된 트렌드 키워드
 - **결과 정렬**: Stars, 최근 업데이트, 생성일 기준
 - **빠른 액션**: 검색 결과에서 즉시 분석 시작
 
+> 💡 **체험 팁**: 라이브 데모에서 "machine learning", "web framework" 등의 키워드로 검색해보세요!
+
 ### 종합 분석 대시보드
 #### 📊 핵심 지표
-- **저장소 건강도**: 활동성, 인기도, 관리 수준 종합 평가
+- **저장소 건강도**: 활동성, 인기도, 관리 수준 종합 평가 (0-100점)
 - **벤치마킹**: 동일 언어 프로젝트 대비 순위
 - **성장 트렌드**: 스타, 포크, 이슈 증가 패턴
 
@@ -232,26 +270,36 @@ main                           # 안정 버전 (v1.0)
 ## 📊 분석 예시
 
 ### 예시 1: 인기 머신러닝 프레임워크 비교
-```python
-# 실시간 검색으로 다음 저장소들을 비교 분석
-repositories = [
-    "tensorflow/tensorflow",
-    "pytorch/pytorch", 
-    "scikit-learn/scikit-learn",
-    "keras-team/keras"
-]
+**라이브 데모에서 체험**: [실시간 비교 분석](https://jo-heejin-github-developer-analyzer-enhanced-dashboard-v-pphufv.streamlit.app/)
 
-# 각 저장소의 건강도 스코어, 기여자 수, 활동 패턴을 
-# 레이더 차트로 비교하여 인사이트 도출
-```
+1. "🎯 저장소 비교" 페이지 방문
+2. 다음 저장소들을 입력:
+   - `tensorflow/tensorflow`
+   - `pytorch/pytorch`
+   - `scikit-learn/scikit-learn`
+   - `keras-team/keras`
+3. 레이더 차트로 종합 성능 비교
+4. 카테고리별 우승자 확인
 
 ### 예시 2: 스타트업을 위한 웹 프레임워크 선택
-```python
-# 검색어: "web framework"
-# 필터: Python, 최소 1000 stars
-# 결과: Django, Flask, FastAPI 등을 비교하여
-# 프로젝트 규모와 팀 크기에 맞는 최적 선택 제안
-```
+1. "🔍 실시간 저장소 검색"에서 "web framework" 검색
+2. Python 언어 필터, 최소 1000 stars 설정
+3. Django, Flask, FastAPI 등 결과 확인
+4. 각각 "⚡ 빠른 분석"으로 상세 분석
+5. 프로젝트 규모와 팀 크기에 맞는 최적 선택
+
+## 🌐 배포 정보
+
+### 실시간 분석 대시보드
+- **라이브 URL**: https://jo-heejin-github-developer-analyzer-enhanced-dashboard-v-pphufv.streamlit.app/
+- **플랫폼**: Streamlit Cloud
+- **브랜치**: `v2.0/enhanced-dashboard`
+- **업데이트**: 자동 배포 (GitHub 푸시 시)
+- **상태**: ![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)
+
+### 로컬 개발
+- **포트**: 8502
+- **실행 명령**: `streamlit run enhanced_dashboard.py --server.port 8502`
 
 ## 🔮 향후 개발 계획
 
@@ -259,16 +307,19 @@ repositories = [
 - **트렌드 예측**: 저장소의 미래 성장 예측
 - **코드 품질 분석**: AI 기반 코드 리뷰
 - **자동 리포트**: 주간/월간 프로젝트 리포트 생성
+- **개발자 추천**: 프로젝트에 적합한 기여자 추천
 
 ### v3.1: 외부 통합
 - **Slack/Discord 봇**: 실시간 알림 및 분석
 - **GitHub 앱**: 저장소에 직접 설치 가능한 앱
 - **REST API**: 다른 서비스에서 활용 가능한 API
+- **Webhook 지원**: 실시간 이벤트 기반 분석
 
 ### v3.2: 엔터프라이즈 기능
 - **팀 대시보드**: 조직 내 여러 저장소 통합 관리
 - **권한 관리**: 사용자별 접근 권한 설정
 - **데이터 내보내기**: PDF, Excel 리포트 생성
+- **커스텀 지표**: 조직별 맞춤 KPI 설정
 
 ## 🤝 기여 방법
 
@@ -316,17 +367,21 @@ pytest tests/
 - **Streamlit**: 빠른 웹 앱 개발 지원
 - **Plotly**: 아름다운 시각화 도구
 - **오픈소스 커뮤니티**: 영감과 학습 기회 제공
+- **Streamlit Cloud**: 무료 호스팅 서비스 제공
 
 ## 📞 문의 및 지원
 
 - **Issues**: [GitHub Issues](https://github.com/yourusername/github-developer-analyzer/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/yourusername/github-developer-analyzer/discussions)
+- **라이브 데모**: [실시간 체험하기](https://jo-heejin-github-developer-analyzer-enhanced-dashboard-v-pphufv.streamlit.app/)
 - **Email**: your.email@example.com
 
 ---
 
 ⭐ **이 프로젝트가 도움이 되었다면 별표를 눌러주세요!**
 
-🚀 **기여하고 싶으시다면 언제든 Pull Request를 보내주세요!**
+🚀 **라이브 데모에서 직접 체험해보세요: [GitHub 개발자 행동 패턴 분석기 Pro](https://jo-heejin-github-developer-analyzer-enhanced-dashboard-v-pphufv.streamlit.app/)**
+
+🤝 **기여하고 싶으시다면 언제든 Pull Request를 보내주세요!**
 
 📊 **데이터 기반 의사결정으로 더 나은 오픈소스 생태계를 만들어가요!**
