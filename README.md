@@ -1,199 +1,332 @@
-# GitHub 개발자 행동 패턴 분석기
+# GitHub 개발자 행동 패턴 분석기 v2.0
 
-GitHub API를 활용하여 오픈 소스 프로젝트의 개발자 행동 데이터를 수집, 분석하고 시각화하는 데이터 분석 프로젝트입니다.
+GitHub API를 활용하여 오픈 소스 프로젝트의 개발자 행동 데이터를 실시간으로 수집, 분석하고 시각화하는 고도화된 데이터 분석 프로젝트입니다.
 
-![대시보드 이미지](https://github.com/JO-HEEJIN/github-developer-analyzer/raw/main/image.png)
+![GitHub](https://img.shields.io/badge/GitHub-API-181717?style=for-the-badge&logo=github)
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
+## 🆕 새로운 기능 (v2.0)
 
-### 🚀 Live Streamlit Dashboard  
-**GitHub Developer Behavior Analyzer**  
-👉 [Launch the Dashboard](https://jo-heejin-github-developer-analyzer-dashboard-ujxmtk.streamlit.app)
+### 🔍 실시간 분석 엔진
+- **실시간 저장소 검색**: GitHub API를 통한 즉석 검색
+- **고급 필터링**: 언어, 인기도, 생성일, 토픽별 필터
+- **즉석 분석**: 저장소 URL 입력만으로 몇 초 내 종합 분석
+- **API 모니터링**: 실시간 API 제한 상태 확인
 
-This dashboard visualizes and analyzes open-source developer behavior based on data collected via the GitHub API.
+### 📊 향상된 분석 기능
+- **저장소 건강도 스코어**: 0-100점 종합 평가 시스템
+- **벤치마킹**: 동일 언어 프로젝트와의 비교 분석
+- **다중 저장소 비교**: 레이더 차트를 통한 시각적 비교
+- **AI 기반 권장사항**: 맞춤형 개선 제안
 
-- **Analyzed Repositories**: Flask, pandas, requests, and other major OSS projects  
-- **Key Features**:  
-  - Commit, PR, and issue statistics  
-  - Temporal activity patterns (by hour, day, month)  
-  - PR approval prediction model  
-  - Message length and code line change analytics
+### 🎯 사용자 경험 개선
+- **카드뷰/테이블뷰**: 선택 가능한 표시 방식
+- **분석 히스토리**: 최근 분석한 저장소 기록 관리
+- **진행률 표시**: 실시간 분석 진행 상황
+- **반응형 디자인**: 모바일 친화적 인터페이스
 
+### 🤖 지능형 기능
+- **자동 카테고리 분류**: 프로젝트 유형 자동 감지
+- **트렌드 분석**: 시간대별 활동 패턴 분석
+- **기여자 네트워크**: 협업 관계 시각화
+- **예측 모델**: PR 승인 확률 예측
 
+## 🚀 빠른 시작
 
-## 주요 기능
+### 1. 환경 설정
 
-- **데이터 수집**:
-  - GitHub API를 통한 저장소 데이터 수집 (커밋, PR, 이슈)
-  - 개발자 활동 메타데이터 추출
+#### 필수 요구사항
+- Python 3.9 이상
+- GitHub Personal Access Token
+- 안정적인 인터넷 연결
 
-- **개발자 행동 패턴 분석**:
-  - 시간대별/요일별 활동 분포
-  - 코드 변경 패턴 분석
-  - 커밋 메시지 특성 분석
-  - 개발자 프로필링 및 클러스터링
+#### 설치 방법
 
-- **PR 분석**:
-  - PR 승인/거부 패턴
-  - 코드 변경량과 처리 시간 관계
-  - 리뷰 네트워크 분석
-
-- **인터랙티브 대시보드**:
-  - 실시간 필터링 및 탐색
-  - 다양한 시각화 차트
-  - 개발자 행동 인사이트
-
-- **예측 모델**:
-  - PR 승인 예측 머신러닝 모델
-  - 개발자 클러스터 분류
-
-## 설치 방법
-
-1. 저장소 클론
 ```bash
+# 저장소 클론
 git clone https://github.com/yourusername/github-developer-analyzer.git
 cd github-developer-analyzer
-```
 
-2. 필요한 패키지 설치
-```bash
+# 가상환경 생성 (Conda 사용)
+conda create -n github_env python=3.9
+conda activate github_env
+
+# 또는 venv 사용
+python -m venv github_env
+source github_env/bin/activate  # Linux/Mac
+# github_env\Scripts\activate   # Windows
+
+# 필요한 패키지 설치
 pip install -r requirements.txt
 ```
 
-3. 환경 변수 설정
-`.env` 파일을 생성하고 GitHub 토큰을 추가합니다:
-```
-GITHUB_TOKEN=your_github_personal_access_token
-```
+### 2. GitHub 토큰 설정
 
-GitHub 토큰은 [GitHub 개인 액세스 토큰](https://github.com/settings/tokens) 페이지에서 생성할 수 있습니다. `repo` 및 `user` 스코프 권한이 필요합니다.
+#### 토큰 생성
+1. [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)
+2. "Generate new token (classic)" 클릭
+3. 필요한 권한 선택:
+   - `repo` (전체 선택)
+   - `user` (사용자 정보)
+4. 토큰 생성 후 복사
 
-## 사용 방법
-
-### 데이터 수집
+#### 환경 변수 설정
 ```bash
-python main.py collect --repos "owner1/repo1" "owner2/repo2" --days 60
+# .env 파일 생성
+echo "GITHUB_TOKEN=your_github_token_here" > .env
+
+# 기타 설정 (선택사항)
+echo "MAX_ITEMS_PER_REQUEST=100" >> .env
+echo "REQUEST_DELAY=0.5" >> .env
 ```
 
-### 데이터 분석
+### 3. 실행 방법
+
+#### v2.0 실시간 분석 대시보드
 ```bash
+# 향상된 대시보드 실행 (포트 8502)
+streamlit run enhanced_dashboard.py --server.port 8502
+
+# 또는 실행 스크립트 사용
+chmod +x run_enhanced_dashboard.sh
+./run_enhanced_dashboard.sh
+```
+
+#### v1.0 기본 분석 (배치 처리)
+```bash
+# 데이터 수집 및 분석
+python main.py all
+
+# 또는 단계별 실행
+python main.py collect --repos "owner/repo1" "owner/repo2"
 python main.py analyze
-```
-
-### 대시보드 실행
-```bash
 python main.py dashboard
 ```
 
-### 모든 단계 한번에 실행
-```bash
-python main.py all --repos "owner1/repo1" "owner2/repo2"
-```
-
-## 명령줄 옵션
-
-- `action`: 실행할 작업 (`collect`, `analyze`, `dashboard`, 또는 `all`)
-- `--repos`: 분석할 GitHub 저장소 목록 (기본값: 'pallets/flask', 'psf/requests', 'pandas-dev/pandas')
-- `--days`: 수집할 데이터의 기간(일) (기본값: 30)
-- `--max-items`: 저장소당 최대 항목 수 (기본값: 200)
-
-## 프로젝트 구조
+## 📁 프로젝트 구조
 
 ```
 github-developer-analyzer/
 │
-├── main.py                   # 메인 실행 스크립트
-├── collect_data.py           # 데이터 수집 모듈
-├── analyze_data.py           # 데이터 분석 모듈
-├── dashboard.py              # 스트림릿 대시보드 
-├── requirements.txt          # 필요한 패키지 목록
-├── .env                      # 환경 변수 (GitHub 토큰 포함)
+├── 📊 v2.0 (실시간 분석)
+│   ├── enhanced_dashboard.py      # 향상된 Streamlit 대시보드
+│   ├── realtime_analyzer.py       # 실시간 분석 엔진
+│   └── run_enhanced_dashboard.sh   # 실행 스크립트
 │
-├── data/                     # 데이터 저장 디렉토리
-│   ├── owner_repo/           # 저장소별 디렉토리
-│   │   ├── commits.csv       # 커밋 데이터
-│   │   ├── pull_requests.csv # PR 데이터
-│   │   ├── issues.csv        # 이슈 데이터
-│   │   └── metadata.csv      # 저장소 메타데이터
+├── 📈 v1.0 (배치 분석)
+│   ├── main.py                    # 메인 실행 스크립트
+│   ├── collect_data.py            # 데이터 수집 모듈
+│   ├── analyze_data.py            # 데이터 분석 모듈
+│   └── dashboard.py               # 기본 대시보드
 │
-├── results/                  # 분석 결과 저장 디렉토리
-│   ├── developer_patterns/   # 개발자 패턴 분석 결과
-│   ├── pr_patterns/          # PR 패턴 분석 결과
-│   ├── clustering/           # 클러스터링 분석 결과
-│   ├── time_patterns/        # 시간 패턴 분석 결과
-│   └── models/               # 훈련된 모델 저장
+├── 📂 데이터 및 결과
+│   ├── data/                      # 수집된 원시 데이터
+│   ├── results/                   # 분석 결과
+│   │   ├── developer_patterns/    # 개발자 패턴 분석
+│   │   ├── pr_patterns/          # PR 패턴 분석
+│   │   ├── clustering/           # 클러스터링 결과
+│   │   ├── time_patterns/        # 시간 패턴 분석
+│   │   └── models/               # 훈련된 ML 모델
+│   └── visualizations/           # 생성된 시각화
+│
+├── 📋 설정 및 문서
+│   ├── requirements.txt          # Python 패키지 목록
+│   ├── .env                      # 환경 변수 (GitHub 토큰)
+│   ├── .gitignore               # Git 무시 파일
+│   └── README.md                # 프로젝트 설명서
+│
+└── 🧪 유틸리티
+    ├── setup.py                 # 프로젝트 초기 설정
+    └── setup.sh                 # 환경 설정 스크립트
 ```
 
-## 분석 내용 예시
+## 🌿 브랜치 구조 및 버전 관리
 
-1. **개발자 활동 패턴**:
-   - 시간별/요일별 커밋 활동 분포
-   - 가장 활발한 시간대 분석
-   - 개발자별 활동 패턴 비교
+### 브랜치 전략
+```
+main                           # 안정 버전 (v1.0)
+├── feature/realtime-dashboard # 실시간 기능 (v2.0)
+├── feature/ai-insights       # AI 기능 개발 중 (v3.0 예정)
+├── feature/api-integration   # 외부 API 연동 (v3.1 예정)
+└── hotfix/*                  # 긴급 버그 수정
+```
 
-2. **코드 변경 분석**:
-   - 커밋 크기 분포
-   - 파일 변경 패턴
-   - 코드 추가/삭제 비율
+### 버전 히스토리
+- **v1.0.0**: 기본 GitHub 분석 기능
+  - 배치 데이터 수집 및 분석
+  - 기본 Streamlit 대시보드
+  - 개발자 패턴 분석
+  - PR 승인 예측 모델
 
-3. **협업 패턴**:
-   - PR 리뷰 관계 네트워크
-   - 코드 리뷰 효율성
-   - 팀 구조 분석
+- **v2.0.0**: 실시간 분석 엔진 (현재)
+  - 실시간 저장소 검색
+  - 향상된 UI/UX
+  - 저장소 건강도 스코어
+  - 다중 저장소 비교
 
-4. **개발자 클러스터링**:
-   - 유사한 행동 패턴을 가진 개발자 그룹화
-   - 개발자 "유형" 식별
-   - 클러스터 특성 분석
+- **v3.0.0**: AI 인사이트 (계획)
+  - 트렌드 예측 모델
+  - 자동 리포트 생성
+  - 코드 품질 분석
 
-5. **PR 승인 예측**:
-   - PR 승인 가능성 예측
-   - 승인에 영향을 미치는 주요 요인
-   - 최적의 PR 제출 전략 제안
+## 🎯 주요 기능 상세
 
-## 기술 스택
+### 실시간 저장소 검색
+- **고급 검색 필터**: 언어, 스타 수, 포크 수, 생성일
+- **인기 검색어**: 미리 정의된 트렌드 키워드
+- **결과 정렬**: Stars, 최근 업데이트, 생성일 기준
+- **빠른 액션**: 검색 결과에서 즉시 분석 시작
 
-- **데이터 수집**: PyGithub, Python requests
-- **데이터 처리 및 분석**: Pandas, NumPy
-- **기계 학습**: Scikit-learn
-- **시각화**: Matplotlib, Seaborn, Plotly
-- **대시보드**: Streamlit
+### 종합 분석 대시보드
+#### 📊 핵심 지표
+- **저장소 건강도**: 활동성, 인기도, 관리 수준 종합 평가
+- **벤치마킹**: 동일 언어 프로젝트 대비 순위
+- **성장 트렌드**: 스타, 포크, 이슈 증가 패턴
 
-## 개발자 행동 패턴 인사이트
+#### 👥 기여자 분석
+- **기여자 분포**: 상위 기여자 및 기여도 분석
+- **활동 패턴**: 시간대별, 요일별 커밋 패턴
+- **협업 네트워크**: 리뷰 관계 시각화
 
-이 프로젝트를 통해 얻을 수 있는 인사이트:
+#### 💻 기술 스택 분석
+- **언어 분포**: 코드베이스 언어 구성
+- **의존성 분석**: 주요 라이브러리 및 프레임워크
+- **코드 품질**: 평균 커밋 크기, 파일 변경 패턴
 
-1. **작업 시간 패턴**:
-   - 개발자들이 언제 가장 활발히 활동하는지
-   - 평일/주말 활동 분포
-   - 시간대별 생산성 패턴
+#### 🎯 맞춤형 권장사항
+- **개발 전략**: 프로젝트 특성에 맞는 개선 방안
+- **커뮤니티 성장**: 기여자 유치 및 참여 증대 방안
+- **기술 로드맵**: 기술 스택 개선 제안
 
-2. **코드 기여 스타일**:
-   - "추가형" vs "삭제형" 개발자
-   - 대규모 변경 vs 작은 변경 선호도
-   - 커밋 메시지 패턴
+### 다중 저장소 비교
+- **레이더 차트**: 다차원 성능 비교
+- **지표별 순위**: 카테고리별 우승자 선정
+- **상대적 분석**: 선택한 저장소들 간의 상대적 위치
 
-3. **협업 동태학**:
-   - 코드 리뷰 네트워크
-   - 팀 구조와 상호작용
-   - PR 승인 패턴
+## 🛠️ 기술 스택
 
-4. **개발자 유형화**:
-   - 유사한 작업 패턴을 가진 개발자 그룹
-   - 개발자 "페르소나" 식별
-   - 팀 다양성 분석
+### 🐍 백엔드
+- **Python 3.9+**: 메인 개발 언어
+- **PyGithub**: GitHub API 클라이언트
+- **Pandas**: 데이터 처리 및 분석
+- **NumPy**: 수치 계산
+- **Scikit-learn**: 머신러닝 모델
 
-## 기여 방법
+### 🎨 프론트엔드
+- **Streamlit**: 웹 애플리케이션 프레임워크
+- **Plotly**: 인터랙티브 시각화
+- **Matplotlib/Seaborn**: 정적 차트 생성
 
-1. 이 저장소를 포크합니다
-2. 새 기능 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`)
-3. 변경 사항을 커밋합니다 (`git commit -m 'Add some amazing feature'`)
-4. 브랜치에 푸시합니다 (`git push origin feature/amazing-feature`)
-5. Pull Request를 생성합니다
+### 📊 데이터 처리
+- **asyncio**: 비동기 데이터 수집
+- **concurrent.futures**: 병렬 처리
+- **python-dotenv**: 환경 변수 관리
 
-## 라이센스
+### 🔧 개발 도구
+- **Git**: 버전 관리
+- **GitHub Actions**: CI/CD (예정)
+- **pytest**: 테스트 프레임워크 (예정)
 
-MIT 라이센스
+## 📊 분석 예시
 
-## 면책 조항
+### 예시 1: 인기 머신러닝 프레임워크 비교
+```python
+# 실시간 검색으로 다음 저장소들을 비교 분석
+repositories = [
+    "tensorflow/tensorflow",
+    "pytorch/pytorch", 
+    "scikit-learn/scikit-learn",
+    "keras-team/keras"
+]
 
-이 도구는 GitHub의 서비스 약관을 준수하여 사용해야 합니다. 데이터 수집 시 API 속도 제한을 고려하고, 개인 정보 보호 원칙을 준수하세요.
+# 각 저장소의 건강도 스코어, 기여자 수, 활동 패턴을 
+# 레이더 차트로 비교하여 인사이트 도출
+```
+
+### 예시 2: 스타트업을 위한 웹 프레임워크 선택
+```python
+# 검색어: "web framework"
+# 필터: Python, 최소 1000 stars
+# 결과: Django, Flask, FastAPI 등을 비교하여
+# 프로젝트 규모와 팀 크기에 맞는 최적 선택 제안
+```
+
+## 🔮 향후 개발 계획
+
+### v3.0: AI 인사이트 엔진
+- **트렌드 예측**: 저장소의 미래 성장 예측
+- **코드 품질 분석**: AI 기반 코드 리뷰
+- **자동 리포트**: 주간/월간 프로젝트 리포트 생성
+
+### v3.1: 외부 통합
+- **Slack/Discord 봇**: 실시간 알림 및 분석
+- **GitHub 앱**: 저장소에 직접 설치 가능한 앱
+- **REST API**: 다른 서비스에서 활용 가능한 API
+
+### v3.2: 엔터프라이즈 기능
+- **팀 대시보드**: 조직 내 여러 저장소 통합 관리
+- **권한 관리**: 사용자별 접근 권한 설정
+- **데이터 내보내기**: PDF, Excel 리포트 생성
+
+## 🤝 기여 방법
+
+### 개발 환경 설정
+```bash
+# 포크한 저장소 클론
+git clone https://github.com/your-username/github-developer-analyzer.git
+cd github-developer-analyzer
+
+# 개발용 브랜치 생성
+git checkout -b feature/your-feature-name
+
+# 개발 의존성 설치
+pip install -r requirements-dev.txt
+
+# 코드 스타일 검사
+black . && flake8 .
+
+# 테스트 실행
+pytest tests/
+```
+
+### 커밋 컨벤션
+- `feat:` 새로운 기능 추가
+- `fix:` 버그 수정
+- `docs:` 문서 변경
+- `style:` 코드 포맷팅
+- `refactor:` 코드 리팩토링
+- `test:` 테스트 추가/수정
+
+### Pull Request 가이드라인
+1. 기능별로 별도 브랜치 생성
+2. 의미 있는 커밋 메시지 작성
+3. 테스트 코드 포함
+4. 문서 업데이트
+5. 코드 리뷰 요청
+
+## 📄 라이센스
+
+이 프로젝트는 MIT 라이센스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+
+## 🙏 감사의 말
+
+- **GitHub API**: 풍부한 데이터 제공
+- **Streamlit**: 빠른 웹 앱 개발 지원
+- **Plotly**: 아름다운 시각화 도구
+- **오픈소스 커뮤니티**: 영감과 학습 기회 제공
+
+## 📞 문의 및 지원
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/github-developer-analyzer/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/github-developer-analyzer/discussions)
+- **Email**: your.email@example.com
+
+---
+
+⭐ **이 프로젝트가 도움이 되었다면 별표를 눌러주세요!**
+
+🚀 **기여하고 싶으시다면 언제든 Pull Request를 보내주세요!**
+
+📊 **데이터 기반 의사결정으로 더 나은 오픈소스 생태계를 만들어가요!**
